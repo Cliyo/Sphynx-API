@@ -27,17 +27,16 @@ public class TokenService {
         }
     }
 
-    public boolean isValid(String tokenJWT){
+    public String getSubject(String tokenJWT){
         try{
             var algorithm = Algorithm.HMAC256("12345678");
-            var valid = JWT.require(algorithm)
+            return JWT.require(algorithm)
                     .withIssuer("API Sphynx")
                     .build()
                     .verify(tokenJWT)
                     .getSubject();
-            return true;
         } catch(JWTVerificationException exception){
-            return false;
+            throw new RuntimeException("Token JWT is not valid.");
         }
     }
 
