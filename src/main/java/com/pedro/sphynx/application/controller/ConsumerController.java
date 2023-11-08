@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("consumer")
 public class ConsumerController {
@@ -44,5 +46,11 @@ public class ConsumerController {
         repository.deleteByRa(ra);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ConsumerDataComplete>> get(){
+        var list = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
+        return ResponseEntity.ok(list);
     }
 }
