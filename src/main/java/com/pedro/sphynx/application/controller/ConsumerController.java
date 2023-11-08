@@ -37,4 +37,12 @@ public class ConsumerController {
 
         return ResponseEntity.ok(consumerDto);
     }
+
+    @DeleteMapping("/{ra}")
+    @Transactional
+    public ResponseEntity delete(@PathVariable String ra){
+        repository.deleteByRa(ra);
+
+        return ResponseEntity.noContent().build();
+    }
 }

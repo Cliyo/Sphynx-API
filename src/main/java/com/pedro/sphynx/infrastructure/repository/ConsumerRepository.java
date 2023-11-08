@@ -7,4 +7,6 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     boolean existsByRa(String ra);
 
     Consumer getReferenceByRa(String ra);
+
+    void deleteByRa(String ra);
 }
