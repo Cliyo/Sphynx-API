@@ -1,5 +1,6 @@
 package com.pedro.sphynx.infrastructure.entities;
 
+import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInputDTO;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInputDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,5 +24,11 @@ public class Consumer {
     public Consumer(ConsumerDataInputDTO data){
         this.ra = data.ra();
         this.tag = data.tag();
+    }
+
+    public void actualizeData(ConsumerDataEditInputDTO data) {
+        if(data.tag() != null){
+            this.tag = data.tag();
+        }
     }
 }
