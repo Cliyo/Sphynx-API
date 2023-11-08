@@ -25,14 +25,12 @@ public class ConsumerController {
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid ConsumerDataInputDTO data){
-        Consumer consumer = new Consumer(data);
+        var consumerDto = service.createVerify(data);
 
-        repository.save(consumer);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(consumerDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{ra}")
     @Transactional
     public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInputDTO data){
         var consumerDto = service.updateVerify(data, ra);
