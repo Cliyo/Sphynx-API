@@ -9,4 +9,8 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     Consumer getReferenceByRa(String ra);
 
     void deleteByRa(String ra);
+
+    boolean existsByTag(String tag);
+
+    Consumer findByTag(String ra);
 }
