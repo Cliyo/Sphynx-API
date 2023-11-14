@@ -2,12 +2,9 @@ package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.application.dtos.access.AccessDataInput;
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
-import com.pedro.sphynx.application.dtos.person.PersonDataComplete;
 import com.pedro.sphynx.domain.AccessService;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("accessRegister")
-public class AccessRegistersController {
+public class AccessRegisterController {
 
     @Autowired
     private AccessRepository accessRepository;
