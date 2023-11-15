@@ -12,7 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -72,6 +77,26 @@ public class AccessRegisterController {
 
         List<AccessDataComplete> finalList = new ArrayList<>();
         var listAccess = accessRepository.findAllByLocal(localRep).stream().map(AccessDataComplete::new).toList();
+
+        for(AccessDataComplete dto : listAccess){
+            var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
+            var finalDto = dto.withName(dto, person.name());
+
+            finalList.add(finalDto);
+        }
+
+        return ResponseEntity.ok(finalList);
+    }
+
+    @GetMapping("/byDate/{date}")
+    public ResponseEntity<List<AccessDataComplete>> getAllByDate(@PathVariable String date){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dateTimeStart = LocalDate.parse(date, formatter).atStartOfDay();
+        LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
+
+        List<AccessDataComplete> finalList = new ArrayList<>();
+        var listAccess = accessRepository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
 
         for(AccessDataComplete dto : listAccess){
             var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
