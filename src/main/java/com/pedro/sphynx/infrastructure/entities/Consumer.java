@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Table(name="consumers")
 @Entity(name="Consumer")
 @Getter
@@ -20,15 +22,20 @@ public class Consumer {
 
     private String ra;
     private String tag;
+    private LocalDateTime dtcreate;
+    private LocalDateTime dtupdate;
 
     public Consumer(ConsumerDataInputDTO data){
         this.ra = data.ra();
         this.tag = data.tag();
+        this.dtcreate = LocalDateTime.now();
+        this.dtupdate = null;
     }
 
     public void actualizeData(ConsumerDataEditInputDTO data) {
         if(data.tag() != null){
             this.tag = data.tag();
+            this.dtupdate = LocalDateTime.now();
         }
     }
 }
