@@ -1,4 +1,4 @@
-# SPHYNX V2 BACKEND
+# <p align="center"> SPHYNX V2 BACKEND </p>
 
 ## Resumo
 Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalidades ao projeto original. Sendo desenvolvido utilizando o framework Spring.
