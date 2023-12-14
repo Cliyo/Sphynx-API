@@ -49,7 +49,7 @@ public class ConsumerController {
     @DeleteMapping("/{ra}")
     @Transactional
     public ResponseEntity delete(@PathVariable String ra){
-        consumerRepository.deleteByRa(ra);
+        consumerRepository.deleteByPersonRa(ra);
 
         return ResponseEntity.noContent().build();
     }
@@ -59,14 +59,6 @@ public class ConsumerController {
         List<ConsumerDataComplete> finalList = new ArrayList<>();
         var listConsumers = consumerRepository.findAll().stream().map(ConsumerDataComplete::new).toList();
 
-        System.out.println(consumerRepository.findAll().stream().map(ConsumerDataComplete::new).toList());
-
-        for(ConsumerDataComplete dto : listConsumers){
-            var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
-            var finalDto = dto.withName(dto, person.name());
-
-            finalList.add(finalDto);
-        }
         return ResponseEntity.ok(finalList);
     }
 }

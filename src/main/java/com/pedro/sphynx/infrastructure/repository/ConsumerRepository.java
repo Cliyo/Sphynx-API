@@ -4,11 +4,11 @@ import com.pedro.sphynx.infrastructure.entities.Consumer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
-    boolean existsByRa(String ra);
+    boolean existsByPersonRa(String ra);
 
-    Consumer getReferenceByRa(String ra);
+    Consumer getReferenceByPersonRa(String ra);
 
-    void deleteByRa(String ra);
+    void deleteByPersonRa(String ra);
 
     boolean existsByTag(String tag);
 

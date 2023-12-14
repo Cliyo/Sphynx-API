@@ -9,6 +9,7 @@ import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 @Service
@@ -23,7 +24,7 @@ public class ConsumerService {
     private ResourceBundle messages = ResourceBundle.getBundle("messages");
 
     public ConsumerDataComplete createVerify(ConsumerDataInputDTO data){
-        if(consumerRepository.existsByRa(data.ra())){
+        if(consumerRepository.existsByPersonRa(data.ra())){
             throw new RuntimeException(messages.getString("error.raAlreadyExists"));
         }
 
@@ -32,15 +33,15 @@ public class ConsumerService {
         }
 
         else{
-            Consumer consumer = new Consumer(data);
+            Consumer consumer = new Consumer(null, personRepository.findOneByRa(data.ra()), data.tag(), LocalDateTime.now(), null);
             consumerRepository.save(consumer);
             return new ConsumerDataComplete(consumer);
         }
     }
 
     public ConsumerDataComplete updateVerify(ConsumerDataEditInputDTO data, String ra){
-        if(consumerRepository.existsByRa(ra)){
-            var consumer = consumerRepository.getReferenceByRa(ra);
+        if(consumerRepository.existsByPersonRa(ra)){
+            var consumer = consumerRepository.getReferenceByPersonRa(ra);
             consumer.actualizeData(data);
             return new ConsumerDataComplete(consumer);
         } else{

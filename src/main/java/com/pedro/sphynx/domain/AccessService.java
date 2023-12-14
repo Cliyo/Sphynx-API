@@ -33,7 +33,7 @@ public class AccessService {
         }
 
         ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByTag(data.tag()));
-        if(!personRepository.existsByRa(consumer.ra())){
+        if(!personRepository.existsByRa(consumer.person().ra())){
             throw new RuntimeException(messages.getString("error.raDontExistsInPerson"));
         }
 
@@ -42,7 +42,7 @@ public class AccessService {
         //validacao se o consumer pode acessar o lugar, ainda falta criar tabela para os locais,
         //adicionar coluna de permissao no consumer
 
-        var access = new Access(null, data.tag(), consumer.ra(), data.local(), LocalDateTime.now());
+        var access = new Access(null, data.tag(), consumer.person().ra(), data.local(), LocalDateTime.now());
 
         accessRepository.save(access);
     }

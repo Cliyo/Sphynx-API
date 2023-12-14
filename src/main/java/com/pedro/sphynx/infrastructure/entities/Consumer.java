@@ -20,17 +20,13 @@ public class Consumer {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ra;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    private Person person;
+
     private String tag;
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
-
-    public Consumer(ConsumerDataInputDTO data){
-        this.ra = data.ra();
-        this.tag = data.tag();
-        this.dtcreate = LocalDateTime.now();
-        this.dtupdate = null;
-    }
 
     public void actualizeData(ConsumerDataEditInputDTO data) {
         if(data.tag() != null){
