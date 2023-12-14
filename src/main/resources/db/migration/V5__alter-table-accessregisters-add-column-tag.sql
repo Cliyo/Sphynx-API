@@ -1,1 +1,0 @@
-alter table accessregisters add tag varchar(255) not null;
