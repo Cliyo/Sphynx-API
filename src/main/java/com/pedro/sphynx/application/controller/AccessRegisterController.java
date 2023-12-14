@@ -2,7 +2,6 @@ package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.application.dtos.access.AccessDataInput;
-import com.pedro.sphynx.application.dtos.person.PersonDataComplete;
 import com.pedro.sphynx.domain.AccessService;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
 import com.pedro.sphynx.infrastructure.repository.PersonRepository;
@@ -14,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -43,49 +39,25 @@ public class AccessRegisterController {
 
     @GetMapping
     public ResponseEntity<List<AccessDataComplete>> getAll(){
-        List<AccessDataComplete> finalList = new ArrayList<>();
         var listAccess = accessRepository.findAll().stream().map(AccessDataComplete::new).toList();
 
-        for(AccessDataComplete dto : listAccess){
-            var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
-            var finalDto = dto.withName(dto, person.name());
-
-            finalList.add(finalDto);
-        }
-
-        return ResponseEntity.ok(finalList);
+        return ResponseEntity.ok(listAccess);
     }
 
     @GetMapping("/byRa/{ra}")
     public ResponseEntity<List<AccessDataComplete>> getAllByRa(@PathVariable String ra){
-        List<AccessDataComplete> finalList = new ArrayList<>();
-        var listAccess = accessRepository.findAllByRa(ra).stream().map(AccessDataComplete::new).toList();
+        var listAccess = accessRepository.findAllByConsumerPersonRa(ra).stream().map(AccessDataComplete::new).toList();
 
-        for(AccessDataComplete dto : listAccess){
-            var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
-            var finalDto = dto.withName(dto, person.name());
-
-            finalList.add(finalDto);
-        }
-
-        return ResponseEntity.ok(finalList);
+        return ResponseEntity.ok(listAccess);
     }
 
     @GetMapping("/byLocal/{local}")
     public ResponseEntity<List<AccessDataComplete>> getAllByLocal(@PathVariable String local){
         String localRep = local.replace("_", " ");
 
-        List<AccessDataComplete> finalList = new ArrayList<>();
-        var listAccess = accessRepository.findAllByLocal(localRep).stream().map(AccessDataComplete::new).toList();
+        var listAccess = accessRepository.findAllByLocalName(localRep).stream().map(AccessDataComplete::new).toList();
 
-        for(AccessDataComplete dto : listAccess){
-            var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
-            var finalDto = dto.withName(dto, person.name());
-
-            finalList.add(finalDto);
-        }
-
-        return ResponseEntity.ok(finalList);
+        return ResponseEntity.ok(listAccess);
     }
 
     @GetMapping("/byDate/{date}")
@@ -95,16 +67,8 @@ public class AccessRegisterController {
         LocalDateTime dateTimeStart = LocalDate.parse(date, formatter).atStartOfDay();
         LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-        List<AccessDataComplete> finalList = new ArrayList<>();
         var listAccess = accessRepository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
 
-        for(AccessDataComplete dto : listAccess){
-            var person = new PersonDataComplete(personRepository.findOneByRa(dto.ra()));
-            var finalDto = dto.withName(dto, person.name());
-
-            finalList.add(finalDto);
-        }
-
-        return ResponseEntity.ok(finalList);
+        return ResponseEntity.ok(listAccess);
     }
 }

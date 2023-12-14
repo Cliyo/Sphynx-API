@@ -19,9 +19,13 @@ public class Access {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String tag;
-    private String ra;
-    private String local;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consumer_id")
+    private Consumer consumer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "local_id")
+    private Local local;
 
     @Column(name = "dtcreate")
     private LocalDateTime date;
