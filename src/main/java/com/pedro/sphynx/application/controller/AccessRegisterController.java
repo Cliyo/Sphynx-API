@@ -4,7 +4,6 @@ import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.application.dtos.access.AccessDataInput;
 import com.pedro.sphynx.domain.AccessService;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
-import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,32 +20,29 @@ import java.util.List;
 public class AccessRegisterController {
 
     @Autowired
-    private AccessRepository accessRepository;
+    private AccessRepository repository;
 
     @Autowired
-    private AccessService accessService;
-
-    @Autowired
-    private PersonRepository personRepository;
+    private AccessService service;
 
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
-        accessService.validateCreation(data);
+        service.validateCreation(data);
 
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<List<AccessDataComplete>> getAll(){
-        var listAccess = accessRepository.findAll().stream().map(AccessDataComplete::new).toList();
+        var listAccess = repository.findAll().stream().map(AccessDataComplete::new).toList();
 
         return ResponseEntity.ok(listAccess);
     }
 
     @GetMapping("/byRa/{ra}")
     public ResponseEntity<List<AccessDataComplete>> getAllByRa(@PathVariable String ra){
-        var listAccess = accessRepository.findAllByConsumerPersonRa(ra).stream().map(AccessDataComplete::new).toList();
+        var listAccess = repository.findAllByConsumerPersonRa(ra).stream().map(AccessDataComplete::new).toList();
 
         return ResponseEntity.ok(listAccess);
     }
@@ -55,7 +51,7 @@ public class AccessRegisterController {
     public ResponseEntity<List<AccessDataComplete>> getAllByLocal(@PathVariable String local){
         String localRep = local.replace("_", " ");
 
-        var listAccess = accessRepository.findAllByLocalName(localRep).stream().map(AccessDataComplete::new).toList();
+        var listAccess = repository.findAllByLocalName(localRep).stream().map(AccessDataComplete::new).toList();
 
         return ResponseEntity.ok(listAccess);
     }
@@ -67,7 +63,7 @@ public class AccessRegisterController {
         LocalDateTime dateTimeStart = LocalDate.parse(date, formatter).atStartOfDay();
         LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-        var listAccess = accessRepository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
+        var listAccess = repository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
 
         return ResponseEntity.ok(listAccess);
     }

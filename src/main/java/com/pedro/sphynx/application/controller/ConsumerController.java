@@ -20,10 +20,7 @@ import java.util.List;
 public class ConsumerController {
 
     @Autowired
-    private ConsumerRepository consumerRepository;
-
-    @Autowired
-    private PersonRepository personRepository;
+    private ConsumerRepository repository;
 
     @Autowired
     private ConsumerService service;
@@ -47,7 +44,7 @@ public class ConsumerController {
     @DeleteMapping("/{ra}")
     @Transactional
     public ResponseEntity delete(@PathVariable String ra){
-        consumerRepository.deleteByPersonRa(ra);
+        repository.deleteByPersonRa(ra);
 
         return ResponseEntity.noContent().build();
     }
@@ -55,7 +52,7 @@ public class ConsumerController {
     @GetMapping
     public ResponseEntity<List<ConsumerDataComplete>> get(){
         List<ConsumerDataComplete> finalList = new ArrayList<>();
-        var listConsumers = consumerRepository.findAll().stream().map(ConsumerDataComplete::new).toList();
+        var listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
 
         return ResponseEntity.ok(finalList);
     }
