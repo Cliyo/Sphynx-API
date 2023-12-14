@@ -26,7 +26,7 @@ public class Local {
     private LocalDateTime dtupdate;
 
     public Local(LocalDataInputDTO data){
-        this.name = data.nome();
+        this.name = data.name();
         this.mac = data.mac();
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
