@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LocalRepository extends JpaRepository<Local, Long> {
     boolean existsByName(String local);
+
+    Local findByName(String local);
 }
