@@ -1,7 +1,5 @@
 package com.pedro.sphynx.infrastructure.entities;
 
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInputDTO;
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInputDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

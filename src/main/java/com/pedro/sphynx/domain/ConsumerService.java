@@ -1,8 +1,8 @@
 package com.pedro.sphynx.domain;
 
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInputDTO;
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInputDTO;
+import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
+import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.infrastructure.entities.Consumer;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.PersonRepository;
@@ -23,7 +23,7 @@ public class ConsumerService {
 
     private ResourceBundle messages = ResourceBundle.getBundle("messages");
 
-    public ConsumerDataComplete createVerify(ConsumerDataInputDTO data){
+    public ConsumerDataComplete createVerify(ConsumerDataInput data){
         if(consumerRepository.existsByPersonRa(data.ra())){
             throw new RuntimeException(messages.getString("error.raAlreadyExists"));
         }
@@ -39,7 +39,7 @@ public class ConsumerService {
         }
     }
 
-    public ConsumerDataComplete updateVerify(ConsumerDataEditInputDTO data, String ra){
+    public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra){
         if(consumerRepository.existsByPersonRa(ra)){
             var consumer = consumerRepository.getReferenceByPersonRa(ra);
             consumer.actualizeData(data);

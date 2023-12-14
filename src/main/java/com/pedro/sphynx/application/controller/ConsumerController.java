@@ -1,11 +1,9 @@
 package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInputDTO;
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInputDTO;
-import com.pedro.sphynx.application.dtos.person.PersonDataComplete;
+import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
+import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.domain.ConsumerService;
-import com.pedro.sphynx.infrastructure.entities.Consumer;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import jakarta.validation.Valid;
@@ -32,7 +30,7 @@ public class ConsumerController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid ConsumerDataInputDTO data){
+    public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data){
         var consumerDto = service.createVerify(data);
 
         return ResponseEntity.ok(consumerDto);
@@ -40,7 +38,7 @@ public class ConsumerController {
 
     @PutMapping("/{ra}")
     @Transactional
-    public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInputDTO data){
+    public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data){
         var consumerDto = service.updateVerify(data, ra);
 
         return ResponseEntity.ok(consumerDto);

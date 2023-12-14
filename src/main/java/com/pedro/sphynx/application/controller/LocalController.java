@@ -1,6 +1,6 @@
 package com.pedro.sphynx.application.controller;
 
-import com.pedro.sphynx.application.dtos.local.LocalDataInputDTO;
+import com.pedro.sphynx.application.dtos.local.LocalDataInput;
 import com.pedro.sphynx.infrastructure.entities.Local;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class LocalController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody LocalDataInputDTO data){
+    public ResponseEntity create(@RequestBody LocalDataInput data){
         repository.save(new Local(data));
 
         return ResponseEntity.ok().build();
