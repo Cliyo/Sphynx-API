@@ -7,4 +7,6 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
     boolean existsByName(String local);
 
     Local findByName(String local);
+
+    Local getReferenceByName(String name);
 }

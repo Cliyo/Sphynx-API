@@ -1,5 +1,6 @@
 package com.pedro.sphynx.infrastructure.entities;
 
+import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,5 +30,9 @@ public class Local {
         this.mac = data.mac();
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
+    }
+
+    public void updateLocal(LocalDataEditInput data){
+        this.mac = data.mac();
     }
 }
