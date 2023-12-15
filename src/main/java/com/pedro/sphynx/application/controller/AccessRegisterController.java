@@ -28,9 +28,9 @@ public class AccessRegisterController {
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
-        service.validateCreation(data);
+        AccessDataComplete accessDataComplete = service.validateCreation(data);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(accessDataComplete);
     }
 
     @GetMapping

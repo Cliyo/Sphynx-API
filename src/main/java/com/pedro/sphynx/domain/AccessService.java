@@ -1,5 +1,6 @@
 package com.pedro.sphynx.domain;
 
+import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.application.dtos.access.AccessDataInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Access;
@@ -31,7 +32,7 @@ public class AccessService {
 
     private ResourceBundle messages = ResourceBundle.getBundle("messages");
 
-    public void validateCreation(AccessDataInput data){
+    public AccessDataComplete validateCreation(AccessDataInput data){
         if(!consumerRepository.existsByTag(data.tag())){
             throw new RuntimeException(messages.getString("error.tagDontExists"));
         }
@@ -51,6 +52,8 @@ public class AccessService {
         var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByName(data.local()), LocalDateTime.now());
 
         accessRepository.save(access);
+
+        return new AccessDataComplete(access);
     }
 
 }
