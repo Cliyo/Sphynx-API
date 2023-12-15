@@ -1,6 +1,7 @@
 package com.pedro.sphynx.domain;
 
 import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
+import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
 import com.pedro.sphynx.infrastructure.entities.Local;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
@@ -18,6 +19,17 @@ public class LocalService {
             Local local = new Local(data);
 
             repository.save(local);
+
+            return new LocalDataComplete(local);
+        }
+        return null;
+    }
+
+    public LocalDataComplete updateVerify(LocalDataEditInput data, String name) {
+        if(!repository.existsByName(data.mac())){
+            Local local = repository.getReferenceByName(name);
+
+            local.updateLocal(data);
 
             return new LocalDataComplete(local);
         }
