@@ -51,9 +51,8 @@ public class ConsumerController {
 
     @GetMapping
     public ResponseEntity<List<ConsumerDataComplete>> get(){
-        List<ConsumerDataComplete> finalList = new ArrayList<>();
         var listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
 
-        return ResponseEntity.ok(finalList);
+        return ResponseEntity.ok(listConsumers);
     }
 }
