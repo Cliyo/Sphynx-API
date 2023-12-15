@@ -1,4 +1,8 @@
 package com.pedro.sphynx.application.dtos.local;
 
-public record LocalDataInput(String name, String mac) {
+import jakarta.validation.constraints.NotBlank;
+
+public record LocalDataInput(
+        @NotBlank String name,
+        @NotBlank String mac) {
 }
