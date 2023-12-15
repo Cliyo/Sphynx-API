@@ -11,4 +11,6 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
     Local getReferenceByName(String name);
 
     boolean existsByMac(String mac);
+
+    void deleteByName(String name);
 }
