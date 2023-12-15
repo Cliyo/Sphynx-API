@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("locals")
+@RequestMapping("local")
 public class LocalController {
 
     @Autowired
@@ -32,10 +34,23 @@ public class LocalController {
     @PutMapping("/{name}")
     @Transactional
     public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data){
-        var local = repository.getReferenceByName(name);
-
-        local.updateLocal(data);
+        var local = service.updateVerify(data, name);
 
         return ResponseEntity.ok(local);
+    }
+
+    @GetMapping
+    public ResponseEntity<List> get(){
+        var localsList = repository.findAll();
+
+        return ResponseEntity.ok(localsList);
+    }
+
+    @DeleteMapping("/{name}")
+    @Transactional
+    public ResponseEntity delete(@PathVariable String name){
+        repository.deleteByName(name);
+
+        return ResponseEntity.noContent().build();
     }
 }
