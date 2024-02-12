@@ -5,6 +5,8 @@ Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalida
 
 ## Tecnologias
 - Spring Boot
+- Spring Data JPA
+- Spring Validation
 - Spring Security
 - Token JWT
 - MySQL
