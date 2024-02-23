@@ -1,4 +1,4 @@
-create table accessRegisters(
+create table accessregisters(
     id bigint not null auto_increment,
     consumer_id bigint not null,
     local_id bigint not null,
