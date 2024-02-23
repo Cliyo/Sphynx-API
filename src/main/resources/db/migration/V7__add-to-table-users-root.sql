@@ -1,1 +1,1 @@
-INSERT INTO users(user, password) values ('root@gmail.com', '$2a$12$aYcvT/lAPvUEnssepgHD3.2NBiyLcb23SWhW7oYt3K1mx3CFWqcEC');
+INSERT INTO users(user, password) values ('root@sphynx.com', '$2a$12$aYcvT/lAPvUEnssepgHD3.2NBiyLcb23SWhW7oYt3K1mx3CFWqcEC');
