@@ -30,7 +30,9 @@ jobs:
         
     - name: Start MySQL
       run: |
-        sudo /etc/init.d/mysql start
+        sudo mysqld --skip-grant-tables
+        mysql -e "UPDATE user SET Password=PASSWORD('root') where USER='root';" -u root mysql
+        sudo /etc/init.d/mysql restart
         mysql -e "CREATE DATABASE IF NOT EXISTS sphynx_api;" -u root -p root
 
     - name: Build with Maven
