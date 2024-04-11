@@ -28,13 +28,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - uses: mirromutth/mysql-action@v1.1
-      with:
-        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mysql version: latest # Optional, default value is "latest". The version of the MySQL
-        mysql database: 'sphynx_api' # Optional, default value is "test". The specified database which will be create
-        mysql root password: 'root' # Required if "mysql user" is empty, default is empty. The root superuser password
-    
+    - name: Start MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -e "CREATE DATABASE IF NOT EXISTS sphynx_api;" -u root -p root
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
