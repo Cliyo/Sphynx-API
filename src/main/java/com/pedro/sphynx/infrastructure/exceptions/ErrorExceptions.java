@@ -19,8 +19,8 @@ public class ErrorExceptions {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(AccessValidation.class)
-    public ResponseEntity accessValidation(AccessValidation e){
+    @ExceptionHandler(Validation.class)
+    public ResponseEntity validation(Validation e){
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

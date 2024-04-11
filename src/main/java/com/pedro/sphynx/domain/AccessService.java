@@ -4,8 +4,7 @@ import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.application.dtos.access.AccessDataInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Access;
-import com.pedro.sphynx.infrastructure.entities.Consumer;
-import com.pedro.sphynx.infrastructure.exceptions.AccessValidation;
+import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
@@ -35,16 +34,16 @@ public class AccessService {
 
     public AccessDataComplete validateCreation(AccessDataInput data){
         if(!consumerRepository.existsByTag(data.tag())){
-            throw new AccessValidation(messages.getString("error.tagDontExists"));
+            throw new Validation(messages.getString("error.tagDontExists"));
         }
 
         ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByTag(data.tag()));
         if(!personRepository.existsByRa(consumer.person().ra())){
-            throw new AccessValidation(messages.getString("error.raDontExistsInPerson"));
+            throw new Validation(messages.getString("error.raDontExistsInPerson"));
         }
 
         if(!localRepository.existsByName(data.local())){
-            throw new AccessValidation(messages.getString("error.localDontExists"));
+            throw new Validation(messages.getString("error.localDontExists"));
         }
 
         //validacao se o consumer pode acessar o lugar, ainda falta criar tabela para os locais,

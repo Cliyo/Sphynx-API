@@ -4,6 +4,7 @@ import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.infrastructure.entities.Consumer;
+import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,11 @@ public class ConsumerService {
 
     public ConsumerDataComplete createVerify(ConsumerDataInput data){
         if(consumerRepository.existsByPersonRa(data.ra())){
-            throw new RuntimeException(messages.getString("error.raAlreadyExists"));
+            throw new Validation(messages.getString("error.raAlreadyExists"));
         }
 
         else if(!personRepository.existsByRa(data.ra())){
-            throw new RuntimeException(messages.getString("error.raDontExistsInPerson"));
+            throw new Validation(messages.getString("error.raDontExistsInPerson"));
         }
 
         else{
@@ -45,7 +46,7 @@ public class ConsumerService {
             consumer.actualizeData(data);
             return new ConsumerDataComplete(consumer);
         } else{
-            throw new RuntimeException(messages.getString("error.raDontExists"));
+            throw new Validation(messages.getString("error.raDontExists"));
         }
     }
 }
