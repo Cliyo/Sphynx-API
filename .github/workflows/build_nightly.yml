@@ -11,8 +11,10 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         database: [mysql, mariadb]
+        ports: [3306, 3307]
     env:
         DATABASE: ${{ matrix.database }}
+        DATABASE_URL: localhost:${{ matrix.ports }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -29,8 +31,8 @@ jobs:
     - name: Set up MySQL
       uses: mirromutth/mysql-action@v1.1
       with:
-        host port: 3306
-        container port: 3306
+        host port: ${{ matrix.ports }}
+        container port: ${{ matrix.ports }}
         character set server: 'utf8'
         collation server: 'utf8_general_ci'
         mysql version: '8.0'
@@ -41,8 +43,8 @@ jobs:
     - name: Set up MariaDB
       uses: getong/mariadb-action@v1.1
       with:
-        host port: 3306
-        container port: 3306
+        host port: ${{ matrix.ports }}
+        container port: ${{ matrix.ports }}
         character set server: 'utf8'
         collation server: 'utf8_general_ci'
         mariadb version: '10.4.10' 
