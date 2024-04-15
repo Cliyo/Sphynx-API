@@ -11,10 +11,8 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         database: [mysql, mariadb]
-        ports: [3306, 3307]
     env:
         DATABASE: ${{ matrix.database }}
-        DATABASE_URL: localhost:${{ matrix.ports }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -26,13 +24,12 @@ jobs:
     
     - name: Shutdown Ubuntu MySQL
       run: sudo service mysql stop
-      if: matrix.database == 'mysql'
     
     - name: Set up MySQL
       uses: mirromutth/mysql-action@v1.1
       with:
-        host port: ${{ matrix.ports }}
-        container port: ${{ matrix.ports }}
+        host port: 3306
+        container port: 3306
         character set server: 'utf8'
         collation server: 'utf8_general_ci'
         mysql version: '8.0'
@@ -43,8 +40,8 @@ jobs:
     - name: Set up MariaDB
       uses: getong/mariadb-action@v1.1
       with:
-        host port: ${{ matrix.ports }}
-        container port: ${{ matrix.ports }}
+        host port: 3306
+        container port: 3306
         character set server: 'utf8'
         collation server: 'utf8_general_ci'
         mariadb version: '10.4.10' 
@@ -53,7 +50,11 @@ jobs:
       if: matrix.database == 'mariadb'
       
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 2
+        max_attempts: 5
+        command: mvn -B package --file pom.xml
 
     - name: Get Commit SHA
       run: echo "SHA=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
