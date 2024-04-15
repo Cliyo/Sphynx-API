@@ -8,13 +8,28 @@ import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ResourceBundle;
+
 @Service
 public class LocalService {
 
     @Autowired
     private LocalRepository repository;
 
-    public LocalDataComplete createVerify(LocalDataInput data){
+    private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
+
+    public void defineMessagesLanguage(String language){
+        if(language.equals("pt-BR")){
+            messages = ResourceBundle.getBundle("messagesPt");
+        }
+        else if(language.equals("en-US")){
+            messages = ResourceBundle.getBundle("messagesEn");
+        }
+    }
+
+    public LocalDataComplete createVerify(LocalDataInput data, String language){
+        defineMessagesLanguage(language);
+
         if(!repository.existsByName(data.name()) || !repository.existsByMac(data.mac())){
             Local local = new Local(data);
 
@@ -25,7 +40,9 @@ public class LocalService {
         return null;
     }
 
-    public LocalDataComplete updateVerify(LocalDataEditInput data, String name) {
+    public LocalDataComplete updateVerify(LocalDataEditInput data, String name, String language) {
+        defineMessagesLanguage(language);
+
         if(!repository.existsByName(data.mac())){
             Local local = repository.getReferenceByName(name);
 

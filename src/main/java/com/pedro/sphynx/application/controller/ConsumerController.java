@@ -27,16 +27,16 @@ public class ConsumerController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data){
-        var consumerDto = service.createVerify(data);
+    public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data, @RequestHeader("Language") String language){
+        var consumerDto = service.createVerify(data, language);
 
         return ResponseEntity.ok(consumerDto);
     }
 
     @PutMapping("/{ra}")
     @Transactional
-    public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data){
-        var consumerDto = service.updateVerify(data, ra);
+    public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
+        var consumerDto = service.updateVerify(data, ra, language);
 
         return ResponseEntity.ok(consumerDto);
     }

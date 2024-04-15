@@ -25,16 +25,16 @@ public class LocalController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid LocalDataInput data){
-        var local = service.createVerify(data);
+    public ResponseEntity create(@RequestBody @Valid LocalDataInput data, @RequestHeader("Language") String language){
+        var local = service.createVerify(data, language);
 
         return ResponseEntity.ok(local);
     }
 
     @PutMapping("/{name}")
     @Transactional
-    public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data){
-        var local = service.updateVerify(data, name);
+    public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data, @RequestHeader("Language") String language){
+        var local = service.updateVerify(data, name, language);
 
         return ResponseEntity.ok(local);
     }

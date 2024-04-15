@@ -22,9 +22,20 @@ public class ConsumerService {
     @Autowired
     private PersonRepository personRepository;
 
-    private ResourceBundle messages = ResourceBundle.getBundle("messages");
+    private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
 
-    public ConsumerDataComplete createVerify(ConsumerDataInput data){
+    public void defineMessagesLanguage(String language){
+        if(language.equals("pt-BR")){
+            messages = ResourceBundle.getBundle("messagesPt");
+        }
+        else if(language.equals("en-US")){
+            messages = ResourceBundle.getBundle("messagesEn");
+        }
+    }
+
+    public ConsumerDataComplete createVerify(ConsumerDataInput data, String language){
+        defineMessagesLanguage(language);
+
         if(consumerRepository.existsByPersonRa(data.ra())){
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
@@ -40,7 +51,9 @@ public class ConsumerService {
         }
     }
 
-    public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra){
+    public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra, String language){
+        defineMessagesLanguage(language);
+
         if(consumerRepository.existsByPersonRa(ra)){
             var consumer = consumerRepository.getReferenceByPersonRa(ra);
             consumer.actualizeData(data);

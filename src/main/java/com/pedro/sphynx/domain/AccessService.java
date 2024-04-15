@@ -30,9 +30,20 @@ public class AccessService {
     @Autowired
     private LocalRepository localRepository;
 
-    private ResourceBundle messages = ResourceBundle.getBundle("messages");
+    private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
 
-    public AccessDataComplete validateCreation(AccessDataInput data){
+    public void defineMessagesLanguage(String language){
+        if(language.equals("pt-BR")){
+            messages = ResourceBundle.getBundle("messagesPt");
+        }
+        else if(language.equals("en-US")){
+            messages = ResourceBundle.getBundle("messagesEn");
+        }
+    }
+
+    public AccessDataComplete validateCreation(AccessDataInput data, String language){
+        defineMessagesLanguage(language);
+
         if(!consumerRepository.existsByTag(data.tag())){
             throw new Validation(messages.getString("error.tagDontExists"));
         }
