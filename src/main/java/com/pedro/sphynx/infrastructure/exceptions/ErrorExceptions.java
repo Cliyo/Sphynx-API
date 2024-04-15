@@ -21,6 +21,6 @@ public class ErrorExceptions {
 
     @ExceptionHandler(Validation.class)
     public ResponseEntity validation(Validation e){
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new Error(e.getMessage()));
     }
 }
