@@ -1,5 +1,6 @@
 package com.pedro.sphynx.infrastructure.exceptions;
 
+import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,6 @@ public class ErrorExceptions {
 
     @ExceptionHandler(Validation.class)
     public ResponseEntity validation(Validation e){
-        return ResponseEntity.badRequest().body(new Error(e.getMessage()));
+        return ResponseEntity.badRequest().body(new MessageDTO(400, e.getMessage(), null));
     }
 }

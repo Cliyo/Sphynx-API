@@ -2,7 +2,9 @@ package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.application.dtos.access.AccessDataInput;
+import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.AccessService;
+import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,17 @@ public class AccessRegisterController {
     @Autowired
     private AccessService service;
 
+    @Autowired
+    private MessageService messageService;
+
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid AccessDataInput data, @RequestHeader("Language") String language){
         AccessDataComplete accessDataComplete = service.validateCreation(data, language);
 
-        return ResponseEntity.ok(accessDataComplete);
+        MessageDTO dto = messageService.createMessage(201, accessDataComplete, language);
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping

@@ -2,7 +2,9 @@ package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
+import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.LocalService;
+import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.infrastructure.entities.Local;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 import jakarta.validation.Valid;
@@ -23,20 +25,25 @@ public class LocalController {
     @Autowired
     private LocalService service;
 
+    @Autowired
+    private MessageService messageService;
+
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid LocalDataInput data, @RequestHeader("Language") String language){
         var local = service.createVerify(data, language);
+        MessageDTO dto = messageService.createMessage(201, local, language);
 
-        return ResponseEntity.ok(local);
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/{name}")
     @Transactional
     public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data, @RequestHeader("Language") String language){
         var local = service.updateVerify(data, name, language);
+        MessageDTO dto = messageService.createMessage(200, local, language);
 
-        return ResponseEntity.ok(local);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping
