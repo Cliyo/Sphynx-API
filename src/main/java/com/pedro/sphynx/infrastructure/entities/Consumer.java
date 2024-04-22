@@ -24,11 +24,17 @@ public class Consumer {
     private Person person;
 
     private String tag;
+    private int permission;
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
     public void actualizeData(ConsumerDataEditInput data) {
         if(data.tag() != null){
+            this.tag = data.tag();
+            this.dtupdate = LocalDateTime.now();
+        }
+
+        if(data.permission() != null){
             this.tag = data.tag();
             this.dtupdate = LocalDateTime.now();
         }
