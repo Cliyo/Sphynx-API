@@ -45,7 +45,7 @@ public class ConsumerService {
         }
 
         else{
-            Consumer consumer = new Consumer(null, personRepository.findOneByRa(data.ra()), data.tag(), LocalDateTime.now(), null);
+            Consumer consumer = new Consumer(null, personRepository.findOneByRa(data.ra()), data.tag(), data.permission(), LocalDateTime.now(), null);
             consumerRepository.save(consumer);
             return new ConsumerDataComplete(consumer);
         }
