@@ -8,6 +8,8 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
 
     Local findByName(String local);
 
+    Local findByMac(String mac);
+
     Local getReferenceByName(String name);
 
     boolean existsByMac(String mac);
