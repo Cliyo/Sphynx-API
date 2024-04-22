@@ -39,7 +39,7 @@ public class LocalService {
             throw new Validation(messages.getString("error.macAlreadyExists"));
         }
 
-        if(data.permission() > 4 || data.permission() < 1){
+        if(data.permission() > 2 || data.permission() < 0){
             throw new Validation(messages.getString("error.permissionNotValid"));
         }
 
