@@ -27,6 +27,8 @@ public class Access {
     @JoinColumn(name = "local_id")
     private Local local;
 
+    private boolean status;
+
     @Column(name = "dtcreate")
     private LocalDateTime date;
 }
