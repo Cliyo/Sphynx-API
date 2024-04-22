@@ -22,12 +22,14 @@ public class Local {
 
     private String name;
     private String mac;
+    private int permission;
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
     public Local(LocalDataInput data){
         this.name = data.name();
         this.mac = data.mac();
+        this.permission = data.permission();
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }
