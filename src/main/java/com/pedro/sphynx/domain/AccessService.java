@@ -60,7 +60,7 @@ public class AccessService {
         }
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(data.local()));
 
-        if(local.permission() > consumer.permission()){
+        if(local.permission() < consumer.permission()){
             var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByName(data.local()), false, LocalDateTime.now());
 
             accessRepository.save(access);
