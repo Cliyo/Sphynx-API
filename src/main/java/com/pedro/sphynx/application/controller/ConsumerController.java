@@ -7,14 +7,12 @@ import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
-import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -52,7 +50,7 @@ public class ConsumerController {
     @DeleteMapping("/{ra}")
     @Transactional
     public ResponseEntity delete(@PathVariable String ra){
-        repository.deleteByPersonRa(ra);
+        repository.deleteByRa(ra);
 
         return ResponseEntity.noContent().build();
     }

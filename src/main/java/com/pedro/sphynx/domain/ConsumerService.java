@@ -6,7 +6,6 @@ import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.infrastructure.entities.Consumer;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
-import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,6 @@ public class ConsumerService {
 
     @Autowired
     private ConsumerRepository consumerRepository;
-
-    @Autowired
-    private PersonRepository personRepository;
 
     private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
 
@@ -36,16 +32,12 @@ public class ConsumerService {
     public ConsumerDataComplete createVerify(ConsumerDataInput data, String language){
         defineMessagesLanguage(language);
 
-        if(consumerRepository.existsByPersonRa(data.ra())){
+        if(consumerRepository.existsByRa(data.ra())){
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
 
-        else if(!personRepository.existsByRa(data.ra())){
-            throw new Validation(messages.getString("error.raDontExistsInPerson"));
-        }
-
         else{
-            Consumer consumer = new Consumer(null, personRepository.findOneByRa(data.ra()), data.tag(), data.permission(), LocalDateTime.now(), null);
+            Consumer consumer = new Consumer(null, data.ra(), data.tag(), data.permission(), LocalDateTime.now(), null);
             consumerRepository.save(consumer);
             return new ConsumerDataComplete(consumer);
         }
@@ -54,8 +46,8 @@ public class ConsumerService {
     public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra, String language){
         defineMessagesLanguage(language);
 
-        if(consumerRepository.existsByPersonRa(ra)){
-            var consumer = consumerRepository.getReferenceByPersonRa(ra);
+        if(consumerRepository.existsByRa(ra)){
+            var consumer = consumerRepository.getReferenceByRa(ra);
             consumer.actualizeData(data);
             return new ConsumerDataComplete(consumer);
         } else{

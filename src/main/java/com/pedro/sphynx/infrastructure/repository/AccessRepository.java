@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AccessRepository extends JpaRepository<Access, Long> {
 
-    List<Access> findAllByConsumerPersonRa(String ra);
+    List<Access> findAllByConsumerRa(String ra);
 
     List<Access> findAllByLocalName(String local);
 

@@ -49,7 +49,7 @@ public class AccessRegisterController {
 
     @GetMapping("/byRa/{ra}")
     public ResponseEntity<List<AccessDataComplete>> getAllByRa(@PathVariable String ra){
-        var listAccess = repository.findAllByConsumerPersonRa(ra).stream().map(AccessDataComplete::new).toList();
+        var listAccess = repository.findAllByConsumerRa(ra).stream().map(AccessDataComplete::new).toList();
 
         return ResponseEntity.ok(listAccess);
     }

@@ -5,12 +5,10 @@ import com.pedro.sphynx.application.dtos.access.AccessDataInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Access;
-import com.pedro.sphynx.infrastructure.entities.Person;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
-import com.pedro.sphynx.infrastructure.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +23,6 @@ public class AccessService {
 
     @Autowired
     private ConsumerRepository consumerRepository;
-
-    @Autowired
-    private PersonRepository personRepository;
 
     @Autowired
     private LocalRepository localRepository;
@@ -51,8 +46,8 @@ public class AccessService {
         }
         ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByTag(data.tag()));
 
-        if(!personRepository.existsByRa(consumer.person().ra())){
-            throw new Validation(messages.getString("error.raDontExistsInPerson"));
+        if(!consumerRepository.existsByRa(consumer.ra())){
+            throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
         if(!localRepository.existsByMac(data.local())){

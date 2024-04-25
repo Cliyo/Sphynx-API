@@ -17,6 +17,6 @@ public class MessageService {
             messages = ResourceBundle.getBundle("messagesEn");
         }
 
-        return new MessageDTO(status, messages.getString("success." + status), object);
+        return new MessageDTO(status, messages.getString("success." + String.valueOf(status)), object);
     }
 }
