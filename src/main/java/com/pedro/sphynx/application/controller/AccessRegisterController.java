@@ -32,10 +32,10 @@ public class AccessRegisterController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid AccessDataInput data, @RequestHeader("Language") String language){
-        AccessDataComplete accessDataComplete = service.validateCreation(data, language);
+    public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
+        AccessDataComplete accessDataComplete = service.validateCreation(data);
 
-        MessageDTO dto = messageService.createMessage(201, accessDataComplete, language);
+        MessageDTO dto = messageService.createMessage(201, accessDataComplete, null);
 
         return ResponseEntity.ok(dto);
     }
