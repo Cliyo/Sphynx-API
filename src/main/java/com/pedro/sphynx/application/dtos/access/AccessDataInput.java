@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 
 public record AccessDataInput(
         @NotBlank String tag,
-        @NotBlank String local
+        @NotBlank String mac
 ) {
 }
