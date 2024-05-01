@@ -53,7 +53,7 @@ public class dnsService {
                     }
 
                     // create the mDNS service with the desired ipv4 chosen before
-                    jmdns = JmDNS.create(ipAddress);
+                    jmdns = JmDNS.create(ipAddress, "sphynx-api");
 
                     // set service parameters (http._tcp, name, port and description)
                     ServiceInfo serviceInfo = ServiceInfo.create(serviceType, nomeServico, 8080, "Sphynx API");
