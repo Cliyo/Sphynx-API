@@ -56,7 +56,7 @@ public class dnsService {
                     jmdns = JmDNS.create(ipAddress, "sphynx-api");
 
                     // set service parameters (http._tcp, name, port and description)
-                    ServiceInfo serviceInfo = ServiceInfo.create(serviceType, nomeServico, 8080, "Sphynx API");
+                    ServiceInfo serviceInfo = ServiceInfo.create(serviceType, nomeServico, 57128, "Sphynx API");
                     jmdns.registerService(serviceInfo);
                     serviceNumber++;
                 }
