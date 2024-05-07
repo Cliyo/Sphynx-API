@@ -8,6 +8,7 @@ import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("consumer")
-public class ConsumerController {
+public class ConsumerController implements ControllerIN<ConsumerDataInput, ConsumerDataEditInput>{
 
     @Autowired
     private ConsumerRepository repository;
@@ -28,6 +29,7 @@ public class ConsumerController {
     @Autowired
     private MessageService messageService;
 
+    @Override
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data, @RequestHeader("Language") String language){
@@ -38,6 +40,7 @@ public class ConsumerController {
 
     }
 
+    @Override
     @PutMapping("/{ra}")
     @Transactional
     public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
@@ -47,6 +50,7 @@ public class ConsumerController {
         return ResponseEntity.ok(dto);
     }
 
+    @Override
     @DeleteMapping("/{ra}")
     @Transactional
     public ResponseEntity delete(@PathVariable String ra){
@@ -55,6 +59,7 @@ public class ConsumerController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<List<ConsumerDataComplete>> get(){
         var listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();

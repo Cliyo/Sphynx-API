@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("local")
-public class LocalController {
+public class LocalController implements ControllerIN<LocalDataInput, LocalDataEditInput>{
 
     @Autowired
     private LocalRepository repository;
@@ -28,6 +28,7 @@ public class LocalController {
     @Autowired
     private MessageService messageService;
 
+    @Override
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid LocalDataInput data, @RequestHeader("Language") String language){
@@ -37,6 +38,7 @@ public class LocalController {
         return ResponseEntity.ok(dto);
     }
 
+    @Override
     @PutMapping("/{name}")
     @Transactional
     public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data, @RequestHeader("Language") String language){
@@ -46,6 +48,7 @@ public class LocalController {
         return ResponseEntity.ok(dto);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<List> get(){
         var localsList = repository.findAll();
@@ -53,6 +56,7 @@ public class LocalController {
         return ResponseEntity.ok(localsList);
     }
 
+    @Override
     @DeleteMapping("/{name}")
     @Transactional
     public ResponseEntity delete(@PathVariable String name){
