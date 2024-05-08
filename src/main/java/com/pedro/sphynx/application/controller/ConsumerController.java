@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("consumer")
+@RequestMapping("consumers")
 public class ConsumerController implements ControllerIN<ConsumerDataInput, ConsumerDataEditInput>{
 
     @Autowired

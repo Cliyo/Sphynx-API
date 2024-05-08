@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("local")
+@RequestMapping("locals")
 public class LocalController implements ControllerIN<LocalDataInput, LocalDataEditInput>{
 
     @Autowired

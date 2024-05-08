@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
-@RequestMapping("accessRegister")
+@RequestMapping("accessRegisters")
 public class AccessRegisterController {
 
     @Autowired
