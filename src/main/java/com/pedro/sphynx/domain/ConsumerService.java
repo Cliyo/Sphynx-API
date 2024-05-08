@@ -4,8 +4,10 @@ import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.infrastructure.entities.Consumer;
+import com.pedro.sphynx.infrastructure.entities.Permission;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
+import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,9 @@ public class ConsumerService{
     @Autowired
     private ConsumerRepository consumerRepository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     public ConsumerDataComplete createVerify(ConsumerDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
@@ -27,8 +32,13 @@ public class ConsumerService{
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
 
+        if(!permissionRepository.existsByLevel(data.permission())){
+            throw new Validation(messages.getString("error.permissionNotExists"));
+        }
+
         else{
-            Consumer consumer = new Consumer(data);
+            Permission permission = permissionRepository.getReferenceByLevel(data.permission());
+            Consumer consumer = new Consumer(data, permission);
             consumerRepository.save(consumer);
             return new ConsumerDataComplete(consumer);
         }
