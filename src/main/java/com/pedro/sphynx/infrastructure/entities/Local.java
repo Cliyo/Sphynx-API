@@ -22,14 +22,18 @@ public class Local {
 
     private String name;
     private String mac;
-    private int permission;
+
+    @ManyToOne
+    @JoinColumn(name = "permission_id")
+    private Permission permission;
+
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Local(LocalDataInput data){
+    public Local(LocalDataInput data, Permission permission){
         this.name = data.name();
         this.mac = data.mac();
-        this.permission = data.permission();
+        this.permission = permission;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }

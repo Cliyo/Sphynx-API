@@ -4,8 +4,10 @@ import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
 import com.pedro.sphynx.infrastructure.entities.Local;
+import com.pedro.sphynx.infrastructure.entities.Permission;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
+import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,9 @@ public class LocalService {
     @Autowired
     private LocalRepository repository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     public LocalDataComplete createVerify(LocalDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
@@ -30,12 +35,13 @@ public class LocalService {
             throw new Validation(messages.getString("error.macAlreadyExists"));
         }
 
-        if(data.permission() > 2 || data.permission() < 0){
-            throw new Validation(messages.getString("error.permissionNotValid"));
+        if(!permissionRepository.existsByLevel(data.permission())){
+            throw new Validation(messages.getString("error.permissionNotExists"));
         }
 
         else{
-            Local local = new Local(data);
+            Permission permission = permissionRepository.getReferenceByLevel(data.permission());
+            Local local = new Local(data, permission);
 
             repository.save(local);
 
