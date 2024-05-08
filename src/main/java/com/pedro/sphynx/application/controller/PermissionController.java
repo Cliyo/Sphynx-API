@@ -7,10 +7,11 @@ import com.pedro.sphynx.application.dtos.permission.PermissionDataInput;
 import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.domain.PermissionService;
 import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("permissions")
@@ -26,9 +27,11 @@ public class PermissionController implements ControllerIN<PermissionDataInput, P
     private MessageService messageService;
 
     @Override
-    public ResponseEntity create(PermissionDataInput data, String language) {
-        var local = service.createVerify(data, language);
-        MessageDTO dto = messageService.createMessage(201, local, language);
+    @PostMapping
+    @Transactional
+    public ResponseEntity create(@RequestBody @Valid PermissionDataInput data, @RequestHeader("Language") String language) {
+        var permission = service.createVerify(data, language);
+        MessageDTO dto = messageService.createMessage(201, permission, language);
 
         return ResponseEntity.ok(dto);
     }
@@ -39,13 +42,16 @@ public class PermissionController implements ControllerIN<PermissionDataInput, P
     }
 
     @Override
-    public ResponseEntity delete(String name) {
-        repository.deleteByName(name);
+    @DeleteMapping("/{level}")
+    @Transactional
+    public ResponseEntity delete(@PathVariable String level) {
+        repository.deleteByName(level);
 
         return ResponseEntity.noContent().build();
     }
 
     @Override
+    @GetMapping
     public ResponseEntity get() {
         var listPermissions = repository.findAll().stream().map(PermissionDataComplete::new).toList();
 
