@@ -12,39 +12,30 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
+
 @Service
-public class ConsumerService {
+public class ConsumerService{
 
     @Autowired
     private ConsumerRepository consumerRepository;
 
-    private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
-
-    public void defineMessagesLanguage(String language){
-        if(language.equals("pt-BR")){
-            messages = ResourceBundle.getBundle("messagesPt");
-        }
-        else if(language.equals("en-US")){
-            messages = ResourceBundle.getBundle("messagesEn");
-        }
-    }
-
     public ConsumerDataComplete createVerify(ConsumerDataInput data, String language){
-        defineMessagesLanguage(language);
+        ResourceBundle messages = defineMessagesLanguage(language);
 
         if(consumerRepository.existsByRa(data.ra())){
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
 
         else{
-            Consumer consumer = new Consumer(null, data.ra(), data.tag(), data.permission(), LocalDateTime.now(), null);
+            Consumer consumer = new Consumer(data);
             consumerRepository.save(consumer);
             return new ConsumerDataComplete(consumer);
         }
     }
 
     public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra, String language){
-        defineMessagesLanguage(language);
+        ResourceBundle messages = defineMessagesLanguage(language);
 
         if(consumerRepository.existsByRa(ra)){
             var consumer = consumerRepository.getReferenceByRa(ra);

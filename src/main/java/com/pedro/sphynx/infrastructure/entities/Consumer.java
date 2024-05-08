@@ -1,6 +1,7 @@
 package com.pedro.sphynx.infrastructure.entities;
 
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
+import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,15 @@ public class Consumer {
     private int permission;
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
+
+    public Consumer(ConsumerDataInput data){
+        this.id = null;
+        this.ra = data.ra();
+        this.tag = data.tag();
+        this.permission = data.permission();
+        this.dtcreate = LocalDateTime.now();
+        this.dtupdate = null;
+    }
 
     public void actualizeData(ConsumerDataEditInput data) {
         if(data.tag() != null){
