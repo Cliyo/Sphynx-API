@@ -6,20 +6,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ResourceBundle;
 
+import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
+
 @Service
 public class MessageService {
     public MessageDTO createMessage(int status, Object object, @Nullable String language){
-        ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
-
-        if(language != null){
-            if(language.equals("pt-BR")){
-                messages = ResourceBundle.getBundle("messagesPt");
-            }
-            else if(language.equals("en-US")){
-                messages = ResourceBundle.getBundle("messagesEn");
-            }
-        }
-
+        ResourceBundle messages = defineMessagesLanguage(language);
 
         return new MessageDTO(status, messages.getString("success." + String.valueOf(status)), object);
     }

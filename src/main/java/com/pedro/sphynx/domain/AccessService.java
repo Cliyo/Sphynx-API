@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
+
 @Service
 public class AccessService {
 
@@ -27,18 +29,8 @@ public class AccessService {
     @Autowired
     private LocalRepository localRepository;
 
-    private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
-
-    public void defineMessagesLanguage(String language){
-        if(language.equals("pt-BR")){
-            messages = ResourceBundle.getBundle("messagesPt");
-        }
-        else if(language.equals("en-US")){
-            messages = ResourceBundle.getBundle("messagesEn");
-        }
-    }
-
     public AccessDataComplete validateCreation(AccessDataInput data){
+        ResourceBundle messages = defineMessagesLanguage(null);
 
         if(!consumerRepository.existsByTag(data.tag())){
             throw new Validation(messages.getString("error.tagDontExists"));

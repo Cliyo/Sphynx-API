@@ -11,25 +11,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ResourceBundle;
 
+import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
+
 @Service
 public class LocalService {
 
     @Autowired
     private LocalRepository repository;
 
-    private ResourceBundle messages = ResourceBundle.getBundle("messagesEn");
-
-    public void defineMessagesLanguage(String language){
-        if(language.equals("pt-BR")){
-            messages = ResourceBundle.getBundle("messagesPt");
-        }
-        else if(language.equals("en-US")){
-            messages = ResourceBundle.getBundle("messagesEn");
-        }
-    }
-
     public LocalDataComplete createVerify(LocalDataInput data, String language){
-        defineMessagesLanguage(language);
+        ResourceBundle messages = defineMessagesLanguage(language);
 
         if(repository.existsByName(data.name())){
             throw new Validation(messages.getString("error.localAlreadyExists"));
@@ -53,7 +44,7 @@ public class LocalService {
     }
 
     public LocalDataComplete updateVerify(LocalDataEditInput data, String name, String language) {
-        defineMessagesLanguage(language);
+        ResourceBundle messages = defineMessagesLanguage(language);
 
         if(!repository.existsByName(data.mac())){
             Local local = repository.getReferenceByName(name);
