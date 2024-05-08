@@ -9,4 +9,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Integer>
     boolean existsByLevel(int level);
 
     boolean existsByName(String name);
+
+    Permission getReferenceByLevel(int permission);
 }
