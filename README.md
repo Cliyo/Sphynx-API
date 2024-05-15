@@ -1,4 +1,4 @@
-# <p align="center"> SPHYNX V2 BACKEND </p>
+# <p align="center"> SPHYNX API </p>
 
 ## Resumo
 Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalidades ao projeto original, como controle efetivo de acesso, níveis de permissão, biometria e reconhecimento facial. Sendo desenvolvido utilizando o framework Spring.
@@ -11,8 +11,13 @@ Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalida
 - Token JWT
 - MySQL
 
+## Modelos
+- Consumer
+- Local
+- AccessRegister
+- Permission
+
 ## Requisitos
-- Possuir MySQL instalado na máquina e rodar o seguinte comando:
-```create database sphynx_api```
+- Possuir MySQL instalado na máquina
 - Caso queira utilizar em conjunto com o frontend do projeto, baixar no link abaixo:
 https://github.com/PedroVidalDev/sphynx_V2_frontend
