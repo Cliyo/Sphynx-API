@@ -32,6 +32,9 @@ public class AccessService {
     public AccessDataComplete validateCreation(AccessDataInput data){
         ResourceBundle messages = defineMessagesLanguage(null);
 
+        System.out.println(data.mac().replaceAll(":", "-"));
+        System.out.println(data.tag());
+
         if(!consumerRepository.existsByTag(data.tag())){
             throw new Validation(messages.getString("error.tagDontExists"));
         }
@@ -41,20 +44,20 @@ public class AccessService {
             throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
-        if(!localRepository.existsByMac(data.mac())){
+        if(!localRepository.existsByMac(data.mac().replaceAll(":", "-"))){
             throw new Validation(messages.getString("error.localDontExists"));
         }
-        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(data.mac()));
+        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(data.mac().replaceAll(":", "-")));
 
         if(local.permission().level() < consumer.permission().level()){
-            var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByMac(data.mac()), false, LocalDateTime.now());
+            var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByMac(data.mac().replaceAll(":", "-")), false, LocalDateTime.now());
 
             accessRepository.save(access);
 
             throw new Validation(messages.getString("error.consumerDontHavePermission"));
         }
 
-        var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByMac(data.mac()), true, LocalDateTime.now());
+        var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByMac(data.mac().replaceAll(":", "-")), true, LocalDateTime.now());
 
         accessRepository.save(access);
 
