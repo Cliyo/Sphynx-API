@@ -20,6 +20,7 @@ public class Consumer {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
     private String ra;
     private String tag;
 
@@ -32,6 +33,7 @@ public class Consumer {
 
     public Consumer(ConsumerDataInput data, Permission permission){
         this.id = null;
+        this.name = data.name();
         this.ra = data.ra();
         this.tag = data.tag();
         this.permission = permission;
