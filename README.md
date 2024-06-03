@@ -19,5 +19,6 @@ Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalida
 
 ## Requisitos
 - Possuir MySQL instalado na máquina
-- Caso queira utilizar em conjunto com o frontend do projeto, baixar no link abaixo:
-https://github.com/PedroVidalDev/sphynx_V2_frontend
+- Caso queira utilizar em conjunto com o frontend e outra API do projeto, baixar no link abaixo:
+  - https://github.com/Cliyo/Sphynx-Web
+  - https://github.com/Cliyo/Sphynx-Finder
