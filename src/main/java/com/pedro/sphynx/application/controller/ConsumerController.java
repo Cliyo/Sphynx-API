@@ -6,6 +6,7 @@ import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
+import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import jakarta.validation.Valid;
 import lombok.Builder;
@@ -51,8 +52,8 @@ public class ConsumerController{
 
     @DeleteMapping("/{ra}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String ra){
-        repository.deleteByRa(ra);
+    public ResponseEntity delete(@PathVariable String ra, @RequestHeader("Language") String language){
+        service.deleteVerify(ra, language);
 
         return ResponseEntity.noContent().build();
     }

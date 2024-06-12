@@ -55,4 +55,15 @@ public class ConsumerService{
             throw new Validation(messages.getString("error.raDontExists"));
         }
     }
+
+    public void deleteVerify(String ra, String language){
+        ResourceBundle messages = defineMessagesLanguage(language);
+
+        if(!consumerRepository.existsByRa(ra)){
+            throw new Validation(messages.getString("error.raDontExists"));
+        }
+        else{
+            consumerRepository.deleteByRa(ra);
+        }
+    }
 }
