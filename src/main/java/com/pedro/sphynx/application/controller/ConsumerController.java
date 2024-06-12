@@ -15,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("consumers")
-public class ConsumerController implements ControllerIN<ConsumerDataInput, ConsumerDataEditInput>{
+public class ConsumerController{
 
     @Autowired
     private ConsumerRepository repository;
@@ -29,7 +30,6 @@ public class ConsumerController implements ControllerIN<ConsumerDataInput, Consu
     @Autowired
     private MessageService messageService;
 
-    @Override
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data, @RequestHeader("Language") String language){
@@ -40,7 +40,6 @@ public class ConsumerController implements ControllerIN<ConsumerDataInput, Consu
 
     }
 
-    @Override
     @PutMapping("/{ra}")
     @Transactional
     public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
@@ -50,7 +49,6 @@ public class ConsumerController implements ControllerIN<ConsumerDataInput, Consu
         return ResponseEntity.ok(dto);
     }
 
-    @Override
     @DeleteMapping("/{ra}")
     @Transactional
     public ResponseEntity delete(@PathVariable String ra){
@@ -59,10 +57,20 @@ public class ConsumerController implements ControllerIN<ConsumerDataInput, Consu
         return ResponseEntity.noContent().build();
     }
 
-    @Override
+
     @GetMapping
-    public ResponseEntity<List<ConsumerDataComplete>> get(){
-        var listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
+    public ResponseEntity<List<ConsumerDataComplete>> get(@RequestParam("permission") Optional<Integer> permission){
+
+        List<ConsumerDataComplete> listConsumers;
+
+        if(permission.isPresent()){
+            listConsumers = repository.findAllByPermission_Level(permission.get()).stream().map(ConsumerDataComplete::new).toList();
+
+        }
+
+        else{
+            listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
+        }
 
         return ResponseEntity.ok(listConsumers);
     }
