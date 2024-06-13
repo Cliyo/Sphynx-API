@@ -33,4 +33,15 @@ public class PermissionService {
             return new PermissionDataComplete(permission);
         }
     }
+
+    public void deleteVerify(String level, String language) {
+        ResourceBundle messages = defineMessagesLanguage(language);
+
+        if(!repository.existsByLevel(Integer.parseInt(level))){
+            throw new Validation(messages.getString("error.permissionNotExists"));
+        }
+        else{
+            repository.deleteByLevel(Integer.parseInt(level));
+        }
+    }
 }

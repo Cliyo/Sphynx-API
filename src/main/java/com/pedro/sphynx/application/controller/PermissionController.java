@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("permissions")
-public class PermissionController implements ControllerIN<PermissionDataInput, PermissionDataComplete> {
+public class PermissionController {
 
     @Autowired
     private PermissionRepository repository;
@@ -26,7 +26,6 @@ public class PermissionController implements ControllerIN<PermissionDataInput, P
     @Autowired
     private MessageService messageService;
 
-    @Override
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid PermissionDataInput data, @RequestHeader("Language") String language) {
@@ -36,21 +35,18 @@ public class PermissionController implements ControllerIN<PermissionDataInput, P
         return ResponseEntity.ok(dto);
     }
 
-    @Override
     public ResponseEntity update(String id, PermissionDataComplete data, String language) {
         return null;
     }
 
-    @Override
     @DeleteMapping("/{level}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String level) {
-        repository.deleteByLevel(Integer.parseInt(level));
+    public ResponseEntity delete(@PathVariable String level, @RequestHeader("Language") String language) {
+        service.deleteVerify(level, language);
 
         return ResponseEntity.noContent().build();
     }
 
-    @Override
     @GetMapping
     public ResponseEntity get() {
         var listPermissions = repository.findAll().stream().map(PermissionDataComplete::new).toList();
