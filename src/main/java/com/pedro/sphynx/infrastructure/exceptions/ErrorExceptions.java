@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -29,6 +30,11 @@ public class ErrorExceptions {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity auth(UsernameNotFoundException e){
         return ResponseEntity.status(401).body(new MessageDTO(401, "Usuario ou senha incorretos.", null));
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity sqlIntegrity(){
+        return ResponseEntity.badRequest().body(new MessageDTO(400, "Exclusao nao autorizada.", null));
     }
 
 }
