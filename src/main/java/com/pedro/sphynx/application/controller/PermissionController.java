@@ -45,7 +45,7 @@ public class PermissionController implements ControllerIN<PermissionDataInput, P
     @DeleteMapping("/{level}")
     @Transactional
     public ResponseEntity delete(@PathVariable String level) {
-        repository.deleteByName(level);
+        repository.deleteByLevel(Integer.parseInt(level));
 
         return ResponseEntity.noContent().build();
     }
