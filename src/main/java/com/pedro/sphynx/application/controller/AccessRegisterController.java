@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("accessRegisters")
@@ -41,36 +42,36 @@ public class AccessRegisterController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccessDataComplete>> getAll(){
-        var listAccess = repository.findAll().stream().map(AccessDataComplete::new).toList();
+    public ResponseEntity<List<AccessDataComplete>> getAll(@RequestParam("ra") Optional<String> ra, @RequestParam("local") Optional<String> local, @RequestParam("date") Optional<String> date){
+        List<AccessDataComplete> listAccess;
 
-        return ResponseEntity.ok(listAccess);
-    }
+        if(ra.isPresent() && local.isEmpty() && date.isEmpty()){
+            listAccess = repository.findAllByConsumerRa(ra.get()).stream().map(AccessDataComplete::new).toList();
+        }
 
-    @GetMapping("/byRa/{ra}")
-    public ResponseEntity<List<AccessDataComplete>> getAllByRa(@PathVariable String ra){
-        var listAccess = repository.findAllByConsumerRa(ra).stream().map(AccessDataComplete::new).toList();
+        else if(ra.isEmpty() && local.isPresent() && date.isEmpty()){
+            listAccess = repository.findAllByLocalName(local.get()).stream().map(AccessDataComplete::new).toList();
+        }
 
-        return ResponseEntity.ok(listAccess);
-    }
+        else if(ra.isEmpty() && local.isEmpty() && date.isPresent()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
+            LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-    @GetMapping("/byLocal/{local}")
-    public ResponseEntity<List<AccessDataComplete>> getAllByLocal(@PathVariable String local){
-        String localRep = local.replace("_", " ");
+            listAccess = repository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
+        }
 
-        var listAccess = repository.findAllByLocalName(localRep).stream().map(AccessDataComplete::new).toList();
+        else if(ra.isPresent() &&  local.isPresent() && date.isPresent()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
+            LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-        return ResponseEntity.ok(listAccess);
-    }
+            listAccess = repository.findAllByConsumer_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
+        }
 
-    @GetMapping("/byDate/{date}")
-    public ResponseEntity<List<AccessDataComplete>> getAllByDate(@PathVariable String date){
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dateTimeStart = LocalDate.parse(date, formatter).atStartOfDay();
-        LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
-
-        var listAccess = repository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
+        else{
+            listAccess = repository.findAll().stream().map(AccessDataComplete::new).toList();
+        }
 
         return ResponseEntity.ok(listAccess);
     }

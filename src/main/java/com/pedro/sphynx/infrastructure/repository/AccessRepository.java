@@ -13,4 +13,6 @@ public interface AccessRepository extends JpaRepository<Access, Long> {
     List<Access> findAllByLocalName(String local);
 
     List<Access> findAllByDateBetween(LocalDateTime from, LocalDateTime to);
+
+    List<Access> findAllByConsumer_RaAndLocal_NameAndDateBetween(String ra, String local, LocalDateTime from, LocalDateTime to);
 }
