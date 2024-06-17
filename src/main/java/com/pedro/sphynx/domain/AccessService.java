@@ -9,8 +9,13 @@ import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.AccessRepository;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -29,39 +34,46 @@ public class AccessService {
     @Autowired
     private LocalRepository localRepository;
 
-    public AccessDataComplete validateCreation(AccessDataInput data){
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public AccessDataComplete validateCreation(AccessDataInput data) {
         ResourceBundle messages = defineMessagesLanguage(null);
 
-        System.out.println(data.mac().replaceAll("-", ":"));
-        System.out.println(data.tag());
+        String macFormatted = data.mac().replaceAll("-", ":");
+        String tag = data.tag();
 
-        if(!consumerRepository.existsByTag(data.tag())){
+        if (!consumerRepository.existsByTag(tag)) {
             throw new Validation(messages.getString("error.tagDontExists"));
         }
-        ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByTag(data.tag()));
 
-        if(!consumerRepository.existsByRa(consumer.ra())){
+        ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByTag(tag));
+
+        if (!consumerRepository.existsByRa(consumer.ra())) {
             throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
-        if(!localRepository.existsByMac(data.mac().replaceAll("-", ":"))){
+        if (!localRepository.existsByMac(macFormatted)) {
             throw new Validation(messages.getString("error.localDontExists"));
         }
-        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(data.mac().replaceAll("-", ":")));
 
-        if(local.permission().level() < consumer.permission().level()){
-            var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByMac(data.mac().replaceAll("-", ":")), false, LocalDateTime.now());
+        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
-            accessRepository.save(access);
-
-            throw new Validation(messages.getString("error.consumerDontHavePermission"));
+        if (local.permission().level() < consumer.permission().level()) {
+            return createAccess(consumer, local, false, messages.getString("error.consumerDontHavePermission"));
         }
+        else{
+            return createAccess(consumer, local, true, null);
+        }
+        
+    }
 
-        var access = new Access(null, consumerRepository.findByTag(data.tag()), localRepository.findByMac(data.mac().replaceAll("-", ":")), true, LocalDateTime.now());
-
+    private AccessDataComplete createAccess(ConsumerDataComplete consumer, LocalDataComplete local, boolean hasPermission, String errorMessage) {
+        Access access = new Access(null, consumerRepository.findByTag(consumer.tag()), localRepository.findByMac(local.mac().replaceAll("-", ":")), hasPermission, LocalDateTime.now());
         accessRepository.save(access);
+        entityManager.flush();
 
         return new AccessDataComplete(access);
     }
-
 }
