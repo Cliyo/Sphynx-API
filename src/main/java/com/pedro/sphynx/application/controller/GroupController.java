@@ -41,7 +41,7 @@ public class GroupController {
     @DeleteMapping("/{level}")
     @Transactional
     public ResponseEntity delete(@PathVariable String level, @RequestHeader("Language") String language) {
-        service.deleteVerify(level, language);
+        service.deleteVerify(Long.parseLong(level), language);
 
         return ResponseEntity.noContent().build();
     }
