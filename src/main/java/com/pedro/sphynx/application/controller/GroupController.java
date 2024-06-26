@@ -1,12 +1,11 @@
 package com.pedro.sphynx.application.controller;
 
-import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.application.dtos.permission.PermissionDataComplete;
 import com.pedro.sphynx.application.dtos.permission.PermissionDataInput;
 import com.pedro.sphynx.domain.MessageService;
-import com.pedro.sphynx.domain.PermissionService;
-import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
+import com.pedro.sphynx.domain.GroupService;
+import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("permissions")
-public class PermissionController {
+public class GroupController {
 
     @Autowired
-    private PermissionRepository repository;
+    private GroupRepository repository;
 
     @Autowired
-    private PermissionService service;
+    private GroupService service;
 
     @Autowired
     private MessageService messageService;
