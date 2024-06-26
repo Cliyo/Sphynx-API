@@ -23,20 +23,14 @@ public class Consumer {
     private String name;
     private String ra;
     private String tag;
-
-    @ManyToOne
-    @JoinColumn(name = "permission_id")
-    private Permission permission;
-
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Consumer(ConsumerDataInput data, Permission permission){
+    public Consumer(ConsumerDataInput data){
         this.id = null;
         this.name = data.name();
         this.ra = data.ra();
         this.tag = data.tag();
-        this.permission = permission;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }
