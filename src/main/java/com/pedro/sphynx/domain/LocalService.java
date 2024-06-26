@@ -4,7 +4,7 @@ import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
 import com.pedro.sphynx.infrastructure.entities.Local;
-import com.pedro.sphynx.infrastructure.entities.Permission;
+import com.pedro.sphynx.infrastructure.entities.Group;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
@@ -35,13 +35,8 @@ public class LocalService {
             throw new Validation(messages.getString("error.macAlreadyExists"));
         }
 
-        if(!permissionRepository.existsByLevel(data.permission())){
-            throw new Validation(messages.getString("error.permissionNotExists"));
-        }
-
         else{
-            Permission permission = permissionRepository.getReferenceByLevel(data.permission());
-            Local local = new Local(data, permission);
+            Local local = new Local(data);
 
             repository.save(local);
 
