@@ -13,9 +13,21 @@ Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalida
 
 ## Modelos
 - Consumer
+  - id
+  - name
+  - ra
+  - tag
 - Local
+  - id
+  - name
+  - mac
 - AccessRegister
-- Permission
+  - id
+  - consumer_id
+  - local_id
+- Group
+  - id
+  - name
 
 ## Requisitos
 - Possuir MySQL instalado na máquina
