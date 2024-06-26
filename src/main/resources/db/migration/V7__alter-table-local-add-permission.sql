@@ -1,1 +1,0 @@
-alter table locals add permission int;

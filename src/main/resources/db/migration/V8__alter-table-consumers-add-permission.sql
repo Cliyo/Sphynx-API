@@ -1,1 +1,0 @@
-alter table consumers add permission int;
