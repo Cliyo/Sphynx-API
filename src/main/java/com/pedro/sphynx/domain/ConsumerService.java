@@ -7,7 +7,7 @@ import com.pedro.sphynx.infrastructure.entities.Consumer;
 import com.pedro.sphynx.infrastructure.entities.Group;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
-import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
+import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class ConsumerService{
     private ConsumerRepository consumerRepository;
 
     @Autowired
-    private PermissionRepository permissionRepository;
+    private GroupRepository groupRepository;
 
     public ConsumerDataComplete createVerify(ConsumerDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
@@ -32,7 +32,6 @@ public class ConsumerService{
         }
 
         else{
-            Group group = permissionRepository.getReferenceByLevel(data.permission());
             Consumer consumer = new Consumer(data);
             consumerRepository.save(consumer);
             return new ConsumerDataComplete(consumer);

@@ -4,10 +4,9 @@ import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
 import com.pedro.sphynx.infrastructure.entities.Local;
-import com.pedro.sphynx.infrastructure.entities.Group;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
-import com.pedro.sphynx.infrastructure.repository.PermissionRepository;
+import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class LocalService {
     private LocalRepository repository;
 
     @Autowired
-    private PermissionRepository permissionRepository;
+    private GroupRepository groupRepository;
 
     public LocalDataComplete createVerify(LocalDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);

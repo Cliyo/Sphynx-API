@@ -60,12 +60,8 @@ public class AccessService {
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
-        if (local.permission().level() < consumer.permission().level()) {
-            return createAccess(consumer, local, false, messages.getString("error.consumerDontHavePermission"));
-        }
-        else{
-            return createAccess(consumer, local, true, null);
-        }
+        return createAccess(consumer, local, true, null);
+
         
     }
 
