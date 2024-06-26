@@ -1,4 +1,4 @@
-create table if not exists consumers_permissions(
+create table if not exists consumers_groups(
     id bigint not null auto_increment,
     consumer_id bigint not null,
     group_id bigint not null,
