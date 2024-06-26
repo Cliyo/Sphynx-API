@@ -1,6 +1,6 @@
 package com.pedro.sphynx.infrastructure.entities;
 
-import com.pedro.sphynx.application.dtos.permission.PermissionDataInput;
+import com.pedro.sphynx.application.dtos.group.GroupDataInput;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class Group {
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Group(PermissionDataInput data){
+    public Group(GroupDataInput data){
         this.id = null;
         this.name = data.name();
         this.dtcreate = LocalDateTime.now();

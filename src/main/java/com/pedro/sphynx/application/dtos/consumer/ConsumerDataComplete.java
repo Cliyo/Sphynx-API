@@ -1,6 +1,5 @@
 package com.pedro.sphynx.application.dtos.consumer;
 
-import com.pedro.sphynx.application.dtos.permission.PermissionDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Consumer;
 
 public record ConsumerDataComplete (Long id, String name, String ra, String tag){

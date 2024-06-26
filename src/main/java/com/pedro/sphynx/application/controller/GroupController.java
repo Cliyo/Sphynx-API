@@ -1,8 +1,8 @@
 package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
-import com.pedro.sphynx.application.dtos.permission.PermissionDataComplete;
-import com.pedro.sphynx.application.dtos.permission.PermissionDataInput;
+import com.pedro.sphynx.application.dtos.group.GroupDataComplete;
+import com.pedro.sphynx.application.dtos.group.GroupDataInput;
 import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.domain.GroupService;
 import com.pedro.sphynx.infrastructure.repository.GroupRepository;
@@ -27,14 +27,14 @@ public class GroupController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid PermissionDataInput data, @RequestHeader("Language") String language) {
+    public ResponseEntity create(@RequestBody @Valid GroupDataInput data, @RequestHeader("Language") String language) {
         var permission = service.createVerify(data, language);
         MessageDTO dto = messageService.createMessage(201, permission, language);
 
         return ResponseEntity.ok(dto);
     }
 
-    public ResponseEntity update(String id, PermissionDataComplete data, String language) {
+    public ResponseEntity update(String id, GroupDataComplete data, String language) {
         return null;
     }
 
@@ -48,7 +48,7 @@ public class GroupController {
 
     @GetMapping
     public ResponseEntity get() {
-        var listPermissions = repository.findAll().stream().map(PermissionDataComplete::new).toList();
+        var listPermissions = repository.findAll().stream().map(GroupDataComplete::new).toList();
 
         return ResponseEntity.ok(listPermissions);
     }
