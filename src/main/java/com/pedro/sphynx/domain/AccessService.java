@@ -5,10 +5,9 @@ import com.pedro.sphynx.application.dtos.access.AccessDataInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Access;
+import com.pedro.sphynx.infrastructure.entities.ConsumerGroup;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
-import com.pedro.sphynx.infrastructure.repository.AccessRepository;
-import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
-import com.pedro.sphynx.infrastructure.repository.LocalRepository;
+import com.pedro.sphynx.infrastructure.repository.*;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
 
@@ -33,6 +34,12 @@ public class AccessService {
 
     @Autowired
     private LocalRepository localRepository;
+
+    @Autowired
+    private ConsumerGroupRepository consumerGroupRepository;
+
+    @Autowired
+    private LocalGroupRepository localGroupRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -58,7 +65,13 @@ public class AccessService {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
+        List<String> consumerGroups = consumerGroupRepository.findAllByConsumerTag(data.tag()).stream().map(c -> c.getGroup().getName()).collect(Collectors.toList());
+
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
+
+        if(!consumerGroups.contains(localGroupRepository.getReferenceByLocalMac(data.mac()).getGroup().getName())){
+            return createAccess(consumer, local, false, null);
+        }
 
         return createAccess(consumer, local, true, null);
 

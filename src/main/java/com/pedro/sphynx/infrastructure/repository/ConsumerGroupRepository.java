@@ -11,4 +11,6 @@ import java.util.List;
 public interface ConsumerGroupRepository extends JpaRepository<ConsumerGroup, Long> {
 
     List<ConsumerGroup> findAllByGroupName(String s);
+    List<ConsumerGroup> findAllByConsumerTag(String tag);
+
 }
