@@ -3,10 +3,13 @@ package com.pedro.sphynx.application.controller;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
+import com.pedro.sphynx.application.dtos.consumerGroup.ConsumerGroupDataComplete;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
+import com.pedro.sphynx.infrastructure.entities.ConsumerGroup;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
+import com.pedro.sphynx.infrastructure.repository.ConsumerGroupRepository;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import jakarta.validation.Valid;
 import lombok.Builder;
@@ -30,6 +33,9 @@ public class ConsumerController{
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private ConsumerGroupRepository consumerGroupRepository;
 
     @PostMapping
     @Transactional
@@ -60,17 +66,17 @@ public class ConsumerController{
 
 
     @GetMapping
-    public ResponseEntity<List<ConsumerDataComplete>> get(@RequestParam("permission") Optional<Integer> permission){
+    public ResponseEntity<List<ConsumerGroupDataComplete>> get(@RequestParam("group") Optional<String> group){
 
-        List<ConsumerDataComplete> listConsumers;
+        List<ConsumerGroupDataComplete> listConsumers;
 
-        if(permission.isPresent()){
-            listConsumers = repository.findAllByPermission_Level(permission.get()).stream().map(ConsumerDataComplete::new).toList();
+        if(group.isPresent()){
+            listConsumers = consumerGroupRepository.findAllByGroupName(group.get()).stream().map(ConsumerGroupDataComplete::new).toList();
 
         }
 
         else{
-            listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
+            listConsumers = consumerGroupRepository.findAll().stream().map(ConsumerGroupDataComplete::new).toList();
         }
 
         return ResponseEntity.ok(listConsumers);
