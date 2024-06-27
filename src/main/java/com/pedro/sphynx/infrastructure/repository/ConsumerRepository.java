@@ -16,6 +16,4 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     Consumer getReferenceByRa(String ra);
 
     void deleteByRa(String ra);
-
-    List<Consumer> findAllByPermission_Level(Integer level);
 }
