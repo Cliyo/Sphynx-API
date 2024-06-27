@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("permissions")
+@RequestMapping("groups")
 public class GroupController {
 
     @Autowired
