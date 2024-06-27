@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull;
 public record LocalDataInput(
         @NotBlank String name,
         @NotBlank String mac,
-        @NotNull int permission) {
+        @NotBlank String group) {
 }
