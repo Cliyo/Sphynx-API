@@ -36,14 +36,14 @@ public class ConsumerService{
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
 
-        if(!groupRepository.existsByName(data.group())){
+        if(!groupRepository.existsById(data.group())){
             throw new Validation(messages.getString("error.groupNotExists"));
         }
 
         Consumer consumer = new Consumer(data);
         consumerRepository.save(consumer);
 
-        Group group = groupRepository.getReferenceByName(data.group());
+        Group group = groupRepository.getReferenceById(data.group());
         ConsumerGroup consumerGroup = new ConsumerGroup(null, consumer, group);
         consumerGroupRepository.save(consumerGroup);
 
