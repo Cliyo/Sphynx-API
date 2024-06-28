@@ -36,20 +36,19 @@ public class ConsumerService{
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
 
-        if(groupRepository.existsByName(data.group())){
+        if(!groupRepository.existsByName(data.group())){
             throw new Validation(messages.getString("error.groupNotExists"));
         }
 
-        else{
-            Consumer consumer = new Consumer(data);
-            Group group = groupRepository.getReferenceByName(data.group());
-            ConsumerGroup consumerGroup = new ConsumerGroup(null, consumer, group);
+        Consumer consumer = new Consumer(data);
+        consumerRepository.save(consumer);
 
-            consumerRepository.save(consumer);
-            consumerGroupRepository.save(consumerGroup);
+        Group group = groupRepository.getReferenceByName(data.group());
+        ConsumerGroup consumerGroup = new ConsumerGroup(null, consumer, group);
+        consumerGroupRepository.save(consumerGroup);
 
-            return new ConsumerDataComplete(consumer);
-        }
+        return new ConsumerDataComplete(consumer);
+
     }
 
     public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra, String language){

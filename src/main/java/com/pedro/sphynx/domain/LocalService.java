@@ -40,20 +40,23 @@ public class LocalService {
             throw new Validation(messages.getString("error.macAlreadyExists"));
         }
 
-        if(!groupRepository.existsByName(data.group())){
-            throw new Validation(messages.getString("error.groupNotExists"));
+        for(String group : data.group()){
+            if(!groupRepository.existsByName(group)){
+                throw new Validation(messages.getString("error.groupNotExists"));
+            }
         }
 
-        else{
-            Local local = new Local(data);
-            Group group = groupRepository.getReferenceByName(data.group());
+        Local local = new Local(data);
+        repository.save(local);
+
+        for(String groupElement : data.group()){
+            Group group = groupRepository.getReferenceByName(groupElement);
             LocalGroup localGroup = new LocalGroup(null, local, group);
-
-            repository.save(local);
             localGroupRepository.save(localGroup);
-
-            return new LocalDataComplete(local);
         }
+
+        return new LocalDataComplete(local);
+
     }
 
     public LocalDataComplete updateVerify(LocalDataEditInput data, String name, String language) {
