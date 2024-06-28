@@ -40,8 +40,8 @@ public class LocalService {
             throw new Validation(messages.getString("error.macAlreadyExists"));
         }
 
-        for(String group : data.group()){
-            if(!groupRepository.existsByName(group)){
+        for(int group : data.group()){
+            if(!groupRepository.existsById(group)){
                 throw new Validation(messages.getString("error.groupNotExists"));
             }
         }
@@ -49,8 +49,8 @@ public class LocalService {
         Local local = new Local(data);
         repository.save(local);
 
-        for(String groupElement : data.group()){
-            Group group = groupRepository.getReferenceByName(groupElement);
+        for(int groupElement : data.group()){
+            Group group = groupRepository.getReferenceById(groupElement);
             LocalGroup localGroup = new LocalGroup(null, local, group);
             localGroupRepository.save(localGroup);
         }

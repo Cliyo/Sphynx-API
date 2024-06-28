@@ -8,5 +8,5 @@ import java.util.List;
 public record LocalDataInput(
         @NotBlank String name,
         @NotBlank String mac,
-        @NotBlank List<String> group) {
+        @NotNull List<Integer> group) {
 }
