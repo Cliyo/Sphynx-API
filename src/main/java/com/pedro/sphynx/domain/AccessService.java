@@ -5,7 +5,6 @@ import com.pedro.sphynx.application.dtos.access.AccessDataInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Access;
-import com.pedro.sphynx.infrastructure.entities.ConsumerGroup;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.*;
 
@@ -36,9 +35,6 @@ public class AccessService {
     private LocalRepository localRepository;
 
     @Autowired
-    private ConsumerGroupRepository consumerGroupRepository;
-
-    @Autowired
     private LocalGroupRepository localGroupRepository;
 
     @PersistenceContext
@@ -65,11 +61,12 @@ public class AccessService {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
-        List<String> consumerGroups = consumerGroupRepository.findAllByConsumerTag(data.tag()).stream().map(c -> c.getGroup().getName()).collect(Collectors.toList());
+        String consumerGroup = consumerRepository.findByTag(data.tag()).getGroup().getName();
+        List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
-        if(!consumerGroups.contains(localGroupRepository.getReferenceByLocalMac(data.mac()).getGroup().getName())){
+        if(!localGroups.contains(consumerGroup)){
             return createAccess(consumer, local, false, null);
         }
 

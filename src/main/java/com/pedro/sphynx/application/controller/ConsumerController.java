@@ -3,16 +3,11 @@ package com.pedro.sphynx.application.controller;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
-import com.pedro.sphynx.application.dtos.consumerGroup.ConsumerGroupDataComplete;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
-import com.pedro.sphynx.infrastructure.entities.ConsumerGroup;
-import com.pedro.sphynx.infrastructure.exceptions.Validation;
-import com.pedro.sphynx.infrastructure.repository.ConsumerGroupRepository;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import jakarta.validation.Valid;
-import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +28,6 @@ public class ConsumerController{
 
     @Autowired
     private MessageService messageService;
-
-    @Autowired
-    private ConsumerGroupRepository consumerGroupRepository;
 
     @PostMapping
     @Transactional
@@ -66,17 +58,17 @@ public class ConsumerController{
 
 
     @GetMapping
-    public ResponseEntity<List<ConsumerGroupDataComplete>> get(@RequestParam("group") Optional<String> group){
+    public ResponseEntity<List<ConsumerDataComplete>> get(@RequestParam("group") Optional<String> group){
 
-        List<ConsumerGroupDataComplete> listConsumers;
+        List<ConsumerDataComplete> listConsumers;
 
         if(group.isPresent()){
-            listConsumers = consumerGroupRepository.findAllByGroupName(group.get()).stream().map(ConsumerGroupDataComplete::new).toList();
+            listConsumers = repository.findAllByGroupName(group.get()).stream().map(ConsumerDataComplete::new).toList();
 
         }
 
         else{
-            listConsumers = consumerGroupRepository.findAll().stream().map(ConsumerGroupDataComplete::new).toList();
+            listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
         }
 
         return ResponseEntity.ok(listConsumers);

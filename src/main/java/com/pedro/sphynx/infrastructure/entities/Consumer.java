@@ -23,14 +23,20 @@ public class Consumer {
     private String name;
     private String ra;
     private String tag;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
+
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Consumer(ConsumerDataInput data){
+    public Consumer(ConsumerDataInput data, Group group){
         this.id = null;
         this.name = data.name();
         this.ra = data.ra();
         this.tag = data.tag();
+        this.group = group;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }

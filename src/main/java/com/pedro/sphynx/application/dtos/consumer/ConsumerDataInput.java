@@ -7,5 +7,5 @@ public record ConsumerDataInput(
         @NotBlank String name,
         @NotBlank String ra,
         @NotBlank String tag,
-        @NotBlank Integer group){
+        @NotNull Integer group){
 }

@@ -3,6 +3,7 @@ package com.pedro.sphynx.infrastructure.repository;
 import com.pedro.sphynx.infrastructure.entities.Consumer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
@@ -16,4 +17,8 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     Consumer getReferenceByRa(String ra);
 
     void deleteByRa(String ra);
+
+    List<Consumer> findAllByGroupName(String s);
+
+    List<Consumer> findAllByTag(String tag);
 }
