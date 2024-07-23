@@ -38,10 +38,10 @@ public class GroupController {
         return null;
     }
 
-    @DeleteMapping("/{level}")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String level, @RequestHeader("Language") String language) {
-        service.deleteVerify(Long.parseLong(level), language);
+    public ResponseEntity delete(@PathVariable String id, @RequestHeader("Language") String language) {
+        service.deleteVerify(Integer.parseInt(id), language);
 
         return ResponseEntity.noContent().build();
     }

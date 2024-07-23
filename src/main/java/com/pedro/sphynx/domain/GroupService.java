@@ -31,9 +31,15 @@ public class GroupService {
         return new GroupDataComplete(group);
     }
 
-    public void deleteVerify(Long id, String language) {
+    public void deleteVerify(Integer id, String language) {
         ResourceBundle messages = defineMessagesLanguage(language);
 
+        if(!repository.existsById(id)){
+            throw new Validation(messages.getString("error.groupNotExists"));
+        }
+        else{
+            repository.deleteById(id);
+        }
 
     }
 }
