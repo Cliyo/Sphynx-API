@@ -6,7 +6,6 @@ import com.pedro.sphynx.application.dtos.localGroup.LocalGroupDataComplete;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.LocalService;
 import com.pedro.sphynx.domain.MessageService;
-import com.pedro.sphynx.infrastructure.entities.Local;
 import com.pedro.sphynx.infrastructure.repository.LocalGroupRepository;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 import jakarta.validation.Valid;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("locals")
