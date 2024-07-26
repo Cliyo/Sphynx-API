@@ -8,5 +8,5 @@ create table if not exists consumers(
     dtupdate datetime,
 
     primary key(id),
-    constraint fk_group_consumer_id foreign key (group_id) references permissionGroups(id)
+    constraint fk_group_consumer_id foreign key (group_id) references permission_groups(id)
 );

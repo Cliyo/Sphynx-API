@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Table(name = "permissionGroups")
+@Table(name = "permission_groups")
 @Entity(name = "Group")
 @Getter
 @AllArgsConstructor

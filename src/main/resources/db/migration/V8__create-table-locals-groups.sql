@@ -5,5 +5,5 @@ create table if not exists locals_groups(
 
     primary key(id),
     constraint fk_permissions_local_id foreign key (local_id) references locals(id),
-    constraint fk_permissionsConsumer_group_id foreign key (group_id) references permissionGroups(id)
+    constraint fk_permissionsConsumer_group_id foreign key (group_id) references permission_groups(id)
 );
