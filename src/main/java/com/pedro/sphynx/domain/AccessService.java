@@ -6,9 +6,7 @@ import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.infrastructure.entities.Access;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
-import com.pedro.sphynx.infrastructure.repository.AccessRepository;
-import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
-import com.pedro.sphynx.infrastructure.repository.LocalRepository;
+import com.pedro.sphynx.infrastructure.repository.*;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
 
@@ -33,6 +33,9 @@ public class AccessService {
 
     @Autowired
     private LocalRepository localRepository;
+
+    @Autowired
+    private LocalGroupRepository localGroupRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -58,14 +61,17 @@ public class AccessService {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
+        String consumerGroup = consumerRepository.findByTag(data.tag()).getGroup().getName();
+        List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
+
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
-        if (local.permission().level() < consumer.permission().level()) {
-            return createAccess(consumer, local, false, messages.getString("error.consumerDontHavePermission"));
+        if(!localGroups.contains(consumerGroup)){
+            return createAccess(consumer, local, false, null);
         }
-        else{
-            return createAccess(consumer, local, true, null);
-        }
+
+        return createAccess(consumer, local, true, null);
+
         
     }
 

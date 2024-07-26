@@ -6,10 +6,8 @@ import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
-import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import jakarta.validation.Valid;
-import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,12 +58,12 @@ public class ConsumerController{
 
 
     @GetMapping
-    public ResponseEntity<List<ConsumerDataComplete>> get(@RequestParam("permission") Optional<Integer> permission){
+    public ResponseEntity<List<ConsumerDataComplete>> get(@RequestParam("group") Optional<String> group){
 
         List<ConsumerDataComplete> listConsumers;
 
-        if(permission.isPresent()){
-            listConsumers = repository.findAllByPermission_Level(permission.get()).stream().map(ConsumerDataComplete::new).toList();
+        if(group.isPresent()){
+            listConsumers = repository.findAllByGroupName(group.get()).stream().map(ConsumerDataComplete::new).toList();
 
         }
 

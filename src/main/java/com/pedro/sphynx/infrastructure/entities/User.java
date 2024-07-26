@@ -1,7 +1,6 @@
 package com.pedro.sphynx.infrastructure.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

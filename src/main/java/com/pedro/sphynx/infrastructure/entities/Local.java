@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "locals")
 @Entity(name = "Local")
@@ -22,18 +23,20 @@ public class Local {
 
     private String name;
     private String mac;
-
-    @ManyToOne
-    @JoinColumn(name = "permission_id")
-    private Permission permission;
-
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Local(LocalDataInput data, Permission permission){
+    @ManyToMany
+    @JoinTable(
+        name = "locals_groups",
+        joinColumns = @JoinColumn(name = "local_id"),
+        inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private List<Group> groups;
+
+    public Local(LocalDataInput data){
         this.name = data.name();
         this.mac = data.mac();
-        this.permission = permission;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }
