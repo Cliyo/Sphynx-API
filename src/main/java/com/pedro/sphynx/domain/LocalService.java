@@ -13,7 +13,9 @@ import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
 
@@ -56,7 +58,6 @@ public class LocalService {
         }
 
         return new LocalDataComplete(local);
-
     }
 
     public LocalDataComplete updateVerify(LocalDataEditInput data, String name, String language) {
@@ -70,5 +71,10 @@ public class LocalService {
             return new LocalDataComplete(local);
         }
         return null;
+    }
+    
+    public List<LocalDataComplete> getAllLocalsWithGroups() {
+        List<Local> locals = repository.findAll();
+        return locals.stream().map(LocalDataComplete::new).collect(Collectors.toList());
     }
 }

@@ -1,8 +1,8 @@
 package com.pedro.sphynx.application.controller;
 
+import com.pedro.sphynx.application.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.application.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.application.dtos.local.LocalDataInput;
-import com.pedro.sphynx.application.dtos.localGroup.LocalGroupDataComplete;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.LocalService;
 import com.pedro.sphynx.domain.MessageService;
@@ -54,9 +54,8 @@ public class LocalController implements ControllerIN<LocalDataInput, LocalDataEd
 
     @Override
     @GetMapping
-    public ResponseEntity<List> get(){
-        List<LocalGroupDataComplete> localsList = localGroupRepository.findAll().stream().map(LocalGroupDataComplete::new).toList();
-
+    public ResponseEntity<List<LocalDataComplete>> get(){
+        List<LocalDataComplete> localsList = service.getAllLocalsWithGroups();
         return ResponseEntity.ok(localsList);
     }
 
