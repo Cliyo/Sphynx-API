@@ -1,0 +1,39 @@
+services:
+  sphynx-api-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - sphynx-network
+    environment:
+      DATABASE_URL: mysql
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root
+      DATABASE: sphynx_api
+    depends_on:
+      - mysql-db
+
+  mysql-db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - sphynx-network
+    environment:
+      MYSQL_USER: root
+      MYSQL_DATABASE: sphynx_api
+      MYSQL_PASSWORD: root
+
+networks:
+  sphynx-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
