@@ -1,39 +1,45 @@
 services:
-  sphynx-api-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./logs:/app/logs
-    networks:
-      - sphynx-network
-    environment:
-      DATABASE_URL: mysql
-      DATABASE_USERNAME: root
-      DATABASE_PASSWORD: root
-      DATABASE: sphynx_api
-    depends_on:
-      - mysql-db
-
-  mysql-db:
+  mysql:
     image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sphynx_api
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ~/mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
-      - sphynx-network
-    environment:
-      MYSQL_USER: root
-      MYSQL_DATABASE: sphynx_api
-      MYSQL_PASSWORD: root
+      - mysql
 
-networks:
-  sphynx-network:
-    driver: bridge
+  springboot-app:
+    depends_on:
+      mysql:
+        condition: service_healthy
+    build: .
+    container_name: springboot-container
+    ports:
+      - "57128:57128"
+    restart: on-failure
+    environment:
+      DATABASE: mysql
+      DATABASE_URL: mysql:3306
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root
+    networks:
+      - springboot-network
+      - mysql
 
 volumes:
   mysql_data:
-    driver: local
+
+networks:
+  springboot-network:
+
+  mysql:
+
