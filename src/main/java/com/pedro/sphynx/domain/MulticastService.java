@@ -16,7 +16,7 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class MulticastService {
     
-    private static final int PORT = 57127;
+    private static final int PORT = 57128;
     private InetAddress ipAddress;
     
     @PostConstruct
