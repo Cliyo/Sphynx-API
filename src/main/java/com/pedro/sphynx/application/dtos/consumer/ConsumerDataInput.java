@@ -2,10 +2,12 @@ package com.pedro.sphynx.application.dtos.consumer;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 
 public record ConsumerDataInput(
         @NotBlank String name,
         @NotBlank String ra,
         @NotBlank String tag,
-        @NotNull Integer group){
+        @NotNull Integer group,
+        @Null byte[] fingerprint){
 }
