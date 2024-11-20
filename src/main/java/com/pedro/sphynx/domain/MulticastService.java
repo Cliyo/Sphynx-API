@@ -7,9 +7,15 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.pedro.sphynx.infrastructure.entities.Local;
+import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 
 import jakarta.annotation.PostConstruct;
 
@@ -17,36 +23,21 @@ import jakarta.annotation.PostConstruct;
 public class MulticastService {
     
     private static final int PORT = 57128;
+    private static final int FinderPort = 57127;
+    private static final String multicastIP = "239.255.255.250";
     private InetAddress ipAddress;
+
+    public ArrayList<List<String>> devices = new ArrayList<>();
+
+    @Autowired
+    private LocalRepository localRepository;
     
     @PostConstruct
     public void startListening() {
         new Thread(() -> {
             try {
-                MulticastSocket socket = new MulticastSocket(PORT);
                 
-                InetAddress group = InetAddress.getByName("239.255.255.250");
-
-                // uses the same logic from dnsService.java to get the network interface
-                // it should work using 0.0.0.0 as the inetaddress to get all the interfaces, but it doesn't apparently (? need further testing)
-                Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-                while (interfaces.hasMoreElements()) {
-                    NetworkInterface networkInterface = interfaces.nextElement();
-                    
-                    if (networkInterface.isUp() && !networkInterface.isLoopback()) {
-                        Enumeration<InetAddress> Addresses = networkInterface.getInetAddresses();
-                        while (Addresses.hasMoreElements()){
-                            ipAddress = Addresses.nextElement();
-
-                            if (ipAddress instanceof Inet4Address){
-                                break;
-                            }
-                        }
-                        System.out.println("Entrando no grupo de multicast na interface: " + networkInterface.getName());
-                        socket.joinGroup(new InetSocketAddress(group, PORT), networkInterface);
-                    }
-                }
-                // socket.joinGroup(new InetSocketAddress(group, PORT), NetworkInterface.getByInetAddress(InetAddress.getByName("0.0.0.0")));
+                MulticastSocket socket = createSocket(PORT);
 
                 byte[] buffer = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -80,6 +71,50 @@ public class MulticastService {
         }).start();
     }
 
+    @PostConstruct
+    public void Finder() {
+        new Thread(() -> {
+            try {
+                MulticastSocket socket = createSocket(FinderPort);
+                byte[] message = "Sphynx Device Finder".getBytes();
+                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(multicastIP), FinderPort);
+
+                byte[] buffer = new byte[1024];
+                DatagramPacket responsePacket = new DatagramPacket(buffer, buffer.length);
+
+                while (true) {
+                    System.out.println("Starting finder Scan");
+
+                    List<Local> locals = localRepository.findAll();
+
+                    List<String> localsMacs = locals.stream().map(Local::getMac).toList();
+
+                    socket.send(packet);
+
+                    socket.receive(responsePacket);
+                    String responseMessage = new String(responsePacket.getData(), 0, responsePacket.getLength());
+
+                    List<String> device = new ArrayList<>();
+                    try {
+                        device = List.of(responseMessage.split(","));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (device.size() > 1 && !devices.contains(device) && !localsMacs.contains(device.get(1))) {
+                        devices.add(device);
+                    }
+
+                    System.out.println("Devices found: " + devices);
+
+                    Thread.sleep(5000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     // compares the sender address with the local network interfaces to get the correct one
     // this way the sender can get the correct IP address to connect to the API
     private InetAddress getSenderNetwork(InetAddress senderAddress) throws SocketException {
@@ -99,5 +134,40 @@ public class MulticastService {
             }
         }
         return null;
+    }
+
+    private MulticastSocket createSocket(int port) {
+        try {
+            MulticastSocket socket = new MulticastSocket(port);
+                
+            InetAddress group = InetAddress.getByName(multicastIP);
+    
+            // uses the same logic from dnsService.java to get the network interface
+            // it should work using 0.0.0.0 as the inetaddress to get all the interfaces, but it doesn't apparently (? need further testing)
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                
+                if (networkInterface.isUp() && !networkInterface.isLoopback()) {
+                    Enumeration<InetAddress> Addresses = networkInterface.getInetAddresses();
+                    while (Addresses.hasMoreElements()){
+                        ipAddress = Addresses.nextElement();
+    
+                        if (ipAddress instanceof Inet4Address){
+                            break;
+                        }
+                    }
+                    System.out.println("Entrando no grupo de multicast na interface: " + networkInterface.getName() + " porta: " + port);
+                    socket.joinGroup(new InetSocketAddress(group, PORT), networkInterface);
+                }
+            }
+            // socket.joinGroup(new InetSocketAddress(group, PORT), NetworkInterface.getByInetAddress(InetAddress.getByName("0.0.0.0")));
+            return socket;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        
     }
 }
