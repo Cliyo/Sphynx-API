@@ -1,5 +1,6 @@
 package com.pedro.sphynx.domain;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -8,12 +9,15 @@ import javax.jmdns.*;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 @Component
+// only build this class when the app is not built by docker, because we use avahi inside the container
+@ConditionalOnProperty(name = "docker.container", havingValue = "false", matchIfMissing = false)
 public class dnsService {
 
     // Getting mdns variables from application.properties
@@ -44,10 +48,9 @@ public class dnsService {
                     Enumeration<InetAddress> Addresses = networkInterface.getInetAddresses();
                     while (Addresses.hasMoreElements()){
                         ipAddress = Addresses.nextElement(); // assign ipAddress with an ip from the list
-                        String ip = ipAddress.toString();
 
-                        // check with regex if the ip is an ipv4 (must be ipv4, ipv6 won't work), then leaves
-                        if (ip.matches("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")){
+                        // check if the ip is an ipv4 (must be ipv4, ipv6 won't work), then leaves
+                        if (ipAddress instanceof Inet4Address){
                             break;
                         }
                     }

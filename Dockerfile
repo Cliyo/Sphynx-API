@@ -23,6 +23,8 @@ WORKDIR /app
 # Copia o JAR gerado da etapa de build
 COPY --from=build /app/target/*.jar app.jar
 
+ENV DOCKER_CONTAINER=true
+
 # Expõe a porta que será usada pelo Spring Boot
 EXPOSE 8080
 
