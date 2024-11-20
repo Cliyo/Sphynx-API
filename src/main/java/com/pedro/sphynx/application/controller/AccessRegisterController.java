@@ -1,7 +1,8 @@
 package com.pedro.sphynx.application.controller;
 
 import com.pedro.sphynx.application.dtos.access.AccessDataComplete;
-import com.pedro.sphynx.application.dtos.access.AccessDataInput;
+import com.pedro.sphynx.application.dtos.access.AccessDataTagInput;
+import com.pedro.sphynx.application.dtos.access.AccessDataFingerprintInput;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.AccessService;
 import com.pedro.sphynx.domain.MessageService;
@@ -31,9 +32,19 @@ public class AccessRegisterController {
     @Autowired
     private MessageService messageService;
 
-    @PostMapping
+    @PostMapping("/tag")
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid AccessDataTagInput data){
+        AccessDataComplete accessDataComplete = service.validateCreation(data);
+
+        MessageDTO dto = messageService.createMessage(201, accessDataComplete, null);
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/fingerprint")
+    @Transactional
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid AccessDataFingerprintInput data){
         AccessDataComplete accessDataComplete = service.validateCreation(data);
 
         MessageDTO dto = messageService.createMessage(201, accessDataComplete, null);
