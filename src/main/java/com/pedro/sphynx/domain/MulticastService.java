@@ -107,7 +107,7 @@ public class MulticastService {
 
                     System.out.println("Devices found: " + devices);
 
-                    Thread.sleep(5000);
+                    Thread.sleep(180000);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -169,5 +169,9 @@ public class MulticastService {
             return null;
         }
         
+    }
+
+    public List<List<String>> getDevices() {
+        return devices;
     }
 }
