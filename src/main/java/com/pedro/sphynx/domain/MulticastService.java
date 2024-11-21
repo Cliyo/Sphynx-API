@@ -198,6 +198,8 @@ class DeviceFinder {
 
                 if (device.size() > 1 && !devices.contains(device) && !localsMacs.contains(device.get(1))) {
                     devices.add(device);
+                } else if (localsMacs.contains(device.get(1)) && devices.contains(device)) {
+                    devices.remove(device);
                 }
 
                 System.out.println("Devices found: " + devices);
