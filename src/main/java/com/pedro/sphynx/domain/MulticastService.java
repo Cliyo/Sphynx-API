@@ -24,13 +24,11 @@ public class MulticastService {
     
     private static final int PORT = 57128;
     private static final int FinderPort = 57127;
-    private static final String multicastIP = "239.255.255.250";
     private InetAddress ipAddress;
-
-    public ArrayList<List<String>> devices = new ArrayList<>();
-
+    public static final String multicastIP = "239.255.255.250";
+    
     @Autowired
-    private LocalRepository localRepository;
+    private DeviceFinder finder;
     
     @PostConstruct
     public void startListening() {
@@ -72,47 +70,15 @@ public class MulticastService {
     }
 
     @PostConstruct
-    public void Finder() {
+    private void Finder() {
         new Thread(() -> {
-            try {
-                MulticastSocket socket = createSocket(FinderPort);
-                byte[] message = "Sphynx Device Finder".getBytes();
-                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(multicastIP), FinderPort);
-
-                byte[] buffer = new byte[1024];
-                DatagramPacket responsePacket = new DatagramPacket(buffer, buffer.length);
-
-                while (true) {
-                    System.out.println("Starting finder Scan");
-
-                    List<Local> locals = localRepository.findAll();
-
-                    List<String> localsMacs = locals.stream().map(Local::getMac).toList();
-
-                    socket.send(packet);
-
-                    socket.receive(responsePacket);
-                    String responseMessage = new String(responsePacket.getData(), 0, responsePacket.getLength());
-
-                    List<String> device = new ArrayList<>();
-                    try {
-                        device = List.of(responseMessage.split(","));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if (device.size() > 1 && !devices.contains(device) && !localsMacs.contains(device.get(1))) {
-                        devices.add(device);
-                    }
-
-                    System.out.println("Devices found: " + devices);
-
-                    Thread.sleep(180000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            finder.setSocket(createSocket(FinderPort));
+            finder.Finder(true);
         }).start();
+    }
+
+    public void finderScan() {
+        finder.Finder(false);
     }
 
     // compares the sender address with the local network interfaces to get the correct one
@@ -172,6 +138,78 @@ public class MulticastService {
     }
 
     public List<List<String>> getDevices() {
+        return finder.getDevices();
+    }
+
+}
+
+@Service
+class DeviceFinder {
+    private MulticastSocket socket;
+    private byte[] message = "Sphynx Device Finder".getBytes();
+    private static final String multicastIP = "239.255.255.250";
+    private DatagramPacket packet;
+    private byte[] buffer = new byte[1024];
+    private DatagramPacket responsePacket;
+
+    public ArrayList<List<String>> devices = new ArrayList<>();
+
+    @Autowired
+    private LocalRepository localRepository;
+
+    public DeviceFinder() {
+        try{
+            packet = new DatagramPacket(message, message.length, InetAddress.getByName(multicastIP), 57127);
+            responsePacket = new DatagramPacket(buffer, buffer.length);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSocket(MulticastSocket socket) {
+        this.socket = socket;
+    }
+
+    public List<List<String>> getDevices() {
         return devices;
+    }
+
+    public void Finder(boolean auto) {
+        try {
+            while (true) {
+                System.out.println("Starting finder Scan");
+
+                List<Local> locals = localRepository.findAll();
+
+                List<String> localsMacs = locals.stream().map(Local::getMac).toList();
+
+                socket.send(packet);
+
+                socket.receive(responsePacket);
+                String responseMessage = new String(responsePacket.getData(), 0, responsePacket.getLength());
+
+                List<String> device = new ArrayList<>();
+                try {
+                    device = List.of(responseMessage.split(","));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (device.size() > 1 && !devices.contains(device) && !localsMacs.contains(device.get(1))) {
+                    devices.add(device);
+                }
+
+                System.out.println("Devices found: " + devices);
+
+                if (auto) {
+                    Thread.sleep(180000);
+                }else {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
