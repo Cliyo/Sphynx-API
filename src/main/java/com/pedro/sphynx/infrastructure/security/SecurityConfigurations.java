@@ -29,6 +29,7 @@ public class SecurityConfigurations {
         return http.csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(req -> {
+                req.requestMatchers("/online").permitAll();
                 req.requestMatchers("/login").permitAll();
                 req.requestMatchers("/login/verify").permitAll();
                 req.requestMatchers("/accessRegisters").permitAll();
