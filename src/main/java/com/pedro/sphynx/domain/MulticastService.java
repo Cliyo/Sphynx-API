@@ -113,18 +113,17 @@ public class MulticastService {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = interfaces.nextElement();
-                
                 if (networkInterface.isUp() && !networkInterface.isLoopback()) {
                     Enumeration<InetAddress> Addresses = networkInterface.getInetAddresses();
                     while (Addresses.hasMoreElements()){
                         ipAddress = Addresses.nextElement();
     
                         if (ipAddress instanceof Inet4Address){
+                            System.out.println("Entrando no grupo de multicast na interface: " + networkInterface.getName() + " porta: " + port);
+                            socket.joinGroup(new InetSocketAddress(group, PORT), networkInterface);
                             break;
                         }
                     }
-                    System.out.println("Entrando no grupo de multicast na interface: " + networkInterface.getName() + " porta: " + port);
-                    socket.joinGroup(new InetSocketAddress(group, PORT), networkInterface);
                 }
             }
             // socket.joinGroup(new InetSocketAddress(group, PORT), NetworkInterface.getByInetAddress(InetAddress.getByName("0.0.0.0")));
@@ -152,7 +151,7 @@ class DeviceFinder {
     private byte[] buffer = new byte[1024];
     private DatagramPacket responsePacket;
 
-    public ArrayList<List<String>> devices = new ArrayList<>();
+    public List<List<String>> devices = new ArrayList<>();
 
     @Autowired
     private LocalRepository localRepository;
@@ -186,6 +185,7 @@ class DeviceFinder {
 
                 socket.send(packet);
 
+                Thread.sleep(2000);
                 socket.receive(responsePacket);
                 String responseMessage = new String(responsePacket.getData(), 0, responsePacket.getLength());
 
@@ -196,17 +196,26 @@ class DeviceFinder {
                     e.printStackTrace();
                 }
 
-                if (device.size() > 1 && !devices.contains(device) && !localsMacs.contains(device.get(1))) {
-                    devices.add(device);
-                } else if (localsMacs.contains(device.get(1)) && devices.contains(device)) {
-                    devices.remove(device);
+                if (device.size() > 1) {
+                    if (!devices.contains(device) && !localsMacs.contains(device.get(1))) {
+                        devices.add(device);
+                    } else if (localsMacs.contains(device.get(1)) && devices.contains(device)) {
+                        devices.remove(device);
+                    }
                 }
+
+                System.out.println(device.toString());
+                devices.forEach(d -> {
+                    if (localsMacs.contains(d.get(1))) {
+                        devices.remove(d);
+                    }
+                });
 
                 System.out.println("Devices found: " + devices);
 
                 if (auto) {
                     Thread.sleep(180000);
-                }else {
+                } else {
                     break;
                 }
             }
