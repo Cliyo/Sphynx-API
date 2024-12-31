@@ -63,10 +63,10 @@ public class ConsumerController{
         return ResponseEntity.ok(listConsumers);
     }
 
-    @GetMapping("/{ra}")
-    public ResponseEntity getById(@PathVariable String ra, @RequestHeader("Language") String language) {
+    @GetMapping("/{id}")
+    public ResponseEntity getById(@PathVariable String id, @RequestHeader("Language") String language) {
 
-        var consumer = service.getById(ra, language);
+        var consumer = service.getById(Long.parseLong(id), language);
 
         return ResponseEntity.ok(consumer);
     }

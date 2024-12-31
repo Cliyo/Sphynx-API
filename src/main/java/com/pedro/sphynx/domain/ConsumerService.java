@@ -84,13 +84,13 @@ public class ConsumerService{
         }
     }
 
-    public ConsumerDataComplete getById(String ra, String language){
+    public ConsumerDataComplete getById(Long id, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
-        if(!consumerRepository.existsByRa(ra)){
+        if(!consumerRepository.existsById(id)){
             throw new Validation(messages.getString("error.raDontExists"));
         }
 
-        return new ConsumerDataComplete(consumerRepository.getReferenceByRa(ra));
+        return new ConsumerDataComplete(consumerRepository.getReferenceById(id));
     }
 }
