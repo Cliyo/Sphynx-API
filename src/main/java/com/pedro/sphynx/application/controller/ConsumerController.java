@@ -3,6 +3,7 @@ package com.pedro.sphynx.application.controller;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.application.dtos.consumer.ConsumerDataInput;
+import com.pedro.sphynx.application.dtos.group.GroupDataComplete;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.domain.ConsumerService;
 import com.pedro.sphynx.domain.MessageService;
@@ -21,9 +22,6 @@ import java.util.Optional;
 public class ConsumerController{
 
     @Autowired
-    private ConsumerRepository repository;
-
-    @Autowired
     private ConsumerService service;
 
     @Autowired
@@ -32,7 +30,7 @@ public class ConsumerController{
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data, @RequestHeader("Language") String language){
-        var consumerDto = service.createVerify(data, language);
+        var consumerDto = service.create(data, language);
         MessageDTO dto = messageService.createMessage(201, consumerDto, language);
 
         return ResponseEntity.ok(dto);
@@ -42,7 +40,7 @@ public class ConsumerController{
     @PutMapping("/{ra}")
     @Transactional
     public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
-        var consumerDto = service.updateVerify(data, ra, language);
+        var consumerDto = service.update(data, ra, language);
         MessageDTO dto = messageService.createMessage(200, consumerDto, language);
 
         return ResponseEntity.ok(dto);
@@ -51,26 +49,25 @@ public class ConsumerController{
     @DeleteMapping("/{ra}")
     @Transactional
     public ResponseEntity delete(@PathVariable String ra, @RequestHeader("Language") String language){
-        service.deleteVerify(ra, language);
+        service.delete(ra, language);
 
         return ResponseEntity.noContent().build();
     }
 
 
     @GetMapping
-    public ResponseEntity<List<ConsumerDataComplete>> get(@RequestParam("group") Optional<String> group){
+    public ResponseEntity<List<ConsumerDataComplete>> getAll(@RequestParam("group") Optional<String> group){
 
-        List<ConsumerDataComplete> listConsumers;
-
-        if(group.isPresent()){
-            listConsumers = repository.findAllByGroupName(group.get()).stream().map(ConsumerDataComplete::new).toList();
-
-        }
-
-        else{
-            listConsumers = repository.findAll().stream().map(ConsumerDataComplete::new).toList();
-        }
+        var listConsumers = service.getAll(group);
 
         return ResponseEntity.ok(listConsumers);
+    }
+
+    @GetMapping("/{ra}")
+    public ResponseEntity getById(@PathVariable String ra, @RequestHeader("Language") String language) {
+
+        var consumer = service.getById(ra, language);
+
+        return ResponseEntity.ok(consumer);
     }
 }

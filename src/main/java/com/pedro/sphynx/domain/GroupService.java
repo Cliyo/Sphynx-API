@@ -7,6 +7,8 @@ import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
@@ -17,7 +19,8 @@ public class GroupService {
     @Autowired
     private GroupRepository repository;
 
-    public GroupDataComplete createVerify(GroupDataInput data, String language){
+
+    public GroupDataComplete create(GroupDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(repository.existsByName(data.name())){
@@ -31,7 +34,7 @@ public class GroupService {
         return new GroupDataComplete(group);
     }
 
-    public void deleteVerify(Integer id, String language) {
+    public void delete(Integer id, String language) {
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(!repository.existsById(id)){
@@ -41,5 +44,19 @@ public class GroupService {
             repository.deleteById(id);
         }
 
+    }
+
+    public GroupDataComplete getById(Integer id, String language) {
+        ResourceBundle messages = defineMessagesLanguage(language);
+
+        if(!repository.existsById(id)){
+            throw new Validation(messages.getString("error.groupNotExists"));
+        }
+
+        return new GroupDataComplete(repository.getReferenceById(id));
+    }
+
+    public List<GroupDataComplete> getAll(){
+        return repository.findAll().stream().map(GroupDataComplete::new).toList();
     }
 }

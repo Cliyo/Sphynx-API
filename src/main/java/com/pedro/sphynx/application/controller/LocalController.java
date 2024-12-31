@@ -28,38 +28,34 @@ public class LocalController implements ControllerIN<LocalDataInput, LocalDataEd
     @Autowired
     private MessageService messageService;
 
-    @Override
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid LocalDataInput data, @RequestHeader("Language") String language){
-        var local = service.createVerify(data, language);
+        var local = service.create(data, language);
         MessageDTO dto = messageService.createMessage(201, local, language);
 
         return ResponseEntity.ok(dto);
     }
 
-    @Override
     @PutMapping("/{name}")
     @Transactional
     public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data, @RequestHeader("Language") String language){
-        var local = service.updateVerify(data, name, language);
+        var local = service.update(data, name, language);
         MessageDTO dto = messageService.createMessage(200, local, language);
 
         return ResponseEntity.ok(dto);
     }
 
-    @Override
     @GetMapping
-    public ResponseEntity<List<LocalGroupDataComplete>> get(){
+    public ResponseEntity<List<LocalGroupDataComplete>> getAll(){
         List<LocalGroupDataComplete> localsList = service.getAllLocalsWithGroups();
         return ResponseEntity.ok(localsList);
     }
 
-    @Override
     @DeleteMapping("/{name}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String name){
-        repository.deleteByName(name);
+    public ResponseEntity delete(@PathVariable String name, @RequestHeader("Language") String language){
+        service.deleteByName(name, language);
 
         return ResponseEntity.noContent().build();
     }

@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
 
     @Autowired
-    private GroupRepository repository;
-
-    @Autowired
     private GroupService service;
 
     @Autowired
@@ -28,7 +25,7 @@ public class GroupController {
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid GroupDataInput data, @RequestHeader("Language") String language) {
-        var permission = service.createVerify(data, language);
+        var permission = service.create(data, language);
         MessageDTO dto = messageService.createMessage(201, permission, language);
 
         return ResponseEntity.ok(dto);
@@ -41,15 +38,22 @@ public class GroupController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity delete(@PathVariable String id, @RequestHeader("Language") String language) {
-        service.deleteVerify(Integer.parseInt(id), language);
+        service.delete(Integer.parseInt(id), language);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity get() {
-        var listPermissions = repository.findAll().stream().map(GroupDataComplete::new).toList();
+    public ResponseEntity getAll() {
+        var listPermissions = service.getAll();
 
         return ResponseEntity.ok(listPermissions);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getById(@PathVariable String id, @RequestHeader("Language") String language) {
+        var permission = service.getById(Integer.parseInt(id), language);
+
+        return ResponseEntity.ok(permission);
     }
 }

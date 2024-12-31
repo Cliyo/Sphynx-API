@@ -23,9 +23,6 @@ import java.util.Optional;
 public class AccessRegisterController {
 
     @Autowired
-    private AccessRepository repository;
-
-    @Autowired
     private AccessService service;
 
     @Autowired
@@ -43,35 +40,7 @@ public class AccessRegisterController {
 
     @GetMapping
     public ResponseEntity<List<AccessDataComplete>> getAll(@RequestParam("ra") Optional<String> ra, @RequestParam("local") Optional<String> local, @RequestParam("date") Optional<String> date){
-        List<AccessDataComplete> listAccess;
-
-        if(ra.isPresent() && local.isEmpty() && date.isEmpty()){
-            listAccess = repository.findAllByConsumerRa(ra.get()).stream().map(AccessDataComplete::new).toList();
-        }
-
-        else if(ra.isEmpty() && local.isPresent() && date.isEmpty()){
-            listAccess = repository.findAllByLocalName(local.get()).stream().map(AccessDataComplete::new).toList();
-        }
-
-        else if(ra.isEmpty() && local.isEmpty() && date.isPresent()){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
-            LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
-
-            listAccess = repository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
-        }
-
-        else if(ra.isPresent() &&  local.isPresent() && date.isPresent()){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
-            LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
-
-            listAccess = repository.findAllByConsumer_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
-        }
-
-        else{
-            listAccess = repository.findAll().stream().map(AccessDataComplete::new).toList();
-        }
+        List<AccessDataComplete> listAccess = service.getAllAccesses(ra, local, date);
 
         return ResponseEntity.ok(listAccess);
     }

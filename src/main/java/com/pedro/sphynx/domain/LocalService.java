@@ -33,8 +33,10 @@ public class LocalService {
 
     @Autowired
     private LocalGroupRepository localGroupRepository;
+    @Autowired
+    private LocalRepository localRepository;
 
-    public LocalDataComplete createVerify(LocalDataInput data, String language){
+    public LocalDataComplete create(LocalDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(repository.existsByName(data.name())){
@@ -63,7 +65,7 @@ public class LocalService {
         return new LocalDataComplete(local);
     }
 
-    public LocalDataComplete updateVerify(LocalDataEditInput data, String name, String language) {
+    public LocalDataComplete update(LocalDataEditInput data, String name, String language) {
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(!repository.existsByName(data.mac())){
@@ -89,5 +91,15 @@ public class LocalService {
         
                                                     //will convert the Map to and localGroupDataComplete object then to list
         return localsWithGroups.entrySet().stream().map(entry -> new LocalGroupDataComplete(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+    }
+
+    public void deleteByName(String name, String language) {
+        ResourceBundle messages = defineMessagesLanguage(language);
+
+        if(!repository.existsByName(name)){
+            throw new Validation(messages.getString("error.localNotExists"));
+        }
+
+        localRepository.deleteByName(name);
     }
 }

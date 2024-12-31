@@ -11,6 +11,8 @@ import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
@@ -24,7 +26,7 @@ public class ConsumerService{
     @Autowired
     private GroupRepository groupRepository;
 
-    public ConsumerDataComplete createVerify(ConsumerDataInput data, String language){
+    public ConsumerDataComplete create(ConsumerDataInput data, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(consumerRepository.existsByRa(data.ra())){
@@ -44,7 +46,22 @@ public class ConsumerService{
 
     }
 
-    public ConsumerDataComplete updateVerify(ConsumerDataEditInput data, String ra, String language){
+    public List<ConsumerDataComplete> getAll(Optional<String> group){
+        List<ConsumerDataComplete> listConsumers;
+
+        if(group.isPresent()){
+            listConsumers = consumerRepository.findAllByGroupName(group.get()).stream().map(ConsumerDataComplete::new).toList();
+
+        }
+
+        else{
+            listConsumers = consumerRepository.findAll().stream().map(ConsumerDataComplete::new).toList();
+        }
+
+        return listConsumers;
+    }
+
+    public ConsumerDataComplete update(ConsumerDataEditInput data, String ra, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(consumerRepository.existsByRa(ra)){
@@ -56,7 +73,7 @@ public class ConsumerService{
         }
     }
 
-    public void deleteVerify(String ra, String language){
+    public void delete(String ra, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
         if(!consumerRepository.existsByRa(ra)){
@@ -65,5 +82,15 @@ public class ConsumerService{
         else{
             consumerRepository.deleteByRa(ra);
         }
+    }
+
+    public ConsumerDataComplete getById(String ra, String language){
+        ResourceBundle messages = defineMessagesLanguage(language);
+
+        if(!consumerRepository.existsByRa(ra)){
+            throw new Validation(messages.getString("error.raDontExists"));
+        }
+
+        return new ConsumerDataComplete(consumerRepository.getReferenceByRa(ra));
     }
 }
