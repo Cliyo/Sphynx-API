@@ -17,10 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("locals")
-public class LocalController implements ControllerIN<LocalDataInput, LocalDataEditInput>{
-
-    @Autowired
-    private LocalRepository repository;
+public class LocalController{
 
     @Autowired
     private LocalService service;
