@@ -61,26 +61,26 @@ public class ConsumerService{
         return listConsumers;
     }
 
-    public ConsumerDataComplete update(ConsumerDataEditInput data, String ra, String language){
+    public ConsumerDataComplete update(ConsumerDataEditInput data, Long id, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
-        if(consumerRepository.existsByRa(ra)){
-            var consumer = consumerRepository.getReferenceByRa(ra);
+        if(consumerRepository.existsById(id)){
+            var consumer = consumerRepository.getReferenceById(id);
             consumer.actualizeData(data);
             return new ConsumerDataComplete(consumer);
         } else{
-            throw new Validation(messages.getString("error.raDontExists"));
+            throw new Validation(messages.getString("error.idDontExists"));
         }
     }
 
-    public void delete(String ra, String language){
+    public void delete(Long id, String language){
         ResourceBundle messages = defineMessagesLanguage(language);
 
-        if(!consumerRepository.existsByRa(ra)){
+        if(!consumerRepository.existsById(id)){
             throw new Validation(messages.getString("error.raDontExists"));
         }
         else{
-            consumerRepository.deleteByRa(ra);
+            consumerRepository.deleteById(id);
         }
     }
 

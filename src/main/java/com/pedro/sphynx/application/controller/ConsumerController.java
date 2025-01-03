@@ -37,19 +37,19 @@ public class ConsumerController{
 
     }
 
-    @PutMapping("/{ra}")
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity update(@PathVariable String ra, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
-        var consumerDto = service.update(data, ra, language);
+    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
+        var consumerDto = service.update(data, id, language);
         MessageDTO dto = messageService.createMessage(200, consumerDto, language);
 
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/{ra}")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String ra, @RequestHeader("Language") String language){
-        service.delete(ra, language);
+    public ResponseEntity delete(@PathVariable String id, @RequestHeader("Language") String language){
+        service.delete(Long.parseLong(id), language);
 
         return ResponseEntity.noContent().build();
     }
