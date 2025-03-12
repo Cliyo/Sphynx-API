@@ -11,6 +11,7 @@ import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -24,7 +25,7 @@ public class ConsumerService{
     @Autowired
     private GroupRepository groupRepository;
 
-    private ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
+    private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
     public ConsumerDataComplete create(ConsumerDataInput data){
         if(consumerRepository.existsByRa(data.ra())){
@@ -63,6 +64,16 @@ public class ConsumerService{
         if(consumerRepository.existsById(id)){
             var consumer = consumerRepository.getReferenceById(id);
             consumer.actualizeData(data);
+
+            if(data.group() != null){
+                if(!groupRepository.existsById(data.group())){
+                    throw new Validation(messages.getString("error.groupNotExists"));
+                }
+                consumer.setGroup(groupRepository.getReferenceById(data.group()));
+            }
+
+            consumer.setDtupdate(LocalDateTime.now());
+
             return new ConsumerDataComplete(consumer);
         } else{
             throw new Validation(messages.getString("error.idDontExists"));
