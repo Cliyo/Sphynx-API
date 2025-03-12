@@ -1,6 +1,7 @@
 package com.pedro.sphynx.infrastructure.exceptions;
 
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +14,13 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class ErrorExceptions {
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity entityNotFound(){
-        return ResponseEntity.notFound().build();
+    public ResponseEntity entityNotFound(EntityNotFoundException e){
+        return ResponseEntity.badRequest().body(new MessageDTO(400, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity entityExists(EntityExistsException e){
+        return ResponseEntity.badRequest().body(new MessageDTO(400, e.getMessage(), null));
     }
 
     @ExceptionHandler(NoSuchElementException.class)

@@ -4,8 +4,8 @@ import com.pedro.sphynx.application.dtos.group.GroupDataComplete;
 import com.pedro.sphynx.application.dtos.group.GroupDataEdit;
 import com.pedro.sphynx.application.dtos.group.GroupDataInput;
 import com.pedro.sphynx.infrastructure.entities.Group;
-import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.GroupRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,9 @@ public class GroupService {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
-
     public GroupDataComplete create(GroupDataInput data){
         if(repository.existsByName(data.name())){
-            throw new Validation(messages.getString("error.groupAlreadyExists"));
+            throw new EntityExistsException(messages.getString("error.groupAlreadyExists"));
         }
 
         Group group = new Group(data);
@@ -36,7 +35,11 @@ public class GroupService {
 
     public GroupDataComplete update(GroupDataEdit data, Integer id){
         if(!repository.existsById(id)){
-            throw new EntityNotFoundException(messages.getString("error.groupNotExists"));
+            throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
+        }
+
+        if(repository.existsByName(data.name())){
+            throw new EntityExistsException(messages.getString("error.groupAlreadyExists"));
         }
 
         Group group = repository.getReferenceById(id);
@@ -47,7 +50,7 @@ public class GroupService {
 
     public void delete(Integer id) {
         if(!repository.existsById(id)){
-            throw new EntityNotFoundException(messages.getString("error.groupNotExists"));
+            throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
         else{
             repository.deleteById(id);
@@ -57,7 +60,7 @@ public class GroupService {
 
     public GroupDataComplete getById(Integer id) {
         if(!repository.existsById(id)){
-            throw new EntityNotFoundException(messages.getString("error.groupNotExists"));
+            throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
         return new GroupDataComplete(repository.getReferenceById(id));

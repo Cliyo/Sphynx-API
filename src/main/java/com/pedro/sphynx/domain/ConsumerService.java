@@ -8,6 +8,8 @@ import com.pedro.sphynx.infrastructure.entities.Group;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.ConsumerRepository;
 import com.pedro.sphynx.infrastructure.repository.GroupRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,15 @@ public class ConsumerService{
 
     public ConsumerDataComplete create(ConsumerDataInput data){
         if(consumerRepository.existsByRa(data.ra())){
-            throw new Validation(messages.getString("error.raAlreadyExists"));
+            throw new EntityExistsException(messages.getString("error.raAlreadyExists"));
+        }
+
+        if(consumerRepository.existsByTag(data.tag())){
+            throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
         }
 
         if(!groupRepository.existsById(data.group())){
-            throw new Validation(messages.getString("error.groupNotExists"));
+            throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
         Group group = groupRepository.getReferenceById(data.group());
@@ -50,7 +56,6 @@ public class ConsumerService{
 
         if(group.isPresent()){
             listConsumers = consumerRepository.findAllByGroupName(group.get()).stream().map(ConsumerDataComplete::new).toList();
-
         }
 
         else{
@@ -61,28 +66,36 @@ public class ConsumerService{
     }
 
     public ConsumerDataComplete update(ConsumerDataEditInput data, Long id){
-        if(consumerRepository.existsById(id)){
-            var consumer = consumerRepository.getReferenceById(id);
-            consumer.actualizeData(data);
-
-            if(data.group() != null){
-                if(!groupRepository.existsById(data.group())){
-                    throw new Validation(messages.getString("error.groupNotExists"));
-                }
-                consumer.setGroup(groupRepository.getReferenceById(data.group()));
-            }
-
-            consumer.setDtupdate(LocalDateTime.now());
-
-            return new ConsumerDataComplete(consumer);
-        } else{
-            throw new Validation(messages.getString("error.idDontExists"));
+        if(!consumerRepository.existsById(id)) {
+            throw new EntityNotFoundException(messages.getString("error.idDontExists"));
         }
+
+        if(consumerRepository.existsByRa(data.ra())){
+            throw new EntityExistsException(messages.getString("error.raAlreadyExists"));
+        }
+
+        if(consumerRepository.existsByTag(data.tag())){
+            throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
+        }
+
+        var consumer = consumerRepository.getReferenceById(id);
+        consumer.actualizeData(data);
+
+        if(data.group() != null){
+            if(!groupRepository.existsById(data.group())){
+                throw new Validation(messages.getString("error.groupNotExists"));
+            }
+            consumer.setGroup(groupRepository.getReferenceById(data.group()));
+        }
+
+        consumer.setDtupdate(LocalDateTime.now());
+
+        return new ConsumerDataComplete(consumer);
     }
 
     public void delete(Long id){
         if(!consumerRepository.existsById(id)){
-            throw new Validation(messages.getString("error.raDontExists"));
+            throw new EntityNotFoundException(messages.getString("error.raDontExists"));
         }
         else{
             consumerRepository.deleteById(id);
@@ -91,7 +104,7 @@ public class ConsumerService{
 
     public ConsumerDataComplete getById(Long id){
         if(!consumerRepository.existsById(id)){
-            throw new Validation(messages.getString("error.raDontExists"));
+            throw new EntityNotFoundException(messages.getString("error.raDontExists"));
         }
 
         return new ConsumerDataComplete(consumerRepository.getReferenceById(id));
