@@ -6,5 +6,9 @@ create table if not exists consumers(
     group_id bigint not null,
     dtcreate TIMESTAMP  not null,
     dtupdate TIMESTAMP,
-    constraint fk_group_consumer_id foreign key (group_id) references permission_groups(id)
+    CONSTRAINT fk_group_consumer_id
+    FOREIGN KEY (group_id)
+    REFERENCES permission_groups(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
