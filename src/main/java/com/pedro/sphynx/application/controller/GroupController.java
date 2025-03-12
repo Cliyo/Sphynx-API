@@ -1,11 +1,11 @@
 package com.pedro.sphynx.application.controller;
 
+import com.pedro.sphynx.application.dtos.group.GroupDataEdit;
 import com.pedro.sphynx.application.dtos.message.MessageDTO;
 import com.pedro.sphynx.application.dtos.group.GroupDataComplete;
 import com.pedro.sphynx.application.dtos.group.GroupDataInput;
 import com.pedro.sphynx.domain.MessageService;
 import com.pedro.sphynx.domain.GroupService;
-import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +41,15 @@ public class GroupController {
         service.delete(Integer.parseInt(id));
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid GroupDataEdit data) {
+        var groupDto = service.update(data, Long.parseLong(id));
+        MessageDTO dto = messageService.createMessage(200, groupDto);
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping

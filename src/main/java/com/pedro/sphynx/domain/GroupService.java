@@ -1,10 +1,12 @@
 package com.pedro.sphynx.domain;
 
 import com.pedro.sphynx.application.dtos.group.GroupDataComplete;
+import com.pedro.sphynx.application.dtos.group.GroupDataEdit;
 import com.pedro.sphynx.application.dtos.group.GroupDataInput;
 import com.pedro.sphynx.infrastructure.entities.Group;
 import com.pedro.sphynx.infrastructure.exceptions.Validation;
 import com.pedro.sphynx.infrastructure.repository.GroupRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +34,20 @@ public class GroupService {
         return new GroupDataComplete(group);
     }
 
+    public GroupDataComplete update(GroupDataEdit data, Integer id){
+        if(!repository.existsById(id)){
+            throw new EntityNotFoundException(messages.getString("error.groupNotExists"));
+        }
+
+        Group group = repository.getReferenceById(id);
+        group.setName(data.name());
+
+        return new GroupDataComplete(group);
+    }
+
     public void delete(Integer id) {
         if(!repository.existsById(id)){
-            throw new Validation(messages.getString("error.groupNotExists"));
+            throw new EntityNotFoundException(messages.getString("error.groupNotExists"));
         }
         else{
             repository.deleteById(id);
@@ -44,7 +57,7 @@ public class GroupService {
 
     public GroupDataComplete getById(Integer id) {
         if(!repository.existsById(id)){
-            throw new Validation(messages.getString("error.groupNotExists"));
+            throw new EntityNotFoundException(messages.getString("error.groupNotExists"));
         }
 
         return new GroupDataComplete(repository.getReferenceById(id));
