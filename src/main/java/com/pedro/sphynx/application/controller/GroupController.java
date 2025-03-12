@@ -31,10 +31,6 @@ public class GroupController {
         return ResponseEntity.ok(dto);
     }
 
-    public ResponseEntity update(String id, GroupDataComplete data) {
-        return null;
-    }
-
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity delete(@PathVariable String id) {
@@ -46,7 +42,7 @@ public class GroupController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity update(@PathVariable String id, @RequestBody @Valid GroupDataEdit data) {
-        var groupDto = service.update(data, Long.parseLong(id));
+        var groupDto = service.update(data, Integer.parseInt(id));
         MessageDTO dto = messageService.createMessage(200, groupDto);
 
         return ResponseEntity.ok(dto);
