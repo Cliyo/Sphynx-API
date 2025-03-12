@@ -11,18 +11,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
-
 @Service
 public class GroupService {
 
     @Autowired
     private GroupRepository repository;
 
+    private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
-    public GroupDataComplete create(GroupDataInput data, String language){
-        ResourceBundle messages = defineMessagesLanguage(language);
 
+    public GroupDataComplete create(GroupDataInput data){
         if(repository.existsByName(data.name())){
             throw new Validation(messages.getString("error.groupAlreadyExists"));
         }
@@ -34,9 +32,7 @@ public class GroupService {
         return new GroupDataComplete(group);
     }
 
-    public void delete(Integer id, String language) {
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public void delete(Integer id) {
         if(!repository.existsById(id)){
             throw new Validation(messages.getString("error.groupNotExists"));
         }
@@ -46,9 +42,7 @@ public class GroupService {
 
     }
 
-    public GroupDataComplete getById(Integer id, String language) {
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public GroupDataComplete getById(Integer id) {
         if(!repository.existsById(id)){
             throw new Validation(messages.getString("error.groupNotExists"));
         }

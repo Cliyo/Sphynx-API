@@ -14,7 +14,6 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,8 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
-import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
 
 @Service
 public class AccessService {
@@ -44,10 +41,10 @@ public class AccessService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
+
     @Transactional
     public AccessDataComplete validateCreation(AccessDataInput data) {
-        ResourceBundle messages = defineMessagesLanguage(null);
-
         String macFormatted = data.mac().replaceAll("-", ":");
         String tag = data.tag();
 

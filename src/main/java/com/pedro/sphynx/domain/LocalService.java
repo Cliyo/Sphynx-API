@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
-
 @Service
 public class LocalService {
 
@@ -33,12 +31,13 @@ public class LocalService {
 
     @Autowired
     private LocalGroupRepository localGroupRepository;
+
     @Autowired
     private LocalRepository localRepository;
 
-    public LocalDataComplete create(LocalDataInput data, String language){
-        ResourceBundle messages = defineMessagesLanguage(language);
+    private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
+    public LocalDataComplete create(LocalDataInput data){
         if(repository.existsByName(data.name())){
             throw new Validation(messages.getString("error.localAlreadyExists"));
         }
@@ -65,9 +64,7 @@ public class LocalService {
         return new LocalDataComplete(local);
     }
 
-    public LocalDataComplete update(LocalDataEditInput data, String name, String language) {
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public LocalDataComplete update(LocalDataEditInput data, String name) {
         if(!repository.existsByName(data.mac())){
             Local local = repository.getReferenceByName(name);
 
@@ -93,9 +90,7 @@ public class LocalService {
         return localsWithGroups.entrySet().stream().map(entry -> new LocalGroupDataComplete(entry.getKey(), entry.getValue())).collect(Collectors.toList());
     }
 
-    public void deleteByName(String name, String language) {
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public void deleteByName(String name) {
         if(!repository.existsByName(name)){
             throw new Validation(messages.getString("error.localNotExists"));
         }

@@ -23,7 +23,7 @@ public class StatusController {
     public ResponseEntity online() {
         Map<String, String> objeto = new HashMap<>();
         objeto.put("message", "Testando conectividade");
-        MessageDTO dto = messageService.createMessage(200, objeto, null);
+        MessageDTO dto = messageService.createMessage(200, objeto);
         return ResponseEntity.ok(dto);
     }
 }

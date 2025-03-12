@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static com.pedro.sphynx.domain.utils.LanguageService.defineMessagesLanguage;
-
 @Service
 public class ConsumerService{
 
@@ -26,9 +24,9 @@ public class ConsumerService{
     @Autowired
     private GroupRepository groupRepository;
 
-    public ConsumerDataComplete create(ConsumerDataInput data, String language){
-        ResourceBundle messages = defineMessagesLanguage(language);
+    private ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
+    public ConsumerDataComplete create(ConsumerDataInput data){
         if(consumerRepository.existsByRa(data.ra())){
             throw new Validation(messages.getString("error.raAlreadyExists"));
         }
@@ -61,9 +59,7 @@ public class ConsumerService{
         return listConsumers;
     }
 
-    public ConsumerDataComplete update(ConsumerDataEditInput data, Long id, String language){
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public ConsumerDataComplete update(ConsumerDataEditInput data, Long id){
         if(consumerRepository.existsById(id)){
             var consumer = consumerRepository.getReferenceById(id);
             consumer.actualizeData(data);
@@ -73,9 +69,7 @@ public class ConsumerService{
         }
     }
 
-    public void delete(Long id, String language){
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public void delete(Long id){
         if(!consumerRepository.existsById(id)){
             throw new Validation(messages.getString("error.raDontExists"));
         }
@@ -84,9 +78,7 @@ public class ConsumerService{
         }
     }
 
-    public ConsumerDataComplete getById(Long id, String language){
-        ResourceBundle messages = defineMessagesLanguage(language);
-
+    public ConsumerDataComplete getById(Long id){
         if(!consumerRepository.existsById(id)){
             throw new Validation(messages.getString("error.raDontExists"));
         }

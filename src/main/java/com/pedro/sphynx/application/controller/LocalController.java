@@ -27,18 +27,18 @@ public class LocalController{
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid LocalDataInput data, @RequestHeader("Language") String language){
-        var local = service.create(data, language);
-        MessageDTO dto = messageService.createMessage(201, local, language);
+    public ResponseEntity create(@RequestBody @Valid LocalDataInput data){
+        var local = service.create(data);
+        MessageDTO dto = messageService.createMessage(201, local);
 
         return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/{name}")
     @Transactional
-    public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data, @RequestHeader("Language") String language){
-        var local = service.update(data, name, language);
-        MessageDTO dto = messageService.createMessage(200, local, language);
+    public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data){
+        var local = service.update(data, name);
+        MessageDTO dto = messageService.createMessage(200, local);
 
         return ResponseEntity.ok(dto);
     }
@@ -51,8 +51,8 @@ public class LocalController{
 
     @DeleteMapping("/{name}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String name, @RequestHeader("Language") String language){
-        service.deleteByName(name, language);
+    public ResponseEntity delete(@PathVariable String name){
+        service.deleteByName(name);
 
         return ResponseEntity.noContent().build();
     }

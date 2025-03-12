@@ -24,21 +24,21 @@ public class GroupController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid GroupDataInput data, @RequestHeader("Language") String language) {
-        var permission = service.create(data, language);
-        MessageDTO dto = messageService.createMessage(201, permission, language);
+    public ResponseEntity create(@RequestBody @Valid GroupDataInput data) {
+        var permission = service.create(data);
+        MessageDTO dto = messageService.createMessage(201, permission);
 
         return ResponseEntity.ok(dto);
     }
 
-    public ResponseEntity update(String id, GroupDataComplete data, String language) {
+    public ResponseEntity update(String id, GroupDataComplete data) {
         return null;
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String id, @RequestHeader("Language") String language) {
-        service.delete(Integer.parseInt(id), language);
+    public ResponseEntity delete(@PathVariable String id) {
+        service.delete(Integer.parseInt(id));
 
         return ResponseEntity.noContent().build();
     }
@@ -51,8 +51,8 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getById(@PathVariable String id, @RequestHeader("Language") String language) {
-        var permission = service.getById(Integer.parseInt(id), language);
+    public ResponseEntity getById(@PathVariable String id) {
+        var permission = service.getById(Integer.parseInt(id));
 
         return ResponseEntity.ok(permission);
     }

@@ -29,9 +29,9 @@ public class ConsumerController{
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data, @RequestHeader("Language") String language){
-        var consumerDto = service.create(data, language);
-        MessageDTO dto = messageService.createMessage(201, consumerDto, language);
+    public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data){
+        var consumerDto = service.create(data);
+        MessageDTO dto = messageService.createMessage(201, consumerDto);
 
         return ResponseEntity.ok(dto);
 
@@ -39,17 +39,17 @@ public class ConsumerController{
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid ConsumerDataEditInput data, @RequestHeader("Language") String language){
-        var consumerDto = service.update(data, id, language);
-        MessageDTO dto = messageService.createMessage(200, consumerDto, language);
+    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid ConsumerDataEditInput data){
+        var consumerDto = service.update(data, Long.parseLong(id));
+        MessageDTO dto = messageService.createMessage(200, consumerDto);
 
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String id, @RequestHeader("Language") String language){
-        service.delete(Long.parseLong(id), language);
+    public ResponseEntity delete(@PathVariable String id){
+        service.delete(Long.parseLong(id));
 
         return ResponseEntity.noContent().build();
     }
@@ -64,9 +64,9 @@ public class ConsumerController{
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getById(@PathVariable String id, @RequestHeader("Language") String language) {
+    public ResponseEntity getById(@PathVariable String id) {
 
-        var consumer = service.getById(Long.parseLong(id), language);
+        var consumer = service.getById(Long.parseLong(id));
 
         return ResponseEntity.ok(consumer);
     }

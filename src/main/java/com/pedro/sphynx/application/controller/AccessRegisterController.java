@@ -33,7 +33,7 @@ public class AccessRegisterController {
     public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
         AccessDataComplete accessDataComplete = service.validateCreation(data);
 
-        MessageDTO dto = messageService.createMessage(201, accessDataComplete, null);
+        MessageDTO dto = messageService.createMessage(201, accessDataComplete);
 
         return ResponseEntity.ok(dto);
     }
