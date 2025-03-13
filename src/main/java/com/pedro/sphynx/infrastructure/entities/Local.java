@@ -33,6 +33,6 @@ public class Local {
     }
 
     public void updateLocal(LocalDataEditInput data){
-        this.mac = data.mac();
+        this.name = data.name();
     }
 }

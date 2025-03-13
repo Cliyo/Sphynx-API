@@ -9,11 +9,11 @@ public record ConsumerDataInput(
         String name,
 
         @NotBlank
-        @Pattern(regexp="\\d{13}")
+        @Pattern(regexp="\\d{13}", message="RA inválido")
         String ra,
 
         @NotBlank
-        @Pattern(regexp="([A-Z]{2} \\d{1,2} ?)+")
+        @Pattern(regexp="^([A-Z0-9]{2,} ?)+$", message="Tag inválida")
         String tag,
 
         @NotNull
