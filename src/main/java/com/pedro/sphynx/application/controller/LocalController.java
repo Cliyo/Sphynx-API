@@ -36,8 +36,8 @@ public class LocalController{
 
     @PutMapping("/{name}")
     @Transactional
-    public ResponseEntity update(@PathVariable String name, @RequestBody @Valid LocalDataEditInput data){
-        var local = service.update(data, name);
+    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid LocalDataEditInput data){
+        var local = service.update(data, Integer.parseInt(id));
         MessageDTO dto = messageService.createMessage(200, local);
 
         return ResponseEntity.ok(dto);

@@ -12,6 +12,8 @@ import com.pedro.sphynx.infrastructure.repository.LocalGroupRepository;
 import com.pedro.sphynx.infrastructure.repository.LocalRepository;
 import com.pedro.sphynx.infrastructure.repository.GroupRepository;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,16 +41,16 @@ public class LocalService {
 
     public LocalDataComplete create(LocalDataInput data){
         if(repository.existsByName(data.name())){
-            throw new Validation(messages.getString("error.localAlreadyExists"));
+            throw new EntityExistsException(messages.getString("error.localAlreadyExists"));
         }
 
         if(repository.existsByMac(data.mac())){
-            throw new Validation(messages.getString("error.macAlreadyExists"));
+            throw new EntityExistsException(messages.getString("error.macAlreadyExists"));
         }
 
         for(int group : data.group()){
             if(!groupRepository.existsById(group)){
-                throw new Validation(messages.getString("error.groupNotExists"));
+                throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
             }
         }
 
@@ -64,9 +66,9 @@ public class LocalService {
         return new LocalDataComplete(local);
     }
 
-    public LocalDataComplete update(LocalDataEditInput data, String name) {
-        if(!repository.existsByName(data.mac())){
-            Local local = repository.getReferenceByName(name);
+    public LocalDataComplete update(LocalDataEditInput data, Integer id) {
+        if(!repository.existsById(Long.parseLong(id.toString()))){
+            Local local = repository.getReferenceById(Long.parseLong(id.toString()));
 
             local.updateLocal(data);
 
