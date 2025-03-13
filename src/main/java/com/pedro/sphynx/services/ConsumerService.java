@@ -52,7 +52,7 @@ public class ConsumerService{
 
     }
 
-    public List<ConsumerDataComplete> getAll(Optional<String> group){
+    public List<ConsumerDataComplete> getAll(){
         List<ConsumerDataComplete> listConsumers;
 
         listConsumers = consumerRepository.findAll()
@@ -69,11 +69,12 @@ public class ConsumerService{
             throw new EntityNotFoundException(messages.getString("error.idDontExists"));
         }
 
-        if(consumerRepository.existsByRa(data.ra())){
+        if(consumerRepository.existsByRaAndIdNot(data.ra(), id)){
+
             throw new EntityExistsException(messages.getString("error.raAlreadyExists"));
         }
 
-        if(consumerRepository.existsByTag(data.tag())){
+        if(consumerRepository.existsByTagAndIdNot(data.tag(), id)){
             throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
         }
 

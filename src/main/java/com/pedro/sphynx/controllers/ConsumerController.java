@@ -53,9 +53,9 @@ public class ConsumerController{
 
 
     @GetMapping
-    public ResponseEntity<MessageDTO> getAll(@RequestParam("group") Optional<String> group){
+    public ResponseEntity<MessageDTO> getAll(){
 
-        var listConsumers = service.getAll(group);
+        var listConsumers = service.getAll();
         MessageDTO messageDto = createMessageUtil.createMessage(200, listConsumers);
 
         return ResponseEntity.ok(messageDto);
