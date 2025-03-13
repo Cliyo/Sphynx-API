@@ -27,32 +27,34 @@ public class LocalController{
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid LocalDataInput data){
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid LocalDataInput data){
         var local = service.create(data);
-        MessageDTO dto = messageService.createMessage(201, local);
+        MessageDTO messageDTO = messageService.createMessage(201, local);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDTO);
     }
 
     @PutMapping("/{name}")
     @Transactional
-    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid LocalDataEditInput data){
+    public ResponseEntity<MessageDTO> update(@PathVariable String id, @RequestBody @Valid LocalDataEditInput data){
         var local = service.update(data, Integer.parseInt(id));
-        MessageDTO dto = messageService.createMessage(200, local);
+        MessageDTO messageDTO = messageService.createMessage(200, local);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<LocalGroupDataComplete>> getAll(){
+    public ResponseEntity<MessageDTO> getAll(){
         List<LocalGroupDataComplete> localsList = service.getAllLocalsWithGroups();
-        return ResponseEntity.ok(localsList);
+        MessageDTO messageDTO = messageService.createMessage(200, localsList);
+
+        return ResponseEntity.ok(messageDTO);
     }
 
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String name){
-        service.deleteByName(name);
+    public ResponseEntity delete(@PathVariable String id){
+        service.deleteById(Long.parseLong(id));
 
         return ResponseEntity.noContent().build();
     }

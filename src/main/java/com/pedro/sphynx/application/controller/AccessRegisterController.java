@@ -33,15 +33,16 @@ public class AccessRegisterController {
     public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
         AccessDataComplete accessDataComplete = service.validateCreation(data);
 
-        MessageDTO dto = messageService.createMessage(201, accessDataComplete);
+        MessageDTO messageDTO = messageService.createMessage(201, accessDataComplete);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<AccessDataComplete>> getAll(@RequestParam("ra") Optional<String> ra, @RequestParam("local") Optional<String> local, @RequestParam("date") Optional<String> date){
+    public ResponseEntity<MessageDTO> getAll(@RequestParam("ra") Optional<String> ra, @RequestParam("local") Optional<String> local, @RequestParam("date") Optional<String> date){
         List<AccessDataComplete> listAccess = service.getAllAccesses(ra, local, date);
+        MessageDTO messageDTO = messageService.createMessage(200, listAccess);
 
-        return ResponseEntity.ok(listAccess);
+        return ResponseEntity.ok(messageDTO);
     }
 }

@@ -136,6 +136,7 @@ public class AccessService {
                     .toList();
         }
 
+        System.out.println("acessos: " + listAccess);
         return listAccess;
     }
 }

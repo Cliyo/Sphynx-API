@@ -92,11 +92,11 @@ public class LocalService {
         return localsWithGroups.entrySet().stream().map(entry -> new LocalGroupDataComplete(entry.getKey(), entry.getValue())).collect(Collectors.toList());
     }
 
-    public void deleteByName(String name) {
-        if(!repository.existsByName(name)){
+    public void deleteById(Long id) {
+        if(!repository.existsById(id)){
             throw new Validation(messages.getString("error.localNotExists"));
         }
 
-        localRepository.deleteByName(name);
+        localRepository.deleteById(id);
     }
 }

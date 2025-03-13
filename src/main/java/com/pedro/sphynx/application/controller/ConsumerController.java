@@ -29,21 +29,21 @@ public class ConsumerController{
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid ConsumerDataInput data){
-        var consumerDto = service.create(data);
-        MessageDTO dto = messageService.createMessage(201, consumerDto);
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid ConsumerDataInput data){
+        ConsumerDataComplete consumerDto = service.create(data);
+        MessageDTO messageDto = messageService.createMessage(201, consumerDto);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDto);
 
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid ConsumerDataEditInput data){
+    public ResponseEntity<MessageDTO> update(@PathVariable String id, @RequestBody @Valid ConsumerDataEditInput data){
         var consumerDto = service.update(data, Long.parseLong(id));
-        MessageDTO dto = messageService.createMessage(200, consumerDto);
+        MessageDTO messageDto = messageService.createMessage(200, consumerDto);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDto);
     }
 
     @DeleteMapping("/{id}")
@@ -56,18 +56,20 @@ public class ConsumerController{
 
 
     @GetMapping
-    public ResponseEntity<List<ConsumerDataComplete>> getAll(@RequestParam("group") Optional<String> group){
+    public ResponseEntity<MessageDTO> getAll(@RequestParam("group") Optional<String> group){
 
         var listConsumers = service.getAll(group);
+        MessageDTO messageDto = messageService.createMessage(200, listConsumers);
 
-        return ResponseEntity.ok(listConsumers);
+        return ResponseEntity.ok(messageDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable String id) {
 
         var consumer = service.getById(Long.parseLong(id));
+        MessageDTO messageDTO = messageService.createMessage(200, consumer);
 
-        return ResponseEntity.ok(consumer);
+        return ResponseEntity.ok(messageDTO);
     }
 }

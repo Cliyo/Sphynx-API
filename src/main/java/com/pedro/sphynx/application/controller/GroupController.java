@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("groups")
 public class GroupController {
@@ -24,11 +26,11 @@ public class GroupController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid GroupDataInput data) {
-        var permission = service.create(data);
-        MessageDTO dto = messageService.createMessage(201, permission);
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid GroupDataInput data) {
+        GroupDataComplete permission = service.create(data);
+        MessageDTO messageDTO = messageService.createMessage(201, permission);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -41,24 +43,28 @@ public class GroupController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity update(@PathVariable String id, @RequestBody @Valid GroupDataEdit data) {
-        var groupDto = service.update(data, Integer.parseInt(id));
-        MessageDTO dto = messageService.createMessage(200, groupDto);
+    public ResponseEntity<MessageDTO> update(@PathVariable String id, @RequestBody @Valid GroupDataEdit data) {
+        GroupDataComplete groupDto = service.update(data, Integer.parseInt(id));
+        MessageDTO messageDTO = messageService.createMessage(200, groupDto);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(messageDTO);
     }
 
     @GetMapping
     public ResponseEntity getAll() {
-        var listPermissions = service.getAll();
+        List<GroupDataComplete> listPermissions = service.getAll();
 
-        return ResponseEntity.ok(listPermissions);
+        MessageDTO messageDTO = messageService.createMessage(200, listPermissions);
+
+        return ResponseEntity.ok(messageDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable String id) {
-        var permission = service.getById(Integer.parseInt(id));
+        GroupDataComplete permission = service.getById(Integer.parseInt(id));
 
-        return ResponseEntity.ok(permission);
+        MessageDTO messageDTO = messageService.createMessage(200, permission);
+
+        return ResponseEntity.ok(messageDTO);
     }
 }
