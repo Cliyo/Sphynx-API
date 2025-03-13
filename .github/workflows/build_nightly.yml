@@ -2,7 +2,7 @@ name: Nightly API builds
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
   
 jobs:
   build:
