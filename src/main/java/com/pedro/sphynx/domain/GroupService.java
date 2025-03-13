@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -67,6 +68,10 @@ public class GroupService {
     }
 
     public List<GroupDataComplete> getAll(){
-        return repository.findAll().stream().map(GroupDataComplete::new).toList();
+        return repository.findAll()
+                .stream()
+                .map(GroupDataComplete::new)
+                .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
+                .toList();
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -88,11 +89,19 @@ public class AccessService {
         List<AccessDataComplete> listAccess;
 
         if(ra.isPresent() && local.isEmpty() && date.isEmpty()){
-            listAccess = accessRepository.findAllByConsumerRa(ra.get()).stream().map(AccessDataComplete::new).toList();
+            listAccess = accessRepository.findAllByConsumerRa(ra.get())
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .sorted(Comparator.comparing(AccessDataComplete::id))
+                    .toList();
         }
 
         else if(ra.isEmpty() && local.isPresent() && date.isEmpty()){
-            listAccess = accessRepository.findAllByLocalName(local.get()).stream().map(AccessDataComplete::new).toList();
+            listAccess = accessRepository.findAllByLocalName(local.get())
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .sorted(Comparator.comparing(AccessDataComplete::id))
+                    .toList();
         }
 
         else if(ra.isEmpty() && local.isEmpty() && date.isPresent()){
@@ -100,7 +109,11 @@ public class AccessService {
             LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
             LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-            listAccess = accessRepository.findAllByDateBetween(dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
+            listAccess = accessRepository.findAllByDateBetween(dateTimeStart, dateTimeEnd)
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .sorted(Comparator.comparing(AccessDataComplete::id))
+                    .toList();
         }
 
         else if(ra.isPresent() &&  local.isPresent() && date.isPresent()){
@@ -108,11 +121,19 @@ public class AccessService {
             LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
             LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-            listAccess = accessRepository.findAllByConsumer_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd).stream().map(AccessDataComplete::new).toList();
+            listAccess = accessRepository.findAllByConsumer_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd)
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .sorted(Comparator.comparing(AccessDataComplete::id))
+                    .toList();
         }
 
         else{
-            listAccess = accessRepository.findAll().stream().map(AccessDataComplete::new).toList();
+            listAccess = accessRepository.findAll()
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .sorted(Comparator.comparing(AccessDataComplete::id))
+                    .toList();
         }
 
         return listAccess;

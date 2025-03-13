@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -54,13 +55,11 @@ public class ConsumerService{
     public List<ConsumerDataComplete> getAll(Optional<String> group){
         List<ConsumerDataComplete> listConsumers;
 
-        if(group.isPresent()){
-            listConsumers = consumerRepository.findAllByGroupName(group.get()).stream().map(ConsumerDataComplete::new).toList();
-        }
-
-        else{
-            listConsumers = consumerRepository.findAll().stream().map(ConsumerDataComplete::new).toList();
-        }
+        listConsumers = consumerRepository.findAll()
+                .stream()
+                .map(ConsumerDataComplete::new)
+                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                .toList();
 
         return listConsumers;
     }
