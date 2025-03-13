@@ -5,11 +5,14 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ErrorExceptions {
@@ -41,6 +44,26 @@ public class ErrorExceptions {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity sqlIntegrity(){
         return ResponseEntity.badRequest().body(new MessageDTO(400, "Exclusao nao autorizada.", null));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity methodArgumentNotValid(MethodArgumentNotValidException ex){
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        // Create error response
+        MessageDTO errorResponse = new MessageDTO(
+                400,
+                errors.toString(),
+                null
+        );
+
+        System.out.println(errors);
+
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
 }
