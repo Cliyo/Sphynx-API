@@ -74,4 +74,12 @@ public class GroupService {
                 .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
                 .toList();
     }
+
+    public List<GroupDataComplete> getAllByName(String name){
+        return repository.findAllByNameContaining(name)
+                .stream()
+                .map(GroupDataComplete::new)
+                .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
+                .toList();
+    }
 }

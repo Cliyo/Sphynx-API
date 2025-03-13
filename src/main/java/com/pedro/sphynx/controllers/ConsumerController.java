@@ -53,16 +53,16 @@ public class ConsumerController{
 
 
     @GetMapping
-    public ResponseEntity<MessageDTO> getAll(){
+    public ResponseEntity<MessageDTO> getAll(@RequestParam("ra") Optional<String> ra){
 
-        var listConsumers = service.getAll();
+        var listConsumers = ra.isPresent() ? service.getAllByRa(ra.get()) : service.getAll();
         MessageDTO messageDto = createMessageUtil.createMessage(200, listConsumers);
 
         return ResponseEntity.ok(messageDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getById(@PathVariable String id) {
+    public ResponseEntity<MessageDTO> getById(@PathVariable String id) {
 
         var consumer = service.getById(Long.parseLong(id));
         MessageDTO messageDTO = createMessageUtil.createMessage(200, consumer);

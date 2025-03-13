@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
+    List<Consumer> findAllByRaIsLike(String ra);
+
     boolean existsByTag(String tag);
 
     Consumer findByTag(String ra);

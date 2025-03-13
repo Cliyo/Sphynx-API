@@ -64,6 +64,18 @@ public class ConsumerService{
         return listConsumers;
     }
 
+    public List<ConsumerDataComplete> getAllByRa(String ra){
+        List<ConsumerDataComplete> listConsumers;
+
+        listConsumers = consumerRepository.findAllByRaIsLike(ra)
+                .stream()
+                .map(ConsumerDataComplete::new)
+                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                .toList();
+
+        return listConsumers;
+    }
+
     public ConsumerDataComplete update(ConsumerDataEditInput data, Long id){
         if(!consumerRepository.existsById(id)) {
             throw new EntityNotFoundException(messages.getString("error.idDontExists"));

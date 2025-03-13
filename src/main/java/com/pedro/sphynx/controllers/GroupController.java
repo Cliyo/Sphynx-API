@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("groups")
@@ -51,8 +52,8 @@ public class GroupController {
     }
 
     @GetMapping
-    public ResponseEntity getAll() {
-        List<GroupDataComplete> listPermissions = service.getAll();
+    public ResponseEntity<MessageDTO> getAll(@RequestParam Optional<String> name) {
+        List<GroupDataComplete> listPermissions = name.isPresent() ? service.getAllByName(name.get()) : service.getAll();
 
         MessageDTO messageDTO = createMessageUtil.createMessage(200, listPermissions);
 
@@ -60,7 +61,7 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getById(@PathVariable String id) {
+    public ResponseEntity<MessageDTO> getById(@PathVariable String id) {
         GroupDataComplete permission = service.getById(Integer.parseInt(id));
 
         MessageDTO messageDTO = createMessageUtil.createMessage(200, permission);
