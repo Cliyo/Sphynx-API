@@ -7,10 +7,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.pedro.sphynx.entities.User;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 @Service
 public class TokenService {
     public String generateToken(User user){
@@ -19,7 +15,6 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("API Sphynx")
                     .withSubject(user.getUser())
-                    .withExpiresAt(dtExpires())
                     .sign(algorithm);
 
         } catch(JWTCreationException exception){
@@ -38,9 +33,5 @@ public class TokenService {
         } catch(JWTVerificationException exception){
             throw new RuntimeException("Token JWT is not valid.");
         }
-    }
-
-    private Instant dtExpires(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
