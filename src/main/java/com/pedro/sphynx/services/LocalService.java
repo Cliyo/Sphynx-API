@@ -67,14 +67,14 @@ public class LocalService {
     }
 
     public LocalDataComplete update(LocalDataEditInput data, Integer id) {
-        if(!repository.existsById(Long.parseLong(id.toString()))){
+        if(repository.existsById(Long.parseLong(id.toString()))){
             Local local = repository.getReferenceById(Long.parseLong(id.toString()));
 
             local.updateLocal(data);
 
             return new LocalDataComplete(local);
         }
-        return null;
+        throw new EntityExistsException(messages.getString("error.localDontExists"));
     }
     
     public List<LocalGroupDataComplete> getAllLocalsWithGroups() {
@@ -90,6 +90,23 @@ public class LocalService {
         
                                                     //will convert the Map to and localGroupDataComplete object then to list
         return localsWithGroups.entrySet().stream().map(entry -> new LocalGroupDataComplete(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+    }
+
+    public LocalGroupDataComplete getById(Long id) {
+        if(!repository.existsById(id)){
+            throw new EntityNotFoundException(messages.getString("error.localNotExists"));
+        }
+
+        Local local = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(messages.getString("error.localDontExists")));
+
+        List<LocalGroup> localGroups = localGroupRepository.findByLocal(local);
+
+        List<Group> groups = localGroups.stream()
+                .map(LocalGroup::getGroup)
+                .collect(Collectors.toList());
+
+        return new LocalGroupDataComplete(local, groups);
     }
 
     public void deleteById(Long id) {

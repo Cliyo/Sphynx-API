@@ -33,10 +33,18 @@ public class LocalController{
         return ResponseEntity.ok(messageDTO);
     }
 
-    @PutMapping("/{name}")
+    @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<MessageDTO> update(@PathVariable String id, @RequestBody @Valid LocalDataEditInput data){
         var local = service.update(data, Integer.parseInt(id));
+        MessageDTO messageDTO = createMessageUtil.createMessage(200, local);
+
+        return ResponseEntity.ok(messageDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MessageDTO> getById(@PathVariable String id){
+        var local = service.getById(Long.parseLong(id));
         MessageDTO messageDTO = createMessageUtil.createMessage(200, local);
 
         return ResponseEntity.ok(messageDTO);
