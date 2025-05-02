@@ -48,7 +48,7 @@ public class LocalService {
             throw new EntityExistsException(messages.getString("error.macAlreadyExists"));
         }
 
-        for(int group : data.group()){
+        for(int group : data.groups()){
             if(!groupRepository.existsById(group)){
                 throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
             }
@@ -57,7 +57,7 @@ public class LocalService {
         Local local = new Local(data);
         repository.save(local);
 
-        for(int groupElement : data.group()){
+        for(int groupElement : data.groups()){
             Group group = groupRepository.getReferenceById(groupElement);
             LocalGroup localGroup = new LocalGroup(null, local, group);
             localGroupRepository.save(localGroup);

@@ -188,7 +188,6 @@ class DeviceFinder {
                 Thread.sleep(2000);
                 socket.receive(responsePacket);
                 String responseMessage = new String(responsePacket.getData(), 0, responsePacket.getLength());
-
                 List<String> device = new ArrayList<>();
                 try {
                     device = List.of(responseMessage.split(","));

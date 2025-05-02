@@ -14,5 +14,5 @@ public record LocalDataInput(
         @Pattern(regexp="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", message="MAC inválido")
         String mac,
 
-        @NotNull List<Integer> group) {
+        @NotNull List<Integer> groups) {
 }
