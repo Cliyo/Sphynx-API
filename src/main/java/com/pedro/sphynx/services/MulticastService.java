@@ -140,6 +140,10 @@ public class MulticastService {
         return finder.getDevices();
     }
 
+    public void pushDevice(List<String> device) {
+        finder.pushDevice(device);
+    }
+
 }
 
 @Service
@@ -172,6 +176,14 @@ class DeviceFinder {
 
     public List<List<String>> getDevices() {
         return devices;
+    }
+
+    public void pushDevice(List<String> device) {
+        if (!devices.contains(device)) {
+            devices.add(device);
+        } else {
+            devices.remove(device);
+        }
     }
 
     public void Finder(boolean auto) {
