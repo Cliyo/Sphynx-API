@@ -1,1 +1,1 @@
-alter table accessregisters add status bit;
+alter table accessregisters add status boolean;
