@@ -17,9 +17,19 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
 
     boolean existsByRa(String ra);
 
+    boolean existsByFingerprint(long fingerprint);
+
+    List<Consumer> findAllByFingerprint(long fingerprint);
+
+    Consumer findByFingerprint(long fingerprint);
+
     @Query("SELECT COUNT(c) > 0 FROM Consumer c WHERE c.ra = :ra AND c.id <> :excludeId")
     boolean existsByRaAndIdNot(@Param("ra") String ra, @Param("excludeId") Long excludeId);
 
     @Query("SELECT COUNT(c) > 0 FROM Consumer c WHERE c.tag = :tag AND c.id <> :excludeId")
     boolean existsByTagAndIdNot(@Param("tag") String tag, @Param("excludeId") Long excludeId);
+
+    @Query("SELECT COUNT(c) > 0 FROM Consumer c WHERE c.fingerprint = :tag AND c.id <> :excludeId")
+    boolean existsByFingerAndIdNot(@Param("fingerprint") String tag, @Param("excludeId") Long excludeId);
+
 }

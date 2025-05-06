@@ -1,7 +1,8 @@
 package com.pedro.sphynx.controllers;
 
 import com.pedro.sphynx.dtos.access.AccessDataComplete;
-import com.pedro.sphynx.dtos.access.AccessDataInput;
+import com.pedro.sphynx.dtos.access.AccessDataFingerprintInput;
+import com.pedro.sphynx.dtos.access.AccessDataTagInput;
 import com.pedro.sphynx.dtos.message.MessageDTO;
 import com.pedro.sphynx.services.AccessService;
 import com.pedro.sphynx.utils.CreateMessageUtil;
@@ -24,14 +25,26 @@ public class AccessRegisterController {
     @Autowired
     private CreateMessageUtil createMessageUtil;
 
-    @PostMapping
+    @PostMapping("/tag")
     @Transactional
-    public ResponseEntity create(@RequestBody @Valid AccessDataInput data){
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid AccessDataTagInput data){
+        System.out.println(data);
         AccessDataComplete accessDataComplete = service.validateCreation(data);
 
-        MessageDTO messageDTO = createMessageUtil.createMessage(201, accessDataComplete);
+        MessageDTO dto = createMessageUtil.createMessage(201, accessDataComplete);
 
-        return ResponseEntity.ok(messageDTO);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/fingerprint")
+    @Transactional
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid AccessDataFingerprintInput data){
+        System.out.println(data);
+        AccessDataComplete accessDataComplete = service.validateCreation(data);
+
+        MessageDTO dto = createMessageUtil.createMessage(201, accessDataComplete);
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping

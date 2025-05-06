@@ -1,7 +1,8 @@
 package com.pedro.sphynx.services;
 
 import com.pedro.sphynx.dtos.access.AccessDataComplete;
-import com.pedro.sphynx.dtos.access.AccessDataInput;
+import com.pedro.sphynx.dtos.access.AccessDataFingerprintInput;
+import com.pedro.sphynx.dtos.access.AccessDataTagInput;
 import com.pedro.sphynx.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.entities.Access;
@@ -48,7 +49,7 @@ public class AccessService {
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
     @Transactional
-    public AccessDataComplete validateCreation(AccessDataInput data) {
+    public AccessDataComplete validateCreation(AccessDataTagInput data) {
         String macFormatted = data.mac().replaceAll("-", ":");
         String tag = data.tag();
 
@@ -78,6 +79,44 @@ public class AccessService {
         return createAccess(consumer, local, true, null);
 
         
+    }
+
+    @Transactional
+    public AccessDataComplete validateCreation(AccessDataFingerprintInput data) {
+        String macFormatted = data.mac().replaceAll("-", ":");
+        long fingerprint = Integer.parseInt(data.fingerprint());
+
+        // byte[] fingerprintMatch = fingerprintService.matchFingerprint(fingerprint);
+
+        // if (fingerprintMatch == null) {
+        //     throw new Validation(messages.getString("error.tagDontExists"));
+        // }
+
+        if (!consumerRepository.existsByFingerprint(fingerprint)) {
+            throw new Validation(messages.getString("error.tagDontExists"));
+        }
+
+        ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByFingerprint(fingerprint));
+
+        if (!consumerRepository.existsByRa(consumer.ra())) {
+            throw new Validation(messages.getString("error.raDontExistsInConsumer"));
+        }
+
+        if (!localRepository.existsByMac(macFormatted)) {
+            throw new Validation(messages.getString("error.localDontExists"));
+        }
+
+        String consumerGroup = consumerRepository.findByFingerprint(fingerprint).getGroup().getName();
+        List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
+
+        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
+
+        if(!localGroups.contains(consumerGroup)){
+            return createAccess(consumer, local, false, null);
+        }
+
+        return createAccess(consumer, local, true, null);
+
     }
 
     private AccessDataComplete createAccess(ConsumerDataComplete consumer, LocalDataComplete local, boolean hasPermission, String errorMessage) {
