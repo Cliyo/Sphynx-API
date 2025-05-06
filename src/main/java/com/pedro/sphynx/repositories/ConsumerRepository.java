@@ -29,7 +29,7 @@ public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     @Query("SELECT COUNT(c) > 0 FROM Consumer c WHERE c.tag = :tag AND c.id <> :excludeId")
     boolean existsByTagAndIdNot(@Param("tag") String tag, @Param("excludeId") Long excludeId);
 
-    @Query("SELECT COUNT(c) > 0 FROM Consumer c WHERE c.fingerprint = :tag AND c.id <> :excludeId")
-    boolean existsByFingerAndIdNot(@Param("fingerprint") String tag, @Param("excludeId") Long excludeId);
+    @Query("SELECT COUNT(c) > 0 FROM Consumer c WHERE c.fingerprint = :fingerprint AND c.id <> :excludeId")
+    boolean existsByFingerAndIdNot(@Param("fingerprint") long fingerprint, @Param("excludeId") Long excludeId);
 
 }
