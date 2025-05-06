@@ -174,7 +174,6 @@ public class AccessService {
             listAccess = accessRepository.findAll()
                     .stream()
                     .map(AccessDataComplete::new)
-                    .sorted(Comparator.comparing(AccessDataComplete::id))
                     .toList();
         }
 
