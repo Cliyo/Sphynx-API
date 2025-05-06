@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("deviceFinder")
@@ -33,9 +34,10 @@ public class FinderController {
     }
 
     @PostMapping("push")
-    public ResponseEntity<List<List<String>>> pushDevices(List<String> device) {
-        multicastService.pushDevice(device);
-        List<List<String>> devices = multicastService.getDevices();
-        return ResponseEntity.ok(devices);
+    public void pushDevices(@RequestBody String device) {
+        System.out.println(device);
+        String[] deviceList = device.split(",");
+        List<String> deviceListString = List.of(deviceList);
+        multicastService.pushDevice(deviceListString);
     }
 }
