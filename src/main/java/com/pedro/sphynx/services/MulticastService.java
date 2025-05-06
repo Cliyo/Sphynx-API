@@ -179,21 +179,29 @@ class DeviceFinder {
     }
 
     public void pushDevice(List<String> device) {
-        if (!devices.contains(device)) {
-            devices.add(device);
-        } else {
-            devices.remove(device);
+        List<Local> locals = localRepository.findAll();
+
+        List<String> localsMacs = locals.stream().map(Local::getMac).toList();
+
+        if (device.size() > 1) {
+            if (!devices.contains(device) && !localsMacs.contains(device.get(1))) {
+                devices.add(device);
+            } else if (localsMacs.contains(device.get(1)) && devices.contains(device)) {
+                devices.remove(device);
+            }
         }
+
+        devices.forEach(d -> {
+            if (localsMacs.contains(d.get(1))) {
+                devices.remove(d);
+            }
+        });
     }
 
     public void Finder(boolean auto) {
         try {
             while (true) {
                 System.out.println("Starting finder Scan");
-
-                List<Local> locals = localRepository.findAll();
-
-                List<String> localsMacs = locals.stream().map(Local::getMac).toList();
 
                 socket.send(packet);
 
@@ -207,20 +215,7 @@ class DeviceFinder {
                     e.printStackTrace();
                 }
 
-                if (device.size() > 1) {
-                    if (!devices.contains(device) && !localsMacs.contains(device.get(1))) {
-                        devices.add(device);
-                    } else if (localsMacs.contains(device.get(1)) && devices.contains(device)) {
-                        devices.remove(device);
-                    }
-                }
-
-                System.out.println(device.toString());
-                devices.forEach(d -> {
-                    if (localsMacs.contains(d.get(1))) {
-                        devices.remove(d);
-                    }
-                });
+                pushDevice(device);
 
                 System.out.println("Devices found: " + devices);
 
