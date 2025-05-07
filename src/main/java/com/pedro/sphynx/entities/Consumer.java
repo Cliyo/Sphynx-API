@@ -29,6 +29,8 @@ public class Consumer {
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
+    private long fingerprint;
+
     public Consumer(ConsumerDataInput data, Group group){
         this.id = null;
         this.name = data.name();
@@ -37,6 +39,7 @@ public class Consumer {
         this.group = group;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
+        this.fingerprint = data.fingerprint();
     }
 
     public void actualizeData(ConsumerDataEditInput data) {
@@ -48,6 +51,10 @@ public class Consumer {
         }
         if(data.name() != null){
             this.name = data.name();
+        }
+        if(data.fingerprint() != 0L){
+            this.fingerprint = data.fingerprint();
+            this.dtupdate = LocalDateTime.now();
         }
     }
 }

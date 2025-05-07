@@ -9,6 +9,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,8 +137,12 @@ public class MulticastService {
         
     }
 
-    public List<List<String>> getDevices() {
+    public List<HashMap<String, Object>> getDevices() {
         return finder.getDevices();
+    }
+
+    public void pushDevice(HashMap<String, Object> device) {
+        finder.pushDevice(device);
     }
 
 }
@@ -151,7 +156,7 @@ class DeviceFinder {
     private byte[] buffer = new byte[1024];
     private DatagramPacket responsePacket;
 
-    public List<List<String>> devices = new ArrayList<>();
+    public List<HashMap<String, Object>> devices = new ArrayList<>();
 
     @Autowired
     private LocalRepository localRepository;
@@ -170,8 +175,27 @@ class DeviceFinder {
         this.socket = socket;
     }
 
-    public List<List<String>> getDevices() {
+    public List<HashMap<String, Object>> getDevices() {
         return devices;
+    }
+
+    public void pushDevice(HashMap<String, Object> device) {
+        List<Local> locals = localRepository.findAll();
+
+        List<String> localsMacs = locals.stream().map(Local::getMac).toList();
+
+        if (localsMacs.contains(device.get("mac"))) {
+            devices.remove(device);
+            device.put("registered", true);
+        } else {
+            device.put("registered", false);
+        }
+
+        if (devices.contains(device) || "Sphynx Device Finder".equals(device.get("ip"))) {
+            return;
+        } else {
+            devices.add(device);
+        }
     }
 
     public void Finder(boolean auto) {
@@ -179,36 +203,21 @@ class DeviceFinder {
             while (true) {
                 System.out.println("Starting finder Scan");
 
-                List<Local> locals = localRepository.findAll();
-
-                List<String> localsMacs = locals.stream().map(Local::getMac).toList();
-
                 socket.send(packet);
 
                 Thread.sleep(2000);
                 socket.receive(responsePacket);
                 String responseMessage = new String(responsePacket.getData(), 0, responsePacket.getLength());
-                List<String> device = new ArrayList<>();
+                HashMap<String, Object> device = new HashMap<>();
                 try {
-                    device = List.of(responseMessage.split(","));
+                    device.put("ip", responseMessage.split(",")[0]);
+                    device.put("mac", responseMessage.split(",")[1]);
+                    device.put("registered", false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if (device.size() > 1) {
-                    if (!devices.contains(device) && !localsMacs.contains(device.get(1))) {
-                        devices.add(device);
-                    } else if (localsMacs.contains(device.get(1)) && devices.contains(device)) {
-                        devices.remove(device);
-                    }
-                }
-
-                System.out.println(device.toString());
-                devices.forEach(d -> {
-                    if (localsMacs.contains(d.get(1))) {
-                        devices.remove(d);
-                    }
-                });
+                pushDevice(device);
 
                 System.out.println("Devices found: " + devices);
 

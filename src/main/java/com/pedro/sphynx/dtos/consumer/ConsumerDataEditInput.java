@@ -11,5 +11,7 @@ public record ConsumerDataEditInput(
         @Pattern(regexp="^([A-Z0-9]{2,} ?)+$", message="Tag inválida")
         String tag,
 
-        Integer group)
+        Integer group,
+        
+        long fingerprint)
 {}
