@@ -1,7 +1,7 @@
 create table if not exists consumers(
     id BIGSERIAL PRIMARY KEY,
     name varchar(255) not null,
-    ra varchar(255) not null UNIQUE,
+    ra varchar(255) UNIQUE,
     tag varchar(255) not null UNIQUE,
     group_id bigint not null,
     dtcreate TIMESTAMP  not null,
