@@ -5,9 +5,11 @@ import com.pedro.sphynx.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.dtos.consumer.ConsumerDataInput;
 import com.pedro.sphynx.entities.Consumer;
 import com.pedro.sphynx.entities.Group;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.exceptions.Validation;
 import com.pedro.sphynx.repositories.ConsumerRepository;
 import com.pedro.sphynx.repositories.GroupRepository;
+import com.pedro.sphynx.repositories.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Service
@@ -27,6 +28,9 @@ public class ConsumerService{
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
@@ -43,9 +47,14 @@ public class ConsumerService{
             throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
-        Group group = groupRepository.getReferenceById(data.group());
+        if(!userRepository.existsById(data.userId())){
+            throw new EntityNotFoundException(messages.getString("Usuario não existe"));
+        }
 
-        Consumer consumer = new Consumer(data, group);
+        Group group = groupRepository.getReferenceById(data.group());
+        User user = userRepository.getReferenceById(data.userId());
+
+        Consumer consumer = new Consumer(data, group, user);
         consumerRepository.save(consumer);
 
         return new ConsumerDataComplete(consumer);

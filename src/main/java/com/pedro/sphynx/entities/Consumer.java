@@ -2,6 +2,8 @@ package com.pedro.sphynx.entities;
 
 import com.pedro.sphynx.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.dtos.consumer.ConsumerDataInput;
+
+import com.pedro.sphynx.entities.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,17 +28,22 @@ public class Consumer {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
     private long fingerprint;
 
-    public Consumer(ConsumerDataInput data, Group group){
+    public Consumer(ConsumerDataInput data, Group group, User user){
         this.id = null;
         this.name = data.name();
         this.ra = data.ra();
         this.tag = data.tag();
         this.group = group;
+        this.user = user;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
         this.fingerprint = data.fingerprint();
