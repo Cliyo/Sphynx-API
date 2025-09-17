@@ -1,11 +1,13 @@
 package com.pedro.sphynx.controllers;
 
+import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.auth.UserDataLoginInput;
 import com.pedro.sphynx.dtos.auth.UserDataOutputLogin;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyOutput;
 import com.pedro.sphynx.services.TokenService;
+import com.pedro.sphynx.services.UserService;
 import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -28,6 +30,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private CreateMessageUtil createMessageUtil;
@@ -54,19 +59,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data) {
-        if (userRepository.existsByUser(data.user())) {
-            return ResponseEntity.badRequest().body(new MessageDTO(404, "User already exists", null));
-        }
-
-        if (userRepository.existsByRa(data.ra())) {
-            return ResponseEntity.badRequest().body(new MessageDTO(404, "RA already exists", null));
-        }
-
-        var user = new User(null, data.name(), data.ra(), data.isAdmin(), data.user(), data.password());
-        userRepository.save(user);
-
+        UserDataComplete user = userService.create(data);
         MessageDTO messageDto = createMessageUtil.createMessage(201, user);
-
         return ResponseEntity.ok().body(messageDto);
     }
 }

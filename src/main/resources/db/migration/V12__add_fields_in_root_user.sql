@@ -1,0 +1,1 @@
+UPDATE users SET name = 'Root User', is_admin = true, ra = '1234567890123' WHERE "user" = 'root@sphynx.com';
