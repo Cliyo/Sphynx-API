@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Service
@@ -34,7 +35,7 @@ public class ConsumerService{
 
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
-    public ConsumerDataComplete create(ConsumerDataInput data){
+    public ConsumerDataComplete create(ConsumerDataInput data, User loggedUser){
         if(consumerRepository.existsByRa(data.ra())){
             throw new EntityExistsException(messages.getString("error.raAlreadyExists"));
         }
@@ -47,12 +48,8 @@ public class ConsumerService{
             throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
-        if(!userRepository.existsById(data.userId())){
-            throw new EntityNotFoundException(messages.getString("Usuario não existe"));
-        }
-
         Group group = groupRepository.getReferenceById(data.group());
-        User user = userRepository.getReferenceById(data.userId());
+        User user = userRepository.getReferenceById(loggedUser.getId());
 
         Consumer consumer = new Consumer(data, group, user);
         consumerRepository.save(consumer);
@@ -61,26 +58,22 @@ public class ConsumerService{
 
     }
 
-    public List<ConsumerDataComplete> getAll(){
+    public List<ConsumerDataComplete> getAll(Optional<String> ra, User loggedUser){
         List<ConsumerDataComplete> listConsumers;
 
-        listConsumers = consumerRepository.findAll()
+        if (ra.isPresent()) {
+            listConsumers = consumerRepository.findAllByRaIsLikeAndUserId(ra.get(), loggedUser.getId())
                 .stream()
                 .map(ConsumerDataComplete::new)
                 .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
                 .toList();
-
-        return listConsumers;
-    }
-
-    public List<ConsumerDataComplete> getAllByRa(String ra){
-        List<ConsumerDataComplete> listConsumers;
-
-        listConsumers = consumerRepository.findAllByRaIsLike(ra)
+        } else {
+            listConsumers = consumerRepository.findAllByUserId(loggedUser.getId())
                 .stream()
                 .map(ConsumerDataComplete::new)
                 .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
                 .toList();
+        }
 
         return listConsumers;
     }
@@ -91,7 +84,6 @@ public class ConsumerService{
         }
 
         if(consumerRepository.existsByRaAndIdNot(data.ra(), id)){
-
             throw new EntityExistsException(messages.getString("error.raAlreadyExists"));
         }
 

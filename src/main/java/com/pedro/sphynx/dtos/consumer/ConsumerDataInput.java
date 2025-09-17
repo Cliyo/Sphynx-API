@@ -16,9 +16,6 @@ public record ConsumerDataInput(
         String tag,
 
         @NotNull
-        Long userId,
-
-        @NotNull
         Integer group,
         
         long fingerprint){
