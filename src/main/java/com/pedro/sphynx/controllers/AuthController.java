@@ -6,10 +6,10 @@ import com.pedro.sphynx.dtos.auth.UserDataOutputLogin;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyOutput;
+import com.pedro.sphynx.services.AuthService;
 import com.pedro.sphynx.services.TokenService;
 import com.pedro.sphynx.services.UserService;
 import com.pedro.sphynx.entities.User;
-import com.pedro.sphynx.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +29,16 @@ public class AuthController {
     private TokenService tokenService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     @Autowired
     private CreateMessageUtil createMessageUtil;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid UserDataLoginInput data){
+    public ResponseEntity<UserDataOutputLogin> login(@RequestBody @Valid UserDataLoginInput data){
         var token = new UsernamePasswordAuthenticationToken(data.user(), data.password());
         var auth = manager.authenticate(token);
         
@@ -49,17 +49,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity verify(@RequestBody @Valid UserDataVerifyInput data){
-        String subject = tokenService.getSubject(data.token());
-
-        if(userRepository.existsByUser(subject)){
-
-            User user = (User) userRepository.findByUser(subject);
-
-            return ResponseEntity.ok(new UserDataVerifyOutput(data.token(), user.isAdmin(), true));
-        } else{
-            return ResponseEntity.ok(new UserDataVerifyOutput(data.token(), false, false));
-        }
+    public ResponseEntity<UserDataVerifyOutput> verify(@RequestBody @Valid UserDataVerifyInput data){
+        return ResponseEntity.ok(authService.verifyToken(data));
     }
 
     @PostMapping("/register")

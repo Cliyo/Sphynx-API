@@ -3,7 +3,6 @@ package com.pedro.sphynx.entities;
 import com.pedro.sphynx.dtos.consumer.ConsumerDataEditInput;
 import com.pedro.sphynx.dtos.consumer.ConsumerDataInput;
 
-import com.pedro.sphynx.entities.User;
 import jakarta.persistence.*;
 import lombok.*;
 

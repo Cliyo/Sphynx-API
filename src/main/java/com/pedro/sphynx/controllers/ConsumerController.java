@@ -45,7 +45,7 @@ public class ConsumerController{
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String id){
+    public ResponseEntity<Void> delete(@PathVariable String id){
         service.delete(Long.parseLong(id));
 
         return ResponseEntity.noContent().build();

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.repositories.UserRepository;
 
 import jakarta.persistence.EntityExistsException;
@@ -25,6 +26,10 @@ public class UserService {
 
         var user = userRepository.save(new com.pedro.sphynx.entities.User(null, data.name(), data.ra(), data.isAdmin(), data.user(), data.password()));
         return new UserDataComplete(user);
+    }
+
+    public User getByUser(String user) {
+        return (User) userRepository.findByUser(user);
     }
     
 }

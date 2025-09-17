@@ -20,7 +20,7 @@ public class StatusController {
     private CreateMessageUtil createMessageUtil;
 
     @GetMapping
-    public ResponseEntity online() {
+    public ResponseEntity<MessageDTO> online() {
         Map<String, String> objeto = new HashMap<>();
         objeto.put("message", "Testando conectividade");
         MessageDTO dto = createMessageUtil.createMessage(200, objeto);

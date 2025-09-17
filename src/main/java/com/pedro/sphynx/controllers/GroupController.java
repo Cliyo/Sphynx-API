@@ -36,7 +36,7 @@ public class GroupController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(Integer.parseInt(id));
 
         return ResponseEntity.noContent().build();

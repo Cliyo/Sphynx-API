@@ -60,7 +60,7 @@ public class LocalController{
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity delete(@PathVariable String id){
+    public ResponseEntity<Void> delete(@PathVariable String id){
         service.deleteById(Long.parseLong(id));
 
         return ResponseEntity.noContent().build();

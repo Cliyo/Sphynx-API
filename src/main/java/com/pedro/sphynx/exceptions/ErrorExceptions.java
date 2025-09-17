@@ -17,37 +17,37 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ErrorExceptions {
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity entityNotFound(EntityNotFoundException e){
+    public ResponseEntity<MessageDTO> entityNotFound(EntityNotFoundException e){
         return ResponseEntity.badRequest().body(new MessageDTO(400, e.getMessage(), null));
     }
 
     @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity entityExists(EntityExistsException e){
+    public ResponseEntity<MessageDTO> entityExists(EntityExistsException e){
         return ResponseEntity.badRequest().body(new MessageDTO(400, e.getMessage(), null));
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity noSuchElement(){
+    public ResponseEntity<Void> noSuchElement(){
         return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(Validation.class)
-    public ResponseEntity validation(Validation e){
+    public ResponseEntity<MessageDTO> validation(Validation e){
         return ResponseEntity.badRequest().body(new MessageDTO(400, e.getMessage(), null));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity auth(UsernameNotFoundException e){
+    public ResponseEntity<MessageDTO> auth(UsernameNotFoundException e){
         return ResponseEntity.status(401).body(new MessageDTO(401, "Usuario ou senha incorretos.", null));
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity sqlIntegrity(){
+    public ResponseEntity<MessageDTO> sqlIntegrity(){
         return ResponseEntity.badRequest().body(new MessageDTO(400, "Exclusao nao autorizada.", null));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity methodArgumentNotValid(MethodArgumentNotValidException ex){
+    public ResponseEntity<MessageDTO> methodArgumentNotValid(MethodArgumentNotValidException ex){
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
