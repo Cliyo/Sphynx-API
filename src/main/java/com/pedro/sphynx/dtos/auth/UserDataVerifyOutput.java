@@ -1,4 +1,4 @@
 package com.pedro.sphynx.dtos.auth;
 
-public record UserDataVerifyOutput(String token, Boolean result) {
+public record UserDataVerifyOutput(String token, Boolean isAdmin, Boolean result) {
 }

@@ -30,8 +30,8 @@ public class SecurityConfigurations {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(req -> {
                 req.requestMatchers("/online").permitAll();
-                req.requestMatchers("/login").permitAll();
-                req.requestMatchers("/login/verify").permitAll();
+                req.requestMatchers("/auth/login").permitAll();
+                req.requestMatchers("/auth/login/verify").permitAll();
                 req.requestMatchers("/accessRegisters/tag").permitAll();
                 req.requestMatchers("/accessRegisters/fingerprint").permitAll();
                 req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();

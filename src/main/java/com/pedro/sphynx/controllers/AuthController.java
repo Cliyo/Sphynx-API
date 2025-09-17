@@ -41,9 +41,11 @@ public class AuthController {
     public ResponseEntity login(@RequestBody @Valid UserDataLoginInput data){
         var token = new UsernamePasswordAuthenticationToken(data.user(), data.password());
         var auth = manager.authenticate(token);
-        var jwtToken = tokenService.generateToken((User) auth.getPrincipal());
+        
+        User authenticatedUser = (User) auth.getPrincipal();
+        var jwtToken = tokenService.generateToken(authenticatedUser);
 
-        return ResponseEntity.ok(new UserDataOutputLogin(jwtToken));
+        return ResponseEntity.ok(new UserDataOutputLogin(jwtToken, authenticatedUser.isAdmin()));
     }
 
     @PostMapping("/verify")
@@ -51,9 +53,12 @@ public class AuthController {
         String subject = tokenService.getSubject(data.token());
 
         if(userRepository.existsByUser(subject)){
-            return ResponseEntity.ok(new UserDataVerifyOutput(data.token(), true));
+
+            User user = (User) userRepository.findByUser(subject);
+
+            return ResponseEntity.ok(new UserDataVerifyOutput(data.token(), user.isAdmin(), true));
         } else{
-            return ResponseEntity.ok(new UserDataVerifyOutput(data.token(), false));
+            return ResponseEntity.ok(new UserDataVerifyOutput(data.token(), false, false));
         }
     }
 
