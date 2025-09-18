@@ -24,9 +24,14 @@ public class Group {
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Group(GroupDataInput data){
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Group(GroupDataInput data, User user){
         this.id = null;
         this.name = data.name();
+        this.user = user;
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }

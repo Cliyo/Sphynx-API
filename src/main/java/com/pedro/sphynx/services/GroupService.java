@@ -4,6 +4,7 @@ import com.pedro.sphynx.dtos.group.GroupDataComplete;
 import com.pedro.sphynx.dtos.group.GroupDataEdit;
 import com.pedro.sphynx.dtos.group.GroupDataInput;
 import com.pedro.sphynx.entities.Group;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.repositories.GroupRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,12 +23,12 @@ public class GroupService {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
-    public GroupDataComplete create(GroupDataInput data){
+    public GroupDataComplete create(GroupDataInput data, User user){
         if(repository.existsByName(data.name())){
             throw new EntityExistsException(messages.getString("error.groupAlreadyExists"));
         }
 
-        Group group = new Group(data);
+        Group group = new Group(data, user);
 
         repository.save(group);
 

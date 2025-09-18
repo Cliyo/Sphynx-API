@@ -7,6 +7,7 @@ import com.pedro.sphynx.dtos.localGroup.LocalGroupDataComplete;
 import com.pedro.sphynx.entities.Group;
 import com.pedro.sphynx.entities.Local;
 import com.pedro.sphynx.entities.LocalGroup;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.exceptions.Validation;
 import com.pedro.sphynx.repositories.LocalGroupRepository;
 import com.pedro.sphynx.repositories.LocalRepository;
@@ -39,7 +40,7 @@ public class LocalService {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
-    public LocalDataComplete create(LocalDataInput data){
+    public LocalDataComplete create(LocalDataInput data, User user){
         if(repository.existsByName(data.name())){
             throw new EntityExistsException(messages.getString("error.localAlreadyExists"));
         }
@@ -54,7 +55,7 @@ public class LocalService {
             }
         }
 
-        Local local = new Local(data);
+        Local local = new Local(data, user);
         repository.save(local);
 
         for(int groupElement : data.groups()){

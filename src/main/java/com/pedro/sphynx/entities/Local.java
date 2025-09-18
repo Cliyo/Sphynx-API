@@ -25,10 +25,15 @@ public class Local {
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    public Local(LocalDataInput data){
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Local(LocalDataInput data, User user){
         this.name = data.name();
         this.mac = data.mac();
         this.dtcreate = LocalDateTime.now();
+        this.user = user;
         this.dtupdate = null;
     }
 

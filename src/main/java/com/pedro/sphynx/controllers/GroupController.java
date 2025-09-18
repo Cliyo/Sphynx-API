@@ -2,6 +2,7 @@ package com.pedro.sphynx.controllers;
 
 import com.pedro.sphynx.dtos.group.GroupDataEdit;
 import com.pedro.sphynx.dtos.message.MessageDTO;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.dtos.group.GroupDataComplete;
 import com.pedro.sphynx.dtos.group.GroupDataInput;
 import com.pedro.sphynx.utils.CreateMessageUtil;
@@ -9,6 +10,8 @@ import com.pedro.sphynx.services.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +30,8 @@ public class GroupController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<MessageDTO> create(@RequestBody @Valid GroupDataInput data) {
-        GroupDataComplete permission = service.create(data);
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid GroupDataInput data, @AuthenticationPrincipal UserDetails user) {
+        GroupDataComplete permission = service.create(data, (User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(201, permission);
 
         return ResponseEntity.ok(messageDTO);

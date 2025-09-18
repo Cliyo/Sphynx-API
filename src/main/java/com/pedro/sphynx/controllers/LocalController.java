@@ -4,11 +4,14 @@ import com.pedro.sphynx.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.dtos.local.LocalDataInput;
 import com.pedro.sphynx.dtos.localGroup.LocalGroupDataComplete;
 import com.pedro.sphynx.dtos.message.MessageDTO;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.services.LocalService;
 import com.pedro.sphynx.utils.CreateMessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +29,8 @@ public class LocalController{
 
     @PostMapping
     @Transactional
-    public ResponseEntity<MessageDTO> create(@RequestBody @Valid LocalDataInput data){
-        var local = service.create(data);
+    public ResponseEntity<MessageDTO> create(@RequestBody @Valid LocalDataInput data, @AuthenticationPrincipal UserDetails user){
+        var local = service.create(data, (User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(201, local);
 
         return ResponseEntity.ok(messageDTO);
