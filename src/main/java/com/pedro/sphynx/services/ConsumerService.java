@@ -61,18 +61,34 @@ public class ConsumerService{
     public List<ConsumerDataComplete> getAll(Optional<String> ra, User loggedUser){
         List<ConsumerDataComplete> listConsumers;
 
-        if (ra.isPresent()) {
-            listConsumers = consumerRepository.findAllByRaIsLikeAndUserId(ra.get(), loggedUser.getId())
-                .stream()
-                .map(ConsumerDataComplete::new)
-                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
-                .toList();
+        if (loggedUser.isAdmin()) {
+            if (ra.isPresent()) {
+                listConsumers = consumerRepository.findAllByRaIsLike(ra.get())
+                    .stream()
+                    .map(ConsumerDataComplete::new)
+                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                    .toList();
+            } else {
+                listConsumers = consumerRepository.findAll()
+                    .stream()
+                    .map(ConsumerDataComplete::new)
+                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                    .toList();
+            }
         } else {
-            listConsumers = consumerRepository.findAllByUserId(loggedUser.getId())
-                .stream()
-                .map(ConsumerDataComplete::new)
-                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
-                .toList();
+            if (ra.isPresent()) {
+                listConsumers = consumerRepository.findAllByRaIsLikeAndUserId(ra.get(), loggedUser.getId())
+                    .stream()
+                    .map(ConsumerDataComplete::new)
+                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                    .toList();
+            } else {
+                listConsumers = consumerRepository.findAllByUserId(loggedUser.getId())
+                    .stream()
+                    .map(ConsumerDataComplete::new)
+                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                    .toList();
+            }
         }
 
         return listConsumers;
