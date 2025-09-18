@@ -59,4 +59,11 @@ public class AuthController {
         MessageDTO messageDto = createMessageUtil.createMessage(201, user);
         return ResponseEntity.ok().body(messageDto);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

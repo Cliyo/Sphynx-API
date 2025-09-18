@@ -31,5 +31,13 @@ public class UserService {
     public User getByUser(String user) {
         return (User) userRepository.findByUser(user);
     }
+
+    public void delete(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityExistsException("User not found");
+        }
+
+        userRepository.deleteById(id);
+    }
     
 }
