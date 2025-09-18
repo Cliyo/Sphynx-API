@@ -78,8 +78,8 @@ public class LocalService {
         throw new EntityExistsException(messages.getString("error.localDontExists"));
     }
     
-    public List<LocalGroupDataComplete> getAllLocalsWithGroups() {
-        List<LocalGroup> localGroups = localGroupRepository.findAll();
+    public List<LocalGroupDataComplete> getAllLocalsWithGroups(User user) {
+        List<LocalGroup> localGroups = localGroupRepository.findAllByUserId(user.getId());
 
         //mapping Local entity and Group entity based on the localGroups list
         //will group a local with all its permission_groups without duplicates
@@ -89,7 +89,7 @@ public class LocalService {
                 Collectors.mapping(LocalGroup::getGroup,Collectors.toList())
             ));
         
-                                                    //will convert the Map to and localGroupDataComplete object then to list
+        //will convert the Map to and localGroupDataComplete object then to list
         return localsWithGroups.entrySet().stream().map(entry -> new LocalGroupDataComplete(entry.getKey(), entry.getValue())).collect(Collectors.toList());
     }
 

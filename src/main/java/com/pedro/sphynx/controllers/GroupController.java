@@ -55,8 +55,8 @@ public class GroupController {
     }
 
     @GetMapping
-    public ResponseEntity<MessageDTO> getAll(@RequestParam Optional<String> name) {
-        List<GroupDataComplete> listPermissions = name.isPresent() ? service.getAllByName(name.get()) : service.getAll();
+    public ResponseEntity<MessageDTO> getAll(@RequestParam Optional<String> name, @AuthenticationPrincipal UserDetails user) {
+        List<GroupDataComplete> listPermissions = name.isPresent() ? service.getAllByName(name.get(), (User) user) : service.getAll((User) user);
 
         MessageDTO messageDTO = createMessageUtil.createMessage(200, listPermissions);
 

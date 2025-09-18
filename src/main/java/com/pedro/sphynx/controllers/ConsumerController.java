@@ -59,7 +59,7 @@ public class ConsumerController{
     public ResponseEntity<MessageDTO> getAll(@RequestParam("ra") Optional<String> ra, @AuthenticationPrincipal UserDetails userDetails){
         User loggedUser = (User) userDetails;
 
-        var listConsumers = service.getAll(ra, loggedUser);
+        var listConsumers = ra.isPresent() ? service.getAllByRa(ra.get(), loggedUser) : service.getAll(loggedUser);
         MessageDTO messageDto = createMessageUtil.createMessage(200, listConsumers);
 
         return ResponseEntity.ok(messageDto);

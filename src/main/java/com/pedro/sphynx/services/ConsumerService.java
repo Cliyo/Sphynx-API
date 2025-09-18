@@ -58,40 +58,46 @@ public class ConsumerService{
 
     }
 
-    public List<ConsumerDataComplete> getAll(Optional<String> ra, User loggedUser){
+    public List<ConsumerDataComplete> getAll(User loggedUser){
         List<ConsumerDataComplete> listConsumers;
 
         if (loggedUser.isAdmin()) {
-            if (ra.isPresent()) {
-                listConsumers = consumerRepository.findAllByRaIsLike(ra.get())
-                    .stream()
-                    .map(ConsumerDataComplete::new)
-                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
-                    .toList();
-            } else {
-                listConsumers = consumerRepository.findAll()
-                    .stream()
-                    .map(ConsumerDataComplete::new)
-                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
-                    .toList();
-            }
+            listConsumers = consumerRepository.findAll()
+                .stream()
+                .map(ConsumerDataComplete::new)
+                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                .toList();
+            
         } else {
-            if (ra.isPresent()) {
-                listConsumers = consumerRepository.findAllByRaIsLikeAndUserId(ra.get(), loggedUser.getId())
-                    .stream()
-                    .map(ConsumerDataComplete::new)
-                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
-                    .toList();
-            } else {
-                listConsumers = consumerRepository.findAllByUserId(loggedUser.getId())
-                    .stream()
-                    .map(ConsumerDataComplete::new)
-                    .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
-                    .toList();
-            }
+            listConsumers = consumerRepository.findAllByUserId(loggedUser.getId())
+                .stream()
+                .map(ConsumerDataComplete::new)
+                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                .toList();
         }
 
         return listConsumers;
+    }
+
+    public List<ConsumerDataComplete> getAllByRa(String ra, User loggedUser){
+        List<ConsumerDataComplete> listConsumers;
+
+        if (loggedUser.isAdmin()) {
+            listConsumers = consumerRepository.findAllByRaIsLike(ra)
+                .stream()
+                .map(ConsumerDataComplete::new)
+                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                .toList();
+        } else {
+            listConsumers = consumerRepository.findAllByRaIsLikeAndUserId(ra, loggedUser.getId())
+                .stream()
+                .map(ConsumerDataComplete::new)
+                .sorted(Comparator.comparing(ConsumerDataComplete::id).reversed())
+                .toList();
+        }
+
+        return listConsumers;
+        
     }
 
     public ConsumerDataComplete update(ConsumerDataEditInput data, Long id){

@@ -54,8 +54,8 @@ public class LocalController{
     }
 
     @GetMapping
-    public ResponseEntity<MessageDTO> getAll(){
-        List<LocalGroupDataComplete> localsList = service.getAllLocalsWithGroups();
+    public ResponseEntity<MessageDTO> getAll(@AuthenticationPrincipal UserDetails user){
+        List<LocalGroupDataComplete> localsList = service.getAllLocalsWithGroups((User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(200, localsList);
 
         return ResponseEntity.ok(messageDTO);

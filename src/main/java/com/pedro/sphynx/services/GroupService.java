@@ -68,18 +68,18 @@ public class GroupService {
         return new GroupDataComplete(repository.getReferenceById(id));
     }
 
-    public List<GroupDataComplete> getAll(){
-        return repository.findAll()
+    public List<GroupDataComplete> getAll(User user){
+        return repository.findAllByUserId(user.getId())
                 .stream()
-                .map(GroupDataComplete::new)
+                .map(group -> new GroupDataComplete(group))
                 .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
                 .toList();
     }
 
-    public List<GroupDataComplete> getAllByName(String name){
-        return repository.findAllByNameContaining(name)
+    public List<GroupDataComplete> getAllByName(String name, User user){
+        return repository.findAllByNameContainingAndUserId(name, user.getId())
                 .stream()
-                .map(GroupDataComplete::new)
+                .map(group -> new GroupDataComplete(group))
                 .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
                 .toList();
     }
