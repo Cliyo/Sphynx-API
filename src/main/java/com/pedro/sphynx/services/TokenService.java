@@ -15,6 +15,8 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("API Sphynx")
                     .withSubject(user.getUser())
+                    .withClaim("name", user.getName())
+                    .withClaim("isAdmin", user.isAdmin())
                     .sign(algorithm);
 
         } catch(JWTCreationException exception){

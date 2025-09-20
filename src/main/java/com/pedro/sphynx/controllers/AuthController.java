@@ -49,7 +49,7 @@ public class AuthController {
         User authenticatedUser = (User) auth.getPrincipal();
         var jwtToken = tokenService.generateToken(authenticatedUser);
 
-        return ResponseEntity.ok(new UserDataOutputLogin(jwtToken, authenticatedUser.isAdmin()));
+        return ResponseEntity.ok(new UserDataOutputLogin(jwtToken));
     }
 
     @PostMapping("/verify")
