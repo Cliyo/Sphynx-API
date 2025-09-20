@@ -12,10 +12,6 @@ public record UserDataRegisterInput(
 
         @NotBlank 
         String 
-        password,
-
-        @NotBlank 
-        String 
         name,
 
         @NotBlank

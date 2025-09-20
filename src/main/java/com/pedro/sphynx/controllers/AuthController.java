@@ -60,7 +60,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data) {
         UserDataRegisterInput processedData = 
-            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.password(), data.name(), data.ra(), false);
+            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), false);
 
         UserDataComplete user = userService.create(processedData);
         MessageDTO messageDto = createMessageUtil.createMessage(201, user);

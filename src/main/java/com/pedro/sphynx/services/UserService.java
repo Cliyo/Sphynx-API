@@ -33,7 +33,9 @@ public class UserService {
             throw new EntityExistsException("RA already exists");
         }
 
-        String encryptedPassword = passwordEncoder.encode(data.password());
+        String password = "sphynx@" + data.ra();
+
+        String encryptedPassword = passwordEncoder.encode(password);
         var user = userRepository.save(new User(null, data.name(), data.ra(), data.isAdmin(), data.user(), encryptedPassword));
         
         emailService.sendSimpleMessage(data.user(), "Welcome to Sphynx", 
@@ -41,7 +43,7 @@ public class UserService {
             "Your account has been successfully created.\n\n" +
             "Username: " + data.user() + "\n" +
             "RA: " + data.ra() + "\n\n" +
-            "Password: " + data.password() + "\n\n" +
+            "Password: " + password + "\n\n" +
             "Best regards,\n" +
             "The Sphynx Team");
 
