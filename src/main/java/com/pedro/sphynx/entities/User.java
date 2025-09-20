@@ -25,7 +25,10 @@ public class User implements UserDetails {
     private String name;
     private String ra;
     private boolean isAdmin;
+
+    @Column(name = "\"user\"")
     private String user;
+    
     private String password;
 
     @Override

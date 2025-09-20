@@ -21,8 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import com.pedro.sphynx.dtos.message.MessageDTO;
 import com.pedro.sphynx.utils.CreateMessageUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -61,15 +59,26 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data) {
-        UserDataComplete user = userService.create(data);
+        UserDataRegisterInput processedData = 
+            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.password(), data.name(), data.ra(), false);
+
+        UserDataComplete user = userService.create(processedData);
         MessageDTO messageDto = createMessageUtil.createMessage(201, user);
         return ResponseEntity.ok().body(messageDto);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<MessageDTO> getMethodName() {
+    public ResponseEntity<MessageDTO> getAll() {
         List<UserDataComplete> users = userService.getAll();
         MessageDTO messageDto = createMessageUtil.createMessage(200, users);
+
+        return ResponseEntity.ok().body(messageDto);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<MessageDTO> getById(@PathVariable Long id) {
+        UserDataComplete user = userService.getById(id);
+        MessageDTO messageDto = createMessageUtil.createMessage(200, user);
 
         return ResponseEntity.ok().body(messageDto);
     }
