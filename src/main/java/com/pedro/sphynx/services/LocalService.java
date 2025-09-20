@@ -79,7 +79,7 @@ public class LocalService {
     }
     
     public List<LocalGroupDataComplete> getAllLocalsWithGroups(User user) {
-        List<LocalGroup> localGroups = localGroupRepository.findAllByUserId(user.getId());
+        List<LocalGroup> localGroups = new java.util.ArrayList<>();
 
         //mapping Local entity and Group entity based on the localGroups list
         //will group a local with all its permission_groups without duplicates

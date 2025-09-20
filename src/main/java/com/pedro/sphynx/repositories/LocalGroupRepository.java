@@ -13,6 +13,4 @@ public interface LocalGroupRepository extends JpaRepository<LocalGroup, Long> {
     List<LocalGroup> findAllByLocalMac(String macFormatted);
 
     List<LocalGroup> findByLocal(Local local);
-
-    List<LocalGroup> findAllByUserId(Long id);
 }
