@@ -1,10 +1,14 @@
 package com.pedro.sphynx.services;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
+import com.pedro.sphynx.dtos.consumer.ConsumerDataComplete;
 import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.repositories.UserRepository;
 
@@ -30,6 +34,15 @@ public class UserService {
 
     public User getByUser(String user) {
         return (User) userRepository.findByUser(user);
+    }
+
+    public List<UserDataComplete> getAll() {
+        List<User> users = userRepository.findAll();
+        return users
+            .stream()
+            .map(UserDataComplete::new)
+            .sorted(Comparator.comparing(UserDataComplete::id).reversed())
+            .toList();
     }
 
     public void delete(Long id) {

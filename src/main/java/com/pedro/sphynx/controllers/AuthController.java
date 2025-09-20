@@ -11,6 +11,9 @@ import com.pedro.sphynx.services.TokenService;
 import com.pedro.sphynx.services.UserService;
 import com.pedro.sphynx.entities.User;
 import jakarta.validation.Valid;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +21,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import com.pedro.sphynx.dtos.message.MessageDTO;
 import com.pedro.sphynx.utils.CreateMessageUtil;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("auth")
@@ -59,6 +65,15 @@ public class AuthController {
         MessageDTO messageDto = createMessageUtil.createMessage(201, user);
         return ResponseEntity.ok().body(messageDto);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<MessageDTO> getMethodName() {
+        List<UserDataComplete> users = userService.getAll();
+        MessageDTO messageDto = createMessageUtil.createMessage(200, users);
+
+        return ResponseEntity.ok().body(messageDto);
+    }
+    
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
