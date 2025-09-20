@@ -39,13 +39,13 @@ public class UserService {
         var user = userRepository.save(new User(null, data.name(), data.ra(), data.isAdmin(), data.user(), encryptedPassword));
         
         emailService.sendSimpleMessage(data.user(), "Welcome to Sphynx", 
-            "Hello " + data.name() + ",\n\n" +
-            "Your account has been successfully created.\n\n" +
-            "Username: " + data.user() + "\n" +
+            "Olá " + data.name() + ",\n\n" +
+            "Sua conta foi criada com sucesso.\n\n" +
+            "Nome de usuário: " + data.user() + "\n" +
             "RA: " + data.ra() + "\n\n" +
-            "Password: " + password + "\n\n" +
-            "Best regards,\n" +
-            "The Sphynx Team");
+            "Senha: " + password + "\n\n" +
+            "Atenciosamente,\n" +
+            "A equipe Sphynx");
 
         return new UserDataComplete(user);
     }
