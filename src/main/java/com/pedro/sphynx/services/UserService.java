@@ -19,6 +19,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     public UserDataComplete create(UserDataRegisterInput data) {
@@ -32,6 +35,16 @@ public class UserService {
 
         String encryptedPassword = passwordEncoder.encode(data.password());
         var user = userRepository.save(new User(null, data.name(), data.ra(), data.isAdmin(), data.user(), encryptedPassword));
+        
+        emailService.sendSimpleMessage(data.user(), "Welcome to Sphynx", 
+            "Hello " + data.name() + ",\n\n" +
+            "Your account has been successfully created.\n\n" +
+            "Username: " + data.user() + "\n" +
+            "RA: " + data.ra() + "\n\n" +
+            "Password: " + data.password() + "\n\n" +
+            "Best regards,\n" +
+            "The Sphynx Team");
+
         return new UserDataComplete(user);
     }
 
