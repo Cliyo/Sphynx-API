@@ -6,6 +6,7 @@ import com.pedro.sphynx.dtos.auth.UserDataOutputLogin;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyOutput;
+import com.pedro.sphynx.dtos.auth.UserRecoveryPasswordEmail;
 import com.pedro.sphynx.services.AuthService;
 import com.pedro.sphynx.services.TokenService;
 import com.pedro.sphynx.services.UserService;
@@ -21,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import com.pedro.sphynx.dtos.message.MessageDTO;
 import com.pedro.sphynx.utils.CreateMessageUtil;
+
 
 
 @RestController
@@ -90,4 +92,13 @@ public class AuthController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/password-recovery")
+    public ResponseEntity<Void> passwordRecovery(@RequestBody UserRecoveryPasswordEmail user) {
+
+        authService.passwordRecovery(user.user());
+
+        return ResponseEntity.ok().build();
+    }
+    
 }
