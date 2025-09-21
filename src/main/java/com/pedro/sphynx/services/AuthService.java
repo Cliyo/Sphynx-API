@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +30,8 @@ public class AuthService implements UserDetailsService {
 
     @Autowired
     private RecoveryHashRepository recoveryHashRepository;
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -63,5 +66,16 @@ public class AuthService implements UserDetailsService {
             "Sphynx | Recuperar senha",
             "Clique no link para recuperar sua senha no Sphynx: \n http://localhost:3000/password-recovery/" + existingUser.getId() + "/" + randomHash
         );   
+    }
+
+    public void passwordReset(Long id, String hash, String newPassword) {
+        RecoveryHash recoveryHash = recoveryHashRepository.findByUserIdAndHashAndIsValid(id, hash, true);
+
+        User user = recoveryHash.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(user);
+
+        recoveryHash.setValid(false);
+        recoveryHashRepository.save(recoveryHash);
     }
 }

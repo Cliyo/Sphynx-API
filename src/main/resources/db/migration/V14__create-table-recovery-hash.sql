@@ -2,7 +2,7 @@ create table if not exists recovery_hashes(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
     hash varchar(255) not null,
-    isValid boolean not null default true,
+    is_valid boolean not null default true,
     dtcreate TIMESTAMP  not null,
     dtupdate TIMESTAMP,
 

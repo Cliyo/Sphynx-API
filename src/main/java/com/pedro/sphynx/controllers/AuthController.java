@@ -7,6 +7,7 @@ import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyInput;
 import com.pedro.sphynx.dtos.auth.UserDataVerifyOutput;
 import com.pedro.sphynx.dtos.auth.UserRecoveryPasswordEmail;
+import com.pedro.sphynx.dtos.auth.UserResetPassword;
 import com.pedro.sphynx.services.AuthService;
 import com.pedro.sphynx.services.TokenService;
 import com.pedro.sphynx.services.UserService;
@@ -97,6 +98,14 @@ public class AuthController {
     public ResponseEntity<Void> passwordRecovery(@RequestBody UserRecoveryPasswordEmail user) {
 
         authService.passwordRecovery(user.user());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password-recovery/{id}/{hash}")
+    public ResponseEntity<Void> passwordReset(@PathVariable Long id, @PathVariable String hash, @RequestBody UserResetPassword user) {
+
+        authService.passwordReset(id, hash, user.newPassword());
 
         return ResponseEntity.ok().build();
     }

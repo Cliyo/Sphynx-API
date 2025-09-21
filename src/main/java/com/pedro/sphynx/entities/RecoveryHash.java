@@ -10,12 +10,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "recovery_hashes")
 @Entity(name = "RecoveryHash")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class RecoveryHash {
     private Long id;
 
