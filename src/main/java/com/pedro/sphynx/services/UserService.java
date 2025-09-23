@@ -38,7 +38,7 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(password);
         var user = userRepository.save(new User(null, data.name(), data.ra(), data.isAdmin(), data.user(), encryptedPassword));
         
-        emailService.sendSimpleMessage(data.user(), "Bem-vindo ao Sphynx", 
+        emailService.sendSimpleMessage(data.user(), "Sphynx | Bem-vindo ao Sphynx", 
             "Olá " + data.name() + ",\n\n" +
             "Sua conta foi criada com sucesso.\n\n" +
             "Nome de usuário: " + data.user() + "\n" +

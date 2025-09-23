@@ -64,7 +64,7 @@ public class AuthService implements UserDetailsService {
         emailService.sendSimpleMessage(
             existingUser.getUser(),
             "Sphynx | Recuperar senha",
-            "Clique no link para recuperar sua senha no Sphynx: \n http://localhost:3000/password-recovery/" + existingUser.getId() + "/" + randomHash
+            "Clique no link para recuperar sua senha no Sphynx: \n http://localhost:3000/auth/password-recovery/" + existingUser.getId() + "/" + randomHash
         );   
     }
 
@@ -77,5 +77,11 @@ public class AuthService implements UserDetailsService {
 
         recoveryHash.setValid(false);
         recoveryHashRepository.save(recoveryHash);
+
+        emailService.sendSimpleMessage(
+            user.getUser(),
+            "Sphynx | Senha alterada",
+            "Sua senha foi alterada com sucesso."
+        );   
     }
 }

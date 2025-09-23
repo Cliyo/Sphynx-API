@@ -32,6 +32,7 @@ public class SecurityConfigurations {
                 req.requestMatchers("/online").permitAll();
                 req.requestMatchers("/auth/login").permitAll();
                 req.requestMatchers("/auth/password-recovery").permitAll();
+                req.requestMatchers("/auth/password-recovery/**").permitAll();
                 req.requestMatchers("/auth/login/verify").permitAll();
                 req.requestMatchers("/accessRegisters/tag").permitAll();
                 req.requestMatchers("/accessRegisters/fingerprint").permitAll();
