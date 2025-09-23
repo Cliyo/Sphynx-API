@@ -28,7 +28,6 @@ public class AccessRegisterController {
     @PostMapping("/tag")
     @Transactional
     public ResponseEntity<MessageDTO> create(@RequestBody @Valid AccessDataTagInput data){
-        System.out.println(data);
         AccessDataComplete accessDataComplete = service.validateCreation(data);
 
         MessageDTO dto = createMessageUtil.createMessage(201, accessDataComplete);
