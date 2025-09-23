@@ -43,6 +43,9 @@ public class AccessService {
     @Autowired
     private LocalGroupRepository localGroupRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -72,13 +75,21 @@ public class AccessService {
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
-        if(!localGroups.contains(consumerGroup)){
-            return createAccess(consumer, local, false, null);
+        AccessDataComplete accessDataComplete;
+        Boolean hasPermission = localGroups.contains(consumerGroup);
+        if(!hasPermission){
+            accessDataComplete = createAccess(consumer, local, false, null);
+        } else {
+            accessDataComplete = createAccess(consumer, local, true, null);
         }
 
-        return createAccess(consumer, local, true, null);
+        emailService.sendSimpleMessage(
+            consumer.user().user(), 
+            "Sphynx | Acesso " + (hasPermission ? "autorizado" : "negado"), 
+            "Ola " + consumer.user().name() + ",\n\nO dependente de nome " + consumer.name() + " teve seu acesso " + (hasPermission ? "autorizado" : "negado") + " em " + local.name() + "." + "\n\n Dia e hora do acesso: " + accessDataComplete.date() + "\n\n Atenciosamente,\nEquipe Sphynx"
+        );
 
-        
+        return accessDataComplete;
     }
 
     @Transactional
