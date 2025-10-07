@@ -27,6 +27,7 @@ public class User implements UserDetails {
 
     private String name;
     private String ra;
+    private String tag;
     private boolean isAdmin;
 
     @Column(name = "\"user\"")

@@ -36,7 +36,7 @@ public class UserService {
         String password = "sphynx@" + data.ra();
 
         String encryptedPassword = passwordEncoder.encode(password);
-        var user = userRepository.save(new User(null, data.name(), data.ra(), data.isAdmin(), data.user(), encryptedPassword));
+        var user = userRepository.save(new User(null, data.name(), data.ra(), data.tag(), data.isAdmin(), data.user(), encryptedPassword));
         
         emailService.sendSimpleMessage(data.user(), "Sphynx | Bem-vindo ao Sphynx", 
             "Olá " + data.name() + ",\n\n" +
