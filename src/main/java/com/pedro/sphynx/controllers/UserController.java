@@ -3,11 +3,14 @@ package com.pedro.sphynx.controllers;
 import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import com.pedro.sphynx.dtos.message.MessageDTO;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.services.UserService;
 import com.pedro.sphynx.utils.CreateMessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +26,18 @@ public class UserController{
     private CreateMessageUtil createMessageUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data) {
+    public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data, @AuthenticationPrincipal UserDetails user) {
         UserDataRegisterInput processedData = 
-            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.permissionMenu(), data.tag(), false);
+            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.group(), data.permissionMenu(), data.tag(), false);
 
-        UserDataComplete user = service.create(processedData);
-        MessageDTO messageDto = createMessageUtil.createMessage(201, user);
+        UserDataComplete userCreated = service.create(processedData, (User) user);
+        MessageDTO messageDto = createMessageUtil.createMessage(201, userCreated);
         return ResponseEntity.ok().body(messageDto);
     }
 
     @GetMapping("/")
-    public ResponseEntity<MessageDTO> getAll() {
-        List<UserDataComplete> users = service.getAll();
+    public ResponseEntity<MessageDTO> getAll(@AuthenticationPrincipal UserDetails user) {
+        List<UserDataComplete> users = service.getAll((User) user);
         MessageDTO messageDto = createMessageUtil.createMessage(200, users);
 
         return ResponseEntity.ok().body(messageDto);

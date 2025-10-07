@@ -21,6 +21,9 @@ public record UserDataRegisterInput(
         @Pattern(regexp="\\d{13}", message="RA inválido")
         String ra,
 
+        @NotBlank
+        Integer group,
+
         @NotNull
         List<String> permissionMenu,
 

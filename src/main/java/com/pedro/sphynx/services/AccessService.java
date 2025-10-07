@@ -3,15 +3,16 @@ package com.pedro.sphynx.services;
 import com.pedro.sphynx.dtos.access.AccessDataComplete;
 import com.pedro.sphynx.dtos.access.AccessDataFingerprintInput;
 import com.pedro.sphynx.dtos.access.AccessDataTagInput;
-import com.pedro.sphynx.dtos.consumer.ConsumerDataComplete;
+import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.entities.Access;
 import com.pedro.sphynx.exceptions.Validation;
 
 import com.pedro.sphynx.repositories.AccessRepository;
-import com.pedro.sphynx.repositories.ConsumerRepository;
 import com.pedro.sphynx.repositories.LocalGroupRepository;
 import com.pedro.sphynx.repositories.LocalRepository;
+import com.pedro.sphynx.repositories.UserRepository;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -35,7 +36,7 @@ public class AccessService {
     private AccessRepository accessRepository;
 
     @Autowired
-    private ConsumerRepository consumerRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private LocalRepository localRepository;
@@ -56,13 +57,13 @@ public class AccessService {
         String macFormatted = data.mac().replaceAll("-", ":");
         String tag = data.tag();
 
-        if (!consumerRepository.existsByTag(tag)) {
+        if (!userRepository.existsByTag(tag)) {
             throw new Validation(messages.getString("error.tagDontExists"));
         }
 
-        ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByTag(tag));
+        UserDataComplete consumer = new UserDataComplete(userRepository.findByTag(tag));
 
-        if (!consumerRepository.existsByRa(consumer.ra())) {
+        if (!userRepository.existsByRa(consumer.ra())) {
             throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
@@ -70,7 +71,7 @@ public class AccessService {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
-        String consumerGroup = consumerRepository.findByTag(data.tag()).getGroup().getName();
+        String consumerGroup = userRepository.findByTag(data.tag()).getGroup().getName();
         List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
@@ -84,9 +85,9 @@ public class AccessService {
         }
 
         emailService.sendSimpleMessage(
-            consumer.user().user(), 
+            consumer.userCreator().user(),
             "Sphynx | Acesso " + (hasPermission ? "autorizado" : "negado"), 
-            "Ola " + consumer.user().name() + ",\n\nO dependente de nome " + consumer.name() + " teve seu acesso " + (hasPermission ? "autorizado" : "negado") + " em " + local.name() + "." + "\n\n Dia e hora do acesso: " + accessDataComplete.date() + "\n\n Atenciosamente,\nEquipe Sphynx"
+            "Ola " + consumer.userCreator().name() + ",\n\nO dependente de nome " + consumer.name() + " teve seu acesso " + (hasPermission ? "autorizado" : "negado") + " em " + local.name() + "." + "\n\n Dia e hora do acesso: " + accessDataComplete.date() + "\n\n Atenciosamente,\nEquipe Sphynx"
         );
 
         return accessDataComplete;
@@ -103,13 +104,13 @@ public class AccessService {
         //     throw new Validation(messages.getString("error.tagDontExists"));
         // }
 
-        if (!consumerRepository.existsByFingerprint(fingerprint)) {
+        if (!userRepository.existsByFingerprint(fingerprint)) {
             throw new Validation(messages.getString("error.tagDontExists"));
         }
 
-        ConsumerDataComplete consumer = new ConsumerDataComplete(consumerRepository.findByFingerprint(fingerprint));
+        UserDataComplete consumer = new UserDataComplete(userRepository.findByFingerprint(fingerprint));
 
-        if (!consumerRepository.existsByRa(consumer.ra())) {
+        if (!userRepository.existsByRa(consumer.ra())) {
             throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
@@ -117,7 +118,7 @@ public class AccessService {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
-        String consumerGroup = consumerRepository.findByFingerprint(fingerprint).getGroup().getName();
+        String consumerGroup = userRepository.findByFingerprint(fingerprint).getGroup().getName();
         List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
@@ -130,8 +131,8 @@ public class AccessService {
 
     }
 
-    private AccessDataComplete createAccess(ConsumerDataComplete consumer, LocalDataComplete local, boolean hasPermission, String errorMessage) {
-        Access access = new Access(null, consumerRepository.findByTag(consumer.tag()), localRepository.findByMac(local.mac().replaceAll("-", ":")), hasPermission, LocalDateTime.now());
+    private AccessDataComplete createAccess(UserDataComplete consumer, LocalDataComplete local, boolean hasPermission, String errorMessage) {
+        Access access = new Access(null, userRepository.findByTag(consumer.tag()), localRepository.findByMac(local.mac().replaceAll("-", ":")), hasPermission, LocalDateTime.now());
         accessRepository.save(access);
         entityManager.flush();
 

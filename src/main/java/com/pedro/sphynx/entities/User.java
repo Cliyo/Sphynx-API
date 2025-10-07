@@ -11,6 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
+
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,6 +37,31 @@ public class User implements UserDetails {
     private String user;
     
     private String password;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User userCreator;
+
+    private Long fingerprint;
+
+    private LocalDateTime dtcreate;
+    private LocalDateTime dtupdate;
+
+    public void actualizeData(UserDataRegisterInput data) {
+        if(data.tag() != null){
+            this.tag = data.tag();
+        }
+        if(data.ra() != null){
+            this.ra = data.ra();
+        }
+        if(data.name() != null){
+            this.name = data.name();
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
