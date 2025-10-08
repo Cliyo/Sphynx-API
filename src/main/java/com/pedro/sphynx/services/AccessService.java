@@ -143,7 +143,7 @@ public class AccessService {
         List<AccessDataComplete> listAccess;
 
         if(ra.isPresent() && local.isEmpty() && date.isEmpty()){
-            listAccess = accessRepository.findAllByConsumerRa(ra.get())
+            listAccess = accessRepository.findAllByUserRa(ra.get())
                     .stream()
                     .map(AccessDataComplete::new)
                     .sorted(Comparator.comparing(AccessDataComplete::id))
@@ -175,7 +175,7 @@ public class AccessService {
             LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
             LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
 
-            listAccess = accessRepository.findAllByConsumer_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd)
+            listAccess = accessRepository.findAllByUser_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd)
                     .stream()
                     .map(AccessDataComplete::new)
                     .sorted(Comparator.comparing(AccessDataComplete::id))

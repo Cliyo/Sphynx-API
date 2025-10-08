@@ -12,11 +12,11 @@ public interface AccessRepository extends JpaRepository<Access, Long> {
     @Query("SELECT a FROM Access a ORDER BY a.date DESC")
     List<Access> findAll();
 
-    List<Access> findAllByConsumerRa(String ra);
+    List<Access> findAllByUserRa(String ra);
 
     List<Access> findAllByLocalName(String local);
 
     List<Access> findAllByDateBetween(LocalDateTime from, LocalDateTime to);
 
-    List<Access> findAllByConsumer_RaAndLocal_NameAndDateBetween(String ra, String local, LocalDateTime from, LocalDateTime to);
+    List<Access> findAllByUser_RaAndLocal_NameAndDateBetween(String ra, String local, LocalDateTime from, LocalDateTime to);
 }

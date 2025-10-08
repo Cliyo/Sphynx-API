@@ -1,4 +1,4 @@
-create table if not exists accessregisters(
+create table if not exists access_registers(
     id BIGSERIAL PRIMARY KEY,
     consumer_id bigint not null,
     local_id bigint not null,

@@ -1,1 +1,1 @@
-alter table accessregisters add status boolean;
+alter table access_registers add status boolean;

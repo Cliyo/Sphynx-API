@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +15,7 @@ import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.exceptions.Validation;
 import com.pedro.sphynx.repositories.GroupRepository;
+import com.pedro.sphynx.repositories.PermissionMenuRepository;
 import com.pedro.sphynx.repositories.UserRepository;
 
 import jakarta.persistence.EntityExistsException;
@@ -26,6 +28,9 @@ public class UserService {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private PermissionMenuRepository permissionMenuRepository;
 
     @Autowired
     private EmailService emailService;
@@ -50,13 +55,35 @@ public class UserService {
         String password = "sphynx@" + data.ra();
         String encryptedPassword = passwordEncoder.encode(password);
 
-        User user = new User(null, data.name(), data.ra(), data.tag(), data.isAdmin(), data.user(), encryptedPassword, null, loggedUser, null, LocalDateTime.now(), LocalDateTime.now());
+        User user = new User(
+            null, 
+            data.name(), 
+            data.ra(), 
+            data.tag(), 
+            data.isAdmin(), 
+            data.user(), 
+            encryptedPassword, 
+            null, 
+            loggedUser, 
+            null, 
+            null, 
+            LocalDateTime.now(), 
+            LocalDateTime.now()
+        );
         
         if (data.group() != null) {
             if (!groupRepository.existsById(data.group())) {
                 throw new Validation(messages.getString("error.groupNotExists"));
             }
             user.setGroup(groupRepository.getReferenceById(data.group()));
+        }
+
+        if (data.permissionMenu() != null && !data.permissionMenu().isEmpty()) {
+            var permissionMenus = permissionMenuRepository.findByNameIn(data.permissionMenu());
+            if (permissionMenus.size() != data.permissionMenu().size()) {
+                throw new Validation("One or more permission menus are invalid");
+            }
+            user.setPermissionMenus(Set.copyOf(permissionMenus));
         }
 
         User userCreated = userRepository.save(user);
@@ -90,7 +117,7 @@ public class UserService {
                 .toList();
             
         } else {
-            listUsers = userRepository.findAllByUserId(loggedUser.getId())
+            listUsers = userRepository.findAllByUserCreatorId(loggedUser.getId())
                 .stream()
                 .map(UserDataComplete::new)
                 .sorted(Comparator.comparing(UserDataComplete::id).reversed())

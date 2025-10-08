@@ -25,7 +25,7 @@ public class UserController{
     @Autowired
     private CreateMessageUtil createMessageUtil;
 
-    @PostMapping("/register")
+    @PostMapping("/")
     public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data, @AuthenticationPrincipal UserDetails user) {
         UserDataRegisterInput processedData = 
             data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.group(), data.permissionMenu(), data.tag(), false);

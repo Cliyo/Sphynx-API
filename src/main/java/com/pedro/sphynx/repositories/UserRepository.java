@@ -26,9 +26,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByFingerprint(long fingerprint);
 
-    List<User> findAllByUserId(Long userId);
+    List<User> findAllByUserCreatorId(Long userCreatorId);
 
-    List<User> findAllByRaIsLikeAndUserId(String ra, Long userId);
+    List<User> findAllByRaIsLikeAndUserCreatorId(String ra, Long userCreatorId);
 
     User findByFingerprint(long fingerprint);
 

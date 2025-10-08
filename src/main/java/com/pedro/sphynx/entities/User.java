@@ -16,16 +16,18 @@ import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-@Table(name="users")
-@Entity(name="User")
+@Table(name = "users")
+@Entity(name = "User")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -35,7 +37,7 @@ public class User implements UserDetails {
 
     @Column(name = "\"user\"")
     private String user;
-    
+
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,19 +48,23 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_id")
     private User userCreator;
 
+    @ManyToMany
+    @JoinTable(name = "permission_menus_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "permission_menu_id"))
+    private Set<PermissionMenu> permissionMenus;
+
     private Long fingerprint;
 
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
     public void actualizeData(UserDataRegisterInput data) {
-        if(data.tag() != null){
+        if (data.tag() != null) {
             this.tag = data.tag();
         }
-        if(data.ra() != null){
+        if (data.ra() != null) {
             this.ra = data.ra();
         }
-        if(data.name() != null){
+        if (data.name() != null) {
             this.name = data.name();
         }
     }
