@@ -71,15 +71,18 @@ public class UserService {
             LocalDateTime.now()
         );
         
-        if (data.group() != null) {
-            if (!groupRepository.existsById(data.group())) {
+        if (data.groupId() != null) {
+            if (!groupRepository.existsById(data.groupId())) {
                 throw new Validation(messages.getString("error.groupNotExists"));
             }
-            user.setGroup(groupRepository.getReferenceById(data.group()));
+            user.setGroup(groupRepository.getReferenceById(data.groupId()));
         }
 
         if (data.permissionMenu() != null && !data.permissionMenu().isEmpty()) {
-            var permissionMenus = permissionMenuRepository.findByNameIn(data.permissionMenu());
+            List<String> permissionMenuNames = data.permissionMenu().stream()
+                .map(Enum::name)
+                .toList();
+            var permissionMenus = permissionMenuRepository.findByNameIn(permissionMenuNames);
             if (permissionMenus.size() != data.permissionMenu().size()) {
                 throw new Validation("One or more permission menus are invalid");
             }
@@ -151,11 +154,11 @@ public class UserService {
         var user = userRepository.getReferenceById(id);
         user.actualizeData(data);
 
-        if(data.group() != null){
-            if(!groupRepository.existsById(data.group())){
+        if(data.groupId() != null){
+            if(!groupRepository.existsById(data.groupId())){
                 throw new Validation(messages.getString("error.groupNotExists"));
             }
-            user.setGroup(groupRepository.getReferenceById(data.group()));
+            user.setGroup(groupRepository.getReferenceById(data.groupId()));
         }
 
         user.setDtupdate(LocalDateTime.now());

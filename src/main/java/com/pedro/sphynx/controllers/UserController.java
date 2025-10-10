@@ -25,17 +25,17 @@ public class UserController{
     @Autowired
     private CreateMessageUtil createMessageUtil;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data, @AuthenticationPrincipal UserDetails user) {
         UserDataRegisterInput processedData = 
-            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.group(), data.permissionMenu(), data.tag(), false);
+            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.groupId(), data.permissionMenu(), data.tag(), false);
 
         UserDataComplete userCreated = service.create(processedData, (User) user);
         MessageDTO messageDto = createMessageUtil.createMessage(201, userCreated);
         return ResponseEntity.ok().body(messageDto);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<MessageDTO> getAll(@AuthenticationPrincipal UserDetails user) {
         List<UserDataComplete> users = service.getAll((User) user);
         MessageDTO messageDto = createMessageUtil.createMessage(200, users);
