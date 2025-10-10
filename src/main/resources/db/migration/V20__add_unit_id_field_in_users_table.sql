@@ -1,0 +1,2 @@
+ALTER TABLE users ADD COLUMN unit_id BIGINT;
+ALTER TABLE users ADD CONSTRAINT fk_unit FOREIGN KEY (unit_id) REFERENCES units(id);

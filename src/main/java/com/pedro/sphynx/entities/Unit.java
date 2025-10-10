@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Table(name = "units")
 @Entity(name = "Unit")
@@ -25,14 +26,13 @@ public class Unit {
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY)
+    private Set<User> users;
 
-    public Unit(UnitDataInput data, User user){
+    public Unit(UnitDataInput data, Set<User> users){
         this.id = null;
         this.name = data.name();
-        this.user = user;
+        this.users = Set.copyOf(users);
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }
