@@ -9,7 +9,6 @@ import com.pedro.sphynx.entities.Access;
 import com.pedro.sphynx.exceptions.Validation;
 
 import com.pedro.sphynx.repositories.AccessRepository;
-import com.pedro.sphynx.repositories.LocalGroupRepository;
 import com.pedro.sphynx.repositories.LocalRepository;
 import com.pedro.sphynx.repositories.UserRepository;
 
@@ -42,9 +41,6 @@ public class AccessService {
     private LocalRepository localRepository;
 
     @Autowired
-    private LocalGroupRepository localGroupRepository;
-
-    @Autowired
     private EmailService emailService;
 
     @PersistenceContext
@@ -72,12 +68,12 @@ public class AccessService {
         }
 
         String consumerGroup = userRepository.findByTag(data.tag()).getGroup().getName();
-        List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
+        List<String> locals = localRepository.findAllByMac(macFormatted).stream().flatMap(local -> local.getGroups().stream()).map(group -> group.getName()).collect(Collectors.toList());
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
         AccessDataComplete accessDataComplete;
-        Boolean hasPermission = localGroups.contains(consumerGroup);
+        Boolean hasPermission = locals.contains(consumerGroup);
         if(!hasPermission){
             accessDataComplete = createAccess(consumer, local, false, null);
         } else {
@@ -119,11 +115,11 @@ public class AccessService {
         }
 
         String consumerGroup = userRepository.findByFingerprint(fingerprint).getGroup().getName();
-        List<String> localGroups = localGroupRepository.findAllByLocalMac(macFormatted).stream().map(l -> l.getGroup().getName()).collect(Collectors.toList());
+        List<String> locals = localRepository.findAllByMac(macFormatted).stream().flatMap(local -> local.getGroups().stream()).map(group -> group.getName()).collect(Collectors.toList());
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
 
-        if(!localGroups.contains(consumerGroup)){
+        if(!locals.contains(consumerGroup)){
             return createAccess(consumer, local, false, null);
         }
 

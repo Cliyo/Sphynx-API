@@ -1,8 +1,8 @@
 package com.pedro.sphynx.controllers;
 
+import com.pedro.sphynx.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.dtos.local.LocalDataEditInput;
 import com.pedro.sphynx.dtos.local.LocalDataInput;
-import com.pedro.sphynx.dtos.localGroup.LocalGroupDataComplete;
 import com.pedro.sphynx.dtos.message.MessageDTO;
 import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.services.LocalService;
@@ -55,7 +55,7 @@ public class LocalController{
 
     @GetMapping
     public ResponseEntity<MessageDTO> getAll(@AuthenticationPrincipal UserDetails user){
-        List<LocalGroupDataComplete> localsList = service.getAllLocalsWithGroups((User) user);
+        List<LocalDataComplete> localsList = service.getAll((User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(200, localsList);
 
         return ResponseEntity.ok(messageDTO);

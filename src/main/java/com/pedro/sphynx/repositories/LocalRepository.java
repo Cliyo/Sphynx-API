@@ -1,6 +1,9 @@
 package com.pedro.sphynx.repositories;
 
 import com.pedro.sphynx.entities.Local;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LocalRepository extends JpaRepository<Local, Long> {
@@ -15,4 +18,9 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
     boolean existsByMac(String mac);
 
     void deleteByName(String name);
+
+    List<Local> findAllByUserId(Long id);
+
+    List<Local> findAllByMac(String mac);
+
 }

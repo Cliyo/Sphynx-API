@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Table(name = "permission_groups")
 @Entity(name = "Group")
@@ -23,6 +24,10 @@ public class Group {
     private String name;
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
+
+    @ManyToMany
+    @JoinTable(name = "locals_groups", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "local_id"))
+    private Set<Local> locals;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
