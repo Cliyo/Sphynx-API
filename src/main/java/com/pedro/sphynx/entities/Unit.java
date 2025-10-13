@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Table(name = "units")
 @Entity(name = "Unit")
@@ -27,12 +27,20 @@ public class Unit {
     private LocalDateTime dtupdate;
 
     @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY)
-    private Set<User> users;
+    private List<User> users;
 
-    public Unit(UnitDataInput data, Set<User> users){
+    public Unit(UnitDataInput data){
         this.id = null;
         this.name = data.name();
-        this.users = Set.copyOf(users);
+        this.users = null;
+        this.dtcreate = LocalDateTime.now();
+        this.dtupdate = null;
+    }
+
+    public Unit(UnitDataInput data, List<User> users){
+        this.id = null;
+        this.name = data.name();
+        this.users = List.copyOf(users);
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }

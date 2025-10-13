@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.pedro.sphynx.entities.Unit;
 
 public interface UnitRepository extends JpaRepository<Unit, Long> {
-    
+    Boolean existsByName(String name);
+
+    Unit getReferenceById(Long id);
 }
