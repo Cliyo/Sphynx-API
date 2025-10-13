@@ -25,6 +25,9 @@ public class UnitService {
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
     public UnitDataComplete create(UnitDataInput data, User user){
+
+        if (!user.isAdmin()) throw new EntityNotFoundException(messages.getString("error.userNotAdmin"));
+
         if(repository.existsByName(data.name())){
             throw new EntityExistsException(messages.getString("error.unitAlreadyExists"));
         }
@@ -37,6 +40,8 @@ public class UnitService {
     }
 
     public UnitDataComplete update(UnitDataEdit data, Long id, User user) {
+        if (!user.isAdmin()) throw new EntityNotFoundException(messages.getString("error.userNotAdmin"));
+
         if(!repository.existsById(id)){
             throw new EntityNotFoundException(messages.getString("error.unitDontExists"));
         }
@@ -52,16 +57,19 @@ public class UnitService {
     }
 
     public void delete(Long id, User user) {
+        if (!user.isAdmin()) throw new EntityNotFoundException(messages.getString("error.userNotAdmin"));
+
         if(!repository.existsById(id)){
             throw new EntityNotFoundException(messages.getString("error.unitDontExists"));
         }
         else{
             repository.deleteById(id);
         }
-
     }
 
     public UnitDataComplete getById(Long id, User user){
+        if (!user.isAdmin()) throw new EntityNotFoundException(messages.getString("error.userNotAdmin"));
+
         if(!repository.existsById(id)){
             throw new EntityNotFoundException(messages.getString("error.unitDontExists"));
         }
@@ -70,6 +78,8 @@ public class UnitService {
     }
 
     public List<UnitDataComplete> getAll(User user){
+        if (!user.isAdmin()) throw new EntityNotFoundException(messages.getString("error.userNotAdmin"));
+
         return repository.findAll()
                 .stream()
                 .map(unit -> new UnitDataComplete(unit))
