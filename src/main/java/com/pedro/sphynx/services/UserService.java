@@ -102,10 +102,12 @@ public class UserService {
             if (!groupRepository.existsById(data.groupId())) {
                 throw new Validation(messages.getString("error.groupNotExists"));
             }
-            user.setGroup(groupRepository.getReferenceById(data.groupId()));
-        } else if (data.isAdmin()) {
-            user.setGroup(groupRepository.save(new Group(new GroupDataInput(data.unitId() + " - Grupo Padrão"), userCreated)));
+            userCreated.setGroup(groupRepository.getReferenceById(data.groupId()));
+        } else if (loggedUser.isAdmin()) {
+            System.out.println("ENTROU AQUI");
+            userCreated.setGroup(groupRepository.save(new Group(new GroupDataInput(data.ra() + " - Grupo Padrão"), userCreated)));
         }
+        userCreated = userRepository.save(userCreated);
         
         emailService.sendSimpleMessage(data.user(), "Sphynx | Bem-vindo ao Sphynx", 
             "Olá " + data.name() + ",\n\n" +
