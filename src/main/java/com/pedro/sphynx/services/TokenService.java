@@ -17,6 +17,7 @@ public class TokenService {
                     .withSubject(user.getUser())
                     .withClaim("name", user.getName())
                     .withClaim("isAdmin", user.isAdmin())
+                    .withClaim("unitId", user.getUnit() != null ? user.getUnit().getId() : null)
                     .sign(algorithm);
 
         } catch(JWTCreationException exception){
