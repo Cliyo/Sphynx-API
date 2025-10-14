@@ -19,4 +19,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     Collection<Group> findAllByNameContainingAndUserId(String name, Long id);
 
     Collection<Group> findAllByUserId(Long id);
+
+    boolean existsByIdAndUnitId(Integer id, Long unitId);
 }

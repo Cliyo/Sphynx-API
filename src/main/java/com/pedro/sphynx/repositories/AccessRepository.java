@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AccessRepository extends JpaRepository<Access, Long> {
-    
-    @Query("SELECT a FROM Access a ORDER BY a.date DESC")
-    List<Access> findAll();
+
+    @Query("SELECT a FROM Access a WHERE a.unit.id = :unitId ORDER BY a.date DESC")
+    List<Access> findAllByUnitId(Long unitId);
 
     List<Access> findAllByUserRa(String ra);
 

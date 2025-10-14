@@ -7,20 +7,26 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LocalRepository extends JpaRepository<Local, Long> {
-    boolean existsByName(String local);
+    boolean existsByNameAndUnitId(String local, Long unitId);
 
-    Local findByName(String local);
+    Local findByNameAndUnitId(String local, Long unitId);
 
-    Local findByMac(String mac);
+    Local findByMacAndUnitId(String mac, Long unitId);
 
-    Local getReferenceByName(String name);
+    Local findByIdAndUnitId(Long id, Long unitId);
 
-    boolean existsByMac(String mac);
+    Local getReferenceByNameAndUnitId(String name, Long unitId);
 
-    void deleteByName(String name);
+    boolean existsByMacAndUnitId(String mac, Long unitId);
+
+    void deleteByNameAndUnitId(String name, Long unitId);
 
     List<Local> findAllByUserId(Long id);
 
+    List<Local> findAllByUnitId(Long id);
+
     List<Local> findAllByMac(String mac);
+
+    boolean existsByIdAndUnitId(Long id, Long unitId);
 
 }

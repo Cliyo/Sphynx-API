@@ -64,14 +64,14 @@ public class AccessService {
             throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
-        if (!localRepository.existsByMac(macFormatted)) {
+        if (!localRepository.existsByMacAndUnitId(macFormatted, consumer.unit().id())) {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
         String consumerGroup = userRepository.findByTag(data.tag()).getGroup().getName();
         List<String> locals = localRepository.findAllByMac(macFormatted).stream().flatMap(local -> local.getGroups().stream()).map(group -> group.getName()).collect(Collectors.toList());
 
-        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
+        LocalDataComplete local = new LocalDataComplete(localRepository.findByMacAndUnitId(macFormatted, consumer.unit().id()));
 
         AccessDataComplete accessDataComplete;
         Boolean hasPermission = locals.contains(consumerGroup);
@@ -111,14 +111,14 @@ public class AccessService {
             throw new Validation(messages.getString("error.raDontExistsInConsumer"));
         }
 
-        if (!localRepository.existsByMac(macFormatted)) {
+        if (!localRepository.existsByMacAndUnitId(macFormatted, consumer.unit().id())) {
             throw new Validation(messages.getString("error.localDontExists"));
         }
 
         String consumerGroup = userRepository.findByFingerprint(fingerprint).getGroup().getName();
         List<String> locals = localRepository.findAllByMac(macFormatted).stream().flatMap(local -> local.getGroups().stream()).map(group -> group.getName()).collect(Collectors.toList());
 
-        LocalDataComplete local = new LocalDataComplete(localRepository.findByMac(macFormatted));
+        LocalDataComplete local = new LocalDataComplete(localRepository.findByMacAndUnitId(macFormatted, consumer.unit().id()));
 
         if(!locals.contains(consumerGroup)){
             return createAccess(consumer, local, false, null);
@@ -134,7 +134,7 @@ public class AccessService {
         Access access = new Access(
             null,
             user,
-            localRepository.findByMac(local.mac().replaceAll("-", ":")),
+            localRepository.findByMacAndUnitId(local.mac().replaceAll("-", ":"), user.getUnit().getId()),
             user.getUnit(),
             hasPermission, 
             LocalDateTime.now()

@@ -38,16 +38,20 @@ public class LocalController{
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<MessageDTO> update(@PathVariable String id, @RequestBody @Valid LocalDataEditInput data){
-        var local = service.update(data, Integer.parseInt(id));
+    public ResponseEntity<MessageDTO> update(
+        @PathVariable String id, 
+        @RequestBody @Valid LocalDataEditInput data, 
+        @AuthenticationPrincipal UserDetails user
+    ){
+        var local = service.update(data, Integer.parseInt(id), (User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(200, local);
 
         return ResponseEntity.ok(messageDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MessageDTO> getById(@PathVariable String id){
-        var local = service.getById(Long.parseLong(id));
+    public ResponseEntity<MessageDTO> getById(@PathVariable String id, @AuthenticationPrincipal UserDetails user){
+        var local = service.getById(Long.parseLong(id), (User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(200, local);
 
         return ResponseEntity.ok(messageDTO);
@@ -63,8 +67,8 @@ public class LocalController{
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> delete(@PathVariable String id){
-        service.deleteById(Long.parseLong(id));
+    public ResponseEntity<Void> delete(@PathVariable String id, @AuthenticationPrincipal UserDetails user){
+        service.deleteById(Long.parseLong(id), (User) user);
 
         return ResponseEntity.noContent().build();
     }

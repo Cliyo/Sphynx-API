@@ -34,16 +34,16 @@ public class LocalService {
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
     public LocalDataComplete create(LocalDataInput data, User user){
-        if(repository.existsByName(data.name())){
+        if(repository.existsByNameAndUnitId(data.name(), user.getUnit().getId())){
             throw new EntityExistsException(messages.getString("error.localAlreadyExists"));
         }
 
-        if(repository.existsByMac(data.mac())){
+        if(repository.existsByMacAndUnitId(data.mac(), user.getUnit().getId())){
             throw new EntityExistsException(messages.getString("error.macAlreadyExists"));
         }
 
         for(int group : data.groups()){
-            if(!groupRepository.existsById(group)){
+            if(!groupRepository.existsByIdAndUnitId(group, user.getUnit().getId())){
                 throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
             }
         }
@@ -60,8 +60,8 @@ public class LocalService {
         return new LocalDataComplete(local);
     }
 
-    public LocalDataComplete update(LocalDataEditInput data, Integer id) {
-        if(repository.existsById(Long.parseLong(id.toString()))){
+    public LocalDataComplete update(LocalDataEditInput data, Integer id, User user) {
+        if(repository.existsByIdAndUnitId(Long.parseLong(id.toString()), user.getUnit().getId())){
             Local local = repository.getReferenceById(Long.parseLong(id.toString()));
 
             local.updateLocal(data);
@@ -72,26 +72,26 @@ public class LocalService {
     }
     
     public List<LocalDataComplete> getAll(User user) {
-        List<Local> locals = repository.findAllByUserId(user.getId());
+        List<Local> locals = repository.findAllByUnitId(user.getUnit().getId());
 
         return locals.stream()
-                .map(local -> new LocalDataComplete(local))
-                .collect(Collectors.toList());
+            .map(local -> new LocalDataComplete(local))
+            .collect(Collectors.toList());
     }
 
-    public LocalDataComplete getById(Long id) {
-        if(!repository.existsById(id)){
+    public LocalDataComplete getById(Long id, User user) {
+        if(!repository.existsByIdAndUnitId(id, user.getUnit().getId())){
             throw new EntityNotFoundException(messages.getString("error.localNotExists"));
         }
 
         Local local = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(messages.getString("error.localDontExists")));
+            .orElseThrow(() -> new EntityNotFoundException(messages.getString("error.localDontExists")));
 
         return new LocalDataComplete(local);
     }
 
-    public void deleteById(Long id) {
-        if(!repository.existsById(id)){
+    public void deleteById(Long id, User user) {
+        if(!repository.existsByIdAndUnitId(id, user.getUnit().getId())){
             throw new Validation(messages.getString("error.localNotExists"));
         }
 
