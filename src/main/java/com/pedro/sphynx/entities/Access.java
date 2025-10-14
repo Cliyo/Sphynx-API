@@ -27,6 +27,10 @@ public class Access {
     @JoinColumn(name = "local_id")
     private Local local;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
     private Boolean status;
 
     @Column(name = "dtcreate")

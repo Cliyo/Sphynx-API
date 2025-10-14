@@ -33,10 +33,15 @@ public class Group {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
     public Group(GroupDataInput data, User user){
         this.id = null;
         this.name = data.name();
         this.user = user;
+        this.unit = user.getUnit();
         this.dtcreate = LocalDateTime.now();
         this.dtupdate = null;
     }

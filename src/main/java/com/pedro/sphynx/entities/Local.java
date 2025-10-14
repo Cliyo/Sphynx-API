@@ -36,11 +36,16 @@ public class Local {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
     public Local(LocalDataInput data, User user){
         this.name = data.name();
         this.mac = data.mac();
         this.dtcreate = LocalDateTime.now();
         this.user = user;
+        this.unit = user.getUnit();
         this.dtupdate = null;
     }
 

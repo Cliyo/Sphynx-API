@@ -6,6 +6,7 @@ import com.pedro.sphynx.dtos.access.AccessDataTagInput;
 import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.entities.Access;
+import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.exceptions.Validation;
 
 import com.pedro.sphynx.repositories.AccessRepository;
@@ -128,7 +129,16 @@ public class AccessService {
     }
 
     private AccessDataComplete createAccess(UserDataComplete consumer, LocalDataComplete local, boolean hasPermission, String errorMessage) {
-        Access access = new Access(null, userRepository.findByTag(consumer.tag()), localRepository.findByMac(local.mac().replaceAll("-", ":")), hasPermission, LocalDateTime.now());
+        User user = userRepository.findByTag(consumer.tag());
+        
+        Access access = new Access(
+            null,
+            user,
+            localRepository.findByMac(local.mac().replaceAll("-", ":")),
+            user.getUnit(),
+            hasPermission, 
+            LocalDateTime.now()
+        );
         accessRepository.save(access);
         entityManager.flush();
 
