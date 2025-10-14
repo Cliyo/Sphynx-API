@@ -23,10 +23,10 @@ public record UserDataRegisterInput(
         @Pattern(regexp="\\d{13}", message="RA inválido")
         String ra,
 
-        @NotNull
         Integer groupId,
 
-        @NotNull
+        Integer unitId,
+
         List<PermissionMenuEnum> permissionMenu,
 
         @NotBlank

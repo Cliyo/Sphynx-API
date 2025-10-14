@@ -28,7 +28,7 @@ public class UserController{
     @PostMapping
     public ResponseEntity<MessageDTO> register(@RequestBody @Valid UserDataRegisterInput data, @AuthenticationPrincipal UserDetails user) {
         UserDataRegisterInput processedData = 
-            data.isAdmin() != null ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.groupId(), data.permissionMenu(), data.tag(), false);
+            data.isAdmin() ? data : new UserDataRegisterInput(data.user(), data.name(), data.ra(), data.unitId(), data.groupId(), data.permissionMenu(), data.tag(), false);
 
         UserDataComplete userCreated = service.create(processedData, (User) user);
         MessageDTO messageDto = createMessageUtil.createMessage(201, userCreated);

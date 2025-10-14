@@ -8,4 +8,8 @@ public interface UnitRepository extends JpaRepository<Unit, Long> {
     Boolean existsByName(String name);
 
     Unit getReferenceById(Long id);
+
+    Boolean existsById(Integer id);
+
+    Unit getReferenceById(Integer id);
 }

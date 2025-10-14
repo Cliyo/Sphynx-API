@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
+import com.pedro.sphynx.dtos.group.GroupDataInput;
+import com.pedro.sphynx.entities.Group;
 import com.pedro.sphynx.entities.User;
 import com.pedro.sphynx.exceptions.Validation;
 import com.pedro.sphynx.repositories.GroupRepository;
 import com.pedro.sphynx.repositories.PermissionMenuRepository;
+import com.pedro.sphynx.repositories.UnitRepository;
 import com.pedro.sphynx.repositories.UserRepository;
 
 import jakarta.persistence.EntityExistsException;
@@ -28,6 +31,9 @@ public class UserService {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private UnitRepository unitRepository;
 
     @Autowired
     private PermissionMenuRepository permissionMenuRepository;
@@ -71,12 +77,12 @@ public class UserService {
             LocalDateTime.now(), 
             LocalDateTime.now()
         );
-        
-        if (data.groupId() != null) {
-            if (!groupRepository.existsById(data.groupId())) {
-                throw new Validation(messages.getString("error.groupNotExists"));
+
+        if (data.unitId() != null) {
+            if (!unitRepository.existsById(data.unitId())) {
+                throw new Validation(messages.getString("error.unitNotExists"));
             }
-            user.setGroup(groupRepository.getReferenceById(data.groupId()));
+            user.setUnit(unitRepository.getReferenceById(data.unitId()));
         }
 
         if (data.permissionMenu() != null && !data.permissionMenu().isEmpty()) {
@@ -91,6 +97,15 @@ public class UserService {
         }
 
         User userCreated = userRepository.save(user);
+
+        if (data.groupId() != null) {
+            if (!groupRepository.existsById(data.groupId())) {
+                throw new Validation(messages.getString("error.groupNotExists"));
+            }
+            user.setGroup(groupRepository.getReferenceById(data.groupId()));
+        } else if (data.isAdmin()) {
+            user.setGroup(groupRepository.save(new Group(new GroupDataInput(data.unitId() + " - Grupo Padrão"), userCreated)));
+        }
         
         emailService.sendSimpleMessage(data.user(), "Sphynx | Bem-vindo ao Sphynx", 
             "Olá " + data.name() + ",\n\n" +
