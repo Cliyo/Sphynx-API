@@ -39,16 +39,20 @@ public class GroupController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        service.delete(Integer.parseInt(id));
+    public ResponseEntity<Void> delete(@PathVariable String id, @AuthenticationPrincipal UserDetails user) {
+        service.delete(Integer.parseInt(id), (User) user);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<MessageDTO> update(@PathVariable String id, @RequestBody @Valid GroupDataEdit data) {
-        GroupDataComplete groupDto = service.update(data, Integer.parseInt(id));
+    public ResponseEntity<MessageDTO> update(
+        @PathVariable String id, 
+        @RequestBody @Valid GroupDataEdit data, 
+        @AuthenticationPrincipal UserDetails user
+    ) {
+        GroupDataComplete groupDto = service.update(data, Integer.parseInt(id), (User) user);
         MessageDTO messageDTO = createMessageUtil.createMessage(200, groupDto);
 
         return ResponseEntity.ok(messageDTO);
@@ -64,8 +68,8 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MessageDTO> getById(@PathVariable String id) {
-        GroupDataComplete permission = service.getById(Integer.parseInt(id));
+    public ResponseEntity<MessageDTO> getById(@PathVariable String id, @AuthenticationPrincipal UserDetails user) {
+        GroupDataComplete permission = service.getById(Integer.parseInt(id), (User) user);
 
         MessageDTO messageDTO = createMessageUtil.createMessage(200, permission);
 

@@ -24,23 +24,22 @@ public class GroupService {
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
     public GroupDataComplete create(GroupDataInput data, User user){
-        if(repository.existsByName(data.name())){
+        if(repository.existsByNameAndUnitId(data.name(), user.getUnit().getId())){
             throw new EntityExistsException(messages.getString("error.groupAlreadyExists"));
         }
 
         Group group = new Group(data, user);
-
         repository.save(group);
 
         return new GroupDataComplete(group);
     }
 
-    public GroupDataComplete update(GroupDataEdit data, Integer id){
-        if(!repository.existsById(id)){
+    public GroupDataComplete update(GroupDataEdit data, Integer id, User user){
+        if(!repository.existsByIdAndUnitId(id, user.getUnit().getId())){
             throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
-        if(repository.existsByName(data.name())){
+        if(repository.existsByNameAndUnitId(data.name(), user.getUnit().getId())){
             throw new EntityExistsException(messages.getString("error.groupAlreadyExists"));
         }
 
@@ -50,8 +49,8 @@ public class GroupService {
         return new GroupDataComplete(group);
     }
 
-    public void delete(Integer id) {
-        if(!repository.existsById(id)){
+    public void delete(Integer id, User user) {
+        if(!repository.existsByIdAndUnitId(id, user.getUnit().getId())){
             throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
         else{
@@ -60,8 +59,8 @@ public class GroupService {
 
     }
 
-    public GroupDataComplete getById(Integer id) {
-        if(!repository.existsById(id)){
+    public GroupDataComplete getById(Integer id, User user) {
+        if(!repository.existsByIdAndUnitId(id, user.getUnit().getId())){
             throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
@@ -69,7 +68,7 @@ public class GroupService {
     }
 
     public List<GroupDataComplete> getAll(User user){
-        return repository.findAllByUserId(user.getId())
+        return repository.findAllByUnitId(user.getUnit().getId())
                 .stream()
                 .map(group -> new GroupDataComplete(group))
                 .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
@@ -77,7 +76,7 @@ public class GroupService {
     }
 
     public List<GroupDataComplete> getAllByName(String name, User user){
-        return repository.findAllByNameContainingAndUserId(name, user.getId())
+        return repository.findAllByNameContainingAndUnitId(name, user.getUnit().getId())
                 .stream()
                 .map(group -> new GroupDataComplete(group))
                 .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
