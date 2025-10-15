@@ -72,7 +72,13 @@ public class LocalService {
     }
     
     public List<LocalDataComplete> getAll(User user) {
-        List<Local> locals = repository.findAllByUnitId(user.getUnit().getId());
+        List<Local> locals;
+
+        if (user.isAdmin()) {
+            locals = repository.findAll();
+        } else {
+            locals = repository.findAllByUnitId(user.getUnit().getId());
+        }
 
         return locals.stream()
             .map(local -> new LocalDataComplete(local))

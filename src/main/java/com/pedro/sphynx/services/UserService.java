@@ -138,7 +138,7 @@ public class UserService {
                 .toList();
             
         } else {
-            listUsers = userRepository.findAllByUserCreatorId(loggedUser.getId())
+            listUsers = userRepository.findAllByUnitId(loggedUser.getUnit().getId())
                 .stream()
                 .map(UserDataComplete::new)
                 .sorted(Comparator.comparing(UserDataComplete::id).reversed())

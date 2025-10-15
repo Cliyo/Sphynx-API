@@ -68,11 +68,19 @@ public class GroupService {
     }
 
     public List<GroupDataComplete> getAll(User user){
-        return repository.findAllByUnitId(user.getUnit().getId())
-                .stream()
-                .map(group -> new GroupDataComplete(group))
-                .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
-                .toList();
+        List<Group> groups;
+
+        if (user.isAdmin()) {
+            groups = repository.findAll();
+        } else {
+            groups = repository.findAllByUnitId(user.getUnit().getId());
+        }
+
+        return groups
+            .stream()
+            .map(group -> new GroupDataComplete(group))
+            .sorted(Comparator.comparing(GroupDataComplete::id).reversed())
+            .toList();
     }
 
     public List<GroupDataComplete> getAllByName(String name, User user){
