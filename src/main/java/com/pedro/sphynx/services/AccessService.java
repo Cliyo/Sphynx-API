@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -148,53 +145,11 @@ public class AccessService {
     public List<AccessDataComplete> getAllAccesses(Optional<String> ra, Optional<String> local, Optional<String> date) {
         List<AccessDataComplete> listAccess;
 
-        if(ra.isPresent() && local.isEmpty() && date.isEmpty()){
-            listAccess = accessRepository.findAllByUserRa(ra.get())
-                    .stream()
-                    .map(AccessDataComplete::new)
-                    .sorted(Comparator.comparing(AccessDataComplete::id))
-                    .toList();
-        }
-
-        else if(ra.isEmpty() && local.isPresent() && date.isEmpty()){
-            listAccess = accessRepository.findAllByLocalName(local.get())
-                    .stream()
-                    .map(AccessDataComplete::new)
-                    .sorted(Comparator.comparing(AccessDataComplete::id))
-                    .toList();
-        }
-
-        else if(ra.isEmpty() && local.isEmpty() && date.isPresent()){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
-            LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
-
-            listAccess = accessRepository.findAllByDateBetween(dateTimeStart, dateTimeEnd)
-                    .stream()
-                    .map(AccessDataComplete::new)
-                    .sorted(Comparator.comparing(AccessDataComplete::id))
-                    .toList();
-        }
-
-        else if(ra.isPresent() &&  local.isPresent() && date.isPresent()){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime dateTimeStart = LocalDate.parse(date.get(), formatter).atStartOfDay();
-            LocalDateTime dateTimeEnd = dateTimeStart.plusDays(1);
-
-            listAccess = accessRepository.findAllByUser_RaAndLocal_NameAndDateBetween(ra.get(), local.get(), dateTimeStart, dateTimeEnd)
-                    .stream()
-                    .map(AccessDataComplete::new)
-                    .sorted(Comparator.comparing(AccessDataComplete::id))
-                    .toList();
-        }
-
-        else{
-            listAccess = accessRepository.findAll()
-                    .stream()
-                    .map(AccessDataComplete::new)
-                    .toList();
-        }
-
+        listAccess = accessRepository.findAll()
+            .stream()
+            .map(AccessDataComplete::new)
+            .toList();
+        
         System.out.println("acessos: " + listAccess);
         return listAccess;
     }
