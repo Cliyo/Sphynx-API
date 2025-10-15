@@ -16,7 +16,10 @@ public record UserDataComplete (Long id, String name, String ra, String tag, Str
                 new UserDataComplete(
                     user.getUserCreator()
                 ) : null, 
-            new UnitDataComplete(user.getUnit())
+            user.getUnit() != null ? 
+                new UnitDataComplete(
+                    user.getUnit()
+                ) : null
         );
     }
 }
