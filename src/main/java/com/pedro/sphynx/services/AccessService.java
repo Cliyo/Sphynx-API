@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -142,15 +141,21 @@ public class AccessService {
         return new AccessDataComplete(access);
     }
 
-    public List<AccessDataComplete> getAllAccesses(Optional<String> ra, Optional<String> local, Optional<String> date) {
+    public List<AccessDataComplete> getAllAccesses(User loggedUser) {
         List<AccessDataComplete> listAccess;
 
-        listAccess = accessRepository.findAll()
-            .stream()
-            .map(AccessDataComplete::new)
-            .toList();
+        if (loggedUser.isAdmin()) {
+            listAccess = accessRepository.findAll()
+                .stream()
+                .map(AccessDataComplete::new)
+                .toList();
+        } else {
+            listAccess = accessRepository.findAllByUnitId(loggedUser.getUnit().getId())
+                .stream()
+                .map(AccessDataComplete::new)
+                .toList();
+        }
         
-        System.out.println("acessos: " + listAccess);
         return listAccess;
     }
 }
