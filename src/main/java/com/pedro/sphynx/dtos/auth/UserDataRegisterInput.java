@@ -29,7 +29,6 @@ public record UserDataRegisterInput(
 
         List<PermissionMenuEnum> permissionMenu,
 
-        @NotBlank
         String tag,
 
         @NotNull

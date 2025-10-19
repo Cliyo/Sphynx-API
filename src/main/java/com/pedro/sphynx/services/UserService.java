@@ -54,10 +54,6 @@ public class UserService {
             throw new EntityExistsException("RA already exists");
         }
 
-        if(userRepository.existsByTag(data.tag())){
-            throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
-        }
-
         String password = "sphynx@" + data.ra();
         String encryptedPassword = passwordEncoder.encode(password);
 
@@ -65,7 +61,7 @@ public class UserService {
             null, 
             data.name(), 
             data.ra(),
-            data.tag(), 
+            null, 
             data.isAdmin(), 
             data.user(),
             encryptedPassword,
@@ -83,6 +79,15 @@ public class UserService {
                 throw new Validation(messages.getString("error.unitNotExists"));
             }
             user.setUnit(unitRepository.getReferenceById(data.unitId()));
+        }
+
+        if (data.tag() != null) {
+            System.out.println("TAG: " + data.tag());
+
+            if (userRepository.existsByTag(data.tag())) {
+                throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
+            }
+            user.setTag(data.tag());
         }
 
         if (data.permissionMenu() != null && !data.permissionMenu().isEmpty()) {

@@ -10,7 +10,7 @@ public record UserDataComplete (Long id, String name, String ra, String tag, Str
             user.getId(),
             user.getName(), 
             user.getRa(), 
-            user.getTag(), 
+            user.getTag() != null ? user.getTag() : null, 
             user.getUser(), 
             user.getUserCreator() != null ? 
                 new UserDataComplete(
