@@ -186,7 +186,9 @@ public class UserService {
 
         user.setDtupdate(LocalDateTime.now());
 
-        return new UserDataComplete(user);
+        User userUpdated = userRepository.save(user);
+
+        return new UserDataComplete(userUpdated);
     }
     
 }
