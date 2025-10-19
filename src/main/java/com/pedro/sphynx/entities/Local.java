@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Table(name = "locals")
@@ -30,7 +31,7 @@ public class Local {
 
     @ManyToMany
     @JoinTable(name = "locals_groups", joinColumns = @JoinColumn(name = "local_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private Set<Group> groups;
+    private Set<Group> groups = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
