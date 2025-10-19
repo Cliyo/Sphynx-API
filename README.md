@@ -9,28 +9,10 @@ Continuação do projeto Sphynx, com foco em melhorar e acrescentar funcionalida
 - Spring Validation
 - Spring Security
 - Token JWT
-- MySQL
-
-## Modelos
-- Consumer
-  - id
-  - name
-  - ra
-  - tag
-- Local
-  - id
-  - name
-  - mac
-- AccessRegister
-  - id
-  - consumer_id
-  - local_id
-- Group
-  - id
-  - name
+- Postgres
 
 ## Requisitos
-- Possuir MySQL instalado na máquina
-- Caso queira utilizar em conjunto com o frontend e outra API do projeto, baixar no link abaixo:
-  - https://github.com/Cliyo/Sphynx-Web
-  - https://github.com/Cliyo/Sphynx-Finder
+- Possuir Postgres instalado na máquina
+- Caso queira utilizar em conjunto com o frontend e um dispositivo ESP32 com o firmware do projeto, baixe nos links abaixo:
+  - [Sphynx Website](https://github.com/Cliyo/sphynx-website)
+  - [Sphynx-ESP32](https://github.com/Cliyo/Sphynx)
