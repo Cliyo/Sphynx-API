@@ -66,4 +66,12 @@ public class UserController{
 
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MessageDTO> update(@PathVariable Long id, @RequestBody @Valid UserDataRegisterInput data) {
+        UserDataComplete updated = service.update(data, id);
+        MessageDTO messageDto = createMessageUtil.createMessage(200, updated);
+
+        return ResponseEntity.ok().body(messageDto);
+    }
 }
