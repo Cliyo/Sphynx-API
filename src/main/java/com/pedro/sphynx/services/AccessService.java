@@ -7,6 +7,7 @@ import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.local.LocalDataComplete;
 import com.pedro.sphynx.entities.Access;
 import com.pedro.sphynx.entities.User;
+import com.pedro.sphynx.entities.WeekDay;
 import com.pedro.sphynx.exceptions.Validation;
 
 import com.pedro.sphynx.repositories.AccessRepository;
@@ -20,9 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,12 +74,21 @@ public class AccessService {
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMacAndUnitId(macFormatted, consumer.unit().id()));
 
         AccessDataComplete accessDataComplete;
+
         Boolean hasPermission = locals.contains(consumerGroup);
         if(!hasPermission){
             accessDataComplete = createAccess(consumer, local, false, null);
-        } else {
-            accessDataComplete = createAccess(consumer, local, true, null);
         }
+
+        DayOfWeek todayWeekDay = LocalDate.now().getDayOfWeek();
+        Set<WeekDay> groupWeekDays = userRepository.findByTag(data.tag()).getGroup().getWeekDays();
+        Boolean hasAccessToday = groupWeekDays.stream()
+            .anyMatch(weekDay -> weekDay.getName().equals(todayWeekDay.name().toUpperCase())) || groupWeekDays == null;
+        if(!hasAccessToday) {
+            accessDataComplete = createAccess(consumer, local, false, "User doesn't have access to this local today.");
+        }
+
+        accessDataComplete = createAccess(consumer, local, true, null);
 
         emailService.sendSimpleMessage(
             consumer.userCreator().user(),

@@ -37,6 +37,10 @@ public class Group {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
+    @ManyToMany
+    @JoinTable(name = "week_days_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "week_day_id"))
+    private Set<WeekDay> weekDays;
+
     public Group(GroupDataInput data, User user){
         this.id = null;
         this.name = data.name();

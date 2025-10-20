@@ -46,6 +46,8 @@ public class GroupService {
         Group group = repository.getReferenceById(id);
         group.setName(data.name());
 
+        group.setWeekDays(data.weekDays());
+
         return new GroupDataComplete(group);
     }
 

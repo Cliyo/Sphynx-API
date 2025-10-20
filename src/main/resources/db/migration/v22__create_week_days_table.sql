@@ -1,0 +1,14 @@
+CREATE TABLE week_days (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO week_days (name) VALUES ('SUNDAY');
+INSERT INTO week_days (name) VALUES ('MONDAY');
+INSERT INTO week_days (name) VALUES ('TUESDAY');
+INSERT INTO week_days (name) VALUES ('WEDNESDAY');
+INSERT INTO week_days (name) VALUES ('THURSDAY');
+INSERT INTO week_days (name) VALUES ('FRIDAY');
+INSERT INTO week_days (name) VALUES ('SATURDAY');
