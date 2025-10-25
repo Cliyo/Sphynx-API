@@ -26,9 +26,6 @@ public class WeekDay {
 
     private String name;
 
-    @ManyToMany(mappedBy = "weekDays")
-    private Set<User> users;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
