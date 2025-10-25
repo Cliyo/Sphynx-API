@@ -109,7 +109,6 @@ public class UserService {
             }
             userCreated.setGroup(groupRepository.getReferenceById(data.groupId()));
         } else if (loggedUser.isAdmin()) {
-            System.out.println("ENTROU AQUI");
             userCreated.setGroup(groupRepository.save(new Group(new GroupDataInput(data.ra() + " - Grupo Padrão", null), userCreated)));
         }
         userCreated = userRepository.save(userCreated);
