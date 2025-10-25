@@ -5,7 +5,10 @@ import com.pedro.sphynx.dtos.group.GroupDataEdit;
 import com.pedro.sphynx.dtos.group.GroupDataInput;
 import com.pedro.sphynx.entities.Group;
 import com.pedro.sphynx.entities.User;
+import com.pedro.sphynx.entities.WeekDay;
 import com.pedro.sphynx.repositories.GroupRepository;
+import com.pedro.sphynx.repositories.WeekDaysRepository;
+
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +17,16 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 @Service
 public class GroupService {
 
     @Autowired
     private GroupRepository repository;
+
+    @Autowired
+    private WeekDaysRepository weekDaysRepository;
 
     private final ResourceBundle messages = ResourceBundle.getBundle("messagesPt");
 
@@ -29,6 +36,10 @@ public class GroupService {
         }
 
         Group group = new Group(data, user);
+
+        List<WeekDay> weekDays = weekDaysRepository.findByNameIn(data.weekDays().stream().map(Enum::name).toList());
+        group.setWeekDays(Set.copyOf(weekDays));
+
         repository.save(group);
 
         return new GroupDataComplete(group);
@@ -46,7 +57,8 @@ public class GroupService {
         Group group = repository.getReferenceById(id);
         group.setName(data.name());
 
-        group.setWeekDays(data.weekDays());
+        List<WeekDay> weekDays = weekDaysRepository.findByNameIn(data.weekDays().stream().map(Enum::name).toList());
+        group.setWeekDays(Set.copyOf(weekDays));
 
         return new GroupDataComplete(group);
     }
