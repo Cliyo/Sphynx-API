@@ -18,6 +18,7 @@ public class TokenService {
                     .withClaim("name", user.getName())
                     .withClaim("isAdmin", user.isAdmin())
                     .withClaim("unitId", user.getUnit() != null ? user.getUnit().getId() : null)
+                    .withClaim("permissionMenu", user.getPermissionMenus().stream().map(p -> p.getName()).toList())
                     .sign(algorithm);
 
         } catch(JWTCreationException exception){
