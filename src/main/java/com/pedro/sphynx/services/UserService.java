@@ -168,16 +168,23 @@ public class UserService {
         if(!userRepository.existsById(id)) {
             throw new EntityNotFoundException(messages.getString("error.idDontExists"));
         }
+        
+        var user = userRepository.getReferenceById(id);
+        if(!user.getUser().equals(data.user())){
+            if(userRepository.existsByUser(data.user())) {
+                throw new EntityExistsException("User already exists"); 
+            }
+            user.setUser(data.user());
+        }
 
-        if(userRepository.existsByRaAndIdNot(data.ra(), id)){
+        if(!data.ra().equals(user.getRa()) && userRepository.existsByRaAndIdNot(data.ra(), id)){
             throw new EntityExistsException(messages.getString("error.raAlreadyExists"));
         }
 
-        if(userRepository.existsByTagAndIdNot(data.tag(), id)){
+        if(!data.tag().equals(user.getTag()) && userRepository.existsByTagAndIdNot(data.tag(), id)){
             throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
         }
 
-        var user = userRepository.getReferenceById(id);
         user.actualizeData(data);
 
         if(data.groupId() != null){
