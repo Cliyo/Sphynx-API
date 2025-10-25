@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -78,39 +77,44 @@ public class UserService {
             if (!unitRepository.existsById(data.unitId())) {
                 throw new Validation(messages.getString("error.unitNotExists"));
             }
+
             user.setUnit(unitRepository.getReferenceById(data.unitId()));
         }
 
         if (data.tag() != null) {
-            System.out.println("TAG: " + data.tag());
-
             if (userRepository.existsByTag(data.tag())) {
                 throw new EntityExistsException(messages.getString("error.tagAlreadyExists"));
             }
+
             user.setTag(data.tag());
         }
+        
+        User userCreated = userRepository.save(user);
 
         if (data.permissionMenu() != null && !data.permissionMenu().isEmpty()) {
             List<String> permissionMenuNames = data.permissionMenu().stream()
                 .map(Enum::name)
                 .toList();
+
             var permissionMenus = permissionMenuRepository.findByNameIn(permissionMenuNames);
+
             if (permissionMenus.size() != data.permissionMenu().size()) {
                 throw new Validation("One or more permission menus are invalid");
             }
-            user.setPermissionMenus(Set.copyOf(permissionMenus));
-        }
 
-        User userCreated = userRepository.save(user);
+            userCreated.setPermissionMenus(permissionMenus);
+        }
 
         if (data.groupId() != null) {
             if (!groupRepository.existsById(data.groupId())) {
                 throw new Validation(messages.getString("error.groupNotExists"));
             }
+
             userCreated.setGroup(groupRepository.getReferenceById(data.groupId()));
         } else if (loggedUser.isAdmin()) {
             userCreated.setGroup(groupRepository.save(new Group(new GroupDataInput(data.ra() + " - Grupo Padrão", null), userCreated)));
         }
+
         userCreated = userRepository.save(userCreated);
         
         emailService.sendSimpleMessage(data.user(), "Sphynx | Bem-vindo ao Sphynx", 

@@ -16,7 +16,6 @@ import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Table(name = "users")
 @Entity(name = "User")
@@ -54,7 +53,7 @@ public class User implements UserDetails {
 
     @ManyToMany
     @JoinTable(name = "permission_menus_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "permission_menu_id"))
-    private Set<PermissionMenu> permissionMenus;
+    private List<PermissionMenu> permissionMenus;
 
     private Long fingerprint;
 
