@@ -187,6 +187,20 @@ public class UserService {
             user.setGroup(groupRepository.getReferenceById(data.groupId()));
         }
 
+        if (data.permissionMenu() != null && !data.permissionMenu().isEmpty()) {
+            List<String> permissionMenuNames = data.permissionMenu().stream()
+                .map(Enum::name)
+                .toList();
+
+            var permissionMenus = permissionMenuRepository.findByNameIn(permissionMenuNames);
+
+            if (permissionMenus.size() != data.permissionMenu().size()) {
+                throw new Validation("One or more permission menus are invalid");
+            }
+
+            user.setPermissionMenus(permissionMenus);
+        }
+
         user.setDtupdate(LocalDateTime.now());
 
         User userUpdated = userRepository.save(user);
