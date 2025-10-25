@@ -50,10 +50,6 @@ public class GroupService {
             throw new EntityNotFoundException(messages.getString("error.groupDontExists"));
         }
 
-        if(repository.existsByNameAndUnitId(data.name(), user.getUnit().getId())){
-            throw new EntityExistsException(messages.getString("error.groupAlreadyExists"));
-        }
-
         Group group = repository.getReferenceById(id);
         group.setName(data.name());
 
