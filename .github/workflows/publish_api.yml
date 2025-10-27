@@ -22,9 +22,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: sphynx_db
-        options: >-
-          --health-cmd pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -p 5432
-          --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v3
@@ -56,7 +53,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
-  build-mariadb:
+  build:
 
     runs-on: ubuntu-latest
     permissions:
@@ -72,20 +69,6 @@ jobs:
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
-    
-    - name: Shutdown Ubuntu MySQL (SUDO)
-      run: sudo service mysql stop
-  
-    - name: Set up mariadb
-      uses: getong/mariadb-action@v1.1
-      with:
-        host port: 3306
-        container port: 3306
-        character set server: 'utf8'
-        collation server: 'utf8_general_ci'
-        mariadb version: '10.4.10'
-        mysql database: 'sphynx_api'
-        mysql root password: 'root'
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
