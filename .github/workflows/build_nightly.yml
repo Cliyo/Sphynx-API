@@ -28,15 +28,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Wait for Postgres to be ready
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y postgresql-client
-        export PGPASSWORD=postgres
-        until psql -h localhost -U postgres -d sphynx_db -c '\q' >/dev/null 2>&1; do
-          sleep 1
-        done
-
     - name: Build with Maven
       uses: nick-fields/retry@v3
       with:
@@ -48,12 +39,12 @@ jobs:
       run: echo "SHA=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
 
     - name: Rename artifact
-      run: mv target/sphynx-*.jar target/sphynx_${{ matrix.DATABASE }}-${{ env.SHA }}.jar
+      run: mv target/sphynx-*.jar target/sphynx_${{ env.SHA }}.jar
     
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       with:
-        name: Sphynx-${{ matrix.DATABASE }}-API
+        name: Sphynx-API
         path: target/sphynx_*.jar
         
   release-api:

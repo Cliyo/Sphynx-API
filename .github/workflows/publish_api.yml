@@ -33,18 +33,6 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
   
-    - name: Wait for Postgres to be ready
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y postgresql-client
-        export PGPASSWORD=postgres
-        until psql -h localhost -U postgres -d sphynx_db -c '\q' >/dev/null 2>&1; do
-          sleep 1
-        done
-
-    - name: Shutdown Ubuntu MySQL (SUDO)
-      run: sudo service mysql stop
-  
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
