@@ -73,7 +73,7 @@ public class AccessService {
 
         LocalDataComplete local = new LocalDataComplete(localRepository.findByMacAndUnitId(macFormatted, consumer.unit().id()));
 
-        AccessDataComplete accessDataComplete;
+        AccessDataComplete accessDataComplete = null;
 
         Boolean hasPermission = locals.contains(consumerGroup);
         if(!hasPermission){
@@ -88,7 +88,9 @@ public class AccessService {
             accessDataComplete = createAccess(consumer, local, false, "User doesn't have access to this local today.");
         }
 
-        accessDataComplete = createAccess(consumer, local, true, null);
+        if (accessDataComplete == null) {
+            accessDataComplete = createAccess(consumer, local, true, null);
+        }
 
         emailService.sendSimpleMessage(
             consumer.userCreator().user(),
