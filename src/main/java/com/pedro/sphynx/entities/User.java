@@ -51,7 +51,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_id")
     private User userCreator;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "permission_menus_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "permission_menu_id"))
     private List<PermissionMenu> permissionMenus;
 
