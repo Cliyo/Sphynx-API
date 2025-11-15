@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("accessRegisters")
@@ -49,8 +50,8 @@ public class AccessRegisterController {
     }
 
     @GetMapping
-    public ResponseEntity<MessageDTO> getAll(@AuthenticationPrincipal UserDetails user){
-        List<AccessDataComplete> listAccess = service.getAllAccesses((User) user);
+    public ResponseEntity<MessageDTO> getAll(@AuthenticationPrincipal UserDetails user, @RequestParam Optional<Long> unitId){
+        List<AccessDataComplete> listAccess = service.getAllAccesses((User) user, unitId);
         MessageDTO messageDTO = createMessageUtil.createMessage(200, listAccess);
 
         return ResponseEntity.ok(messageDTO);

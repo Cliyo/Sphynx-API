@@ -25,6 +25,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -156,14 +157,22 @@ public class AccessService {
         return new AccessDataComplete(access);
     }
 
-    public List<AccessDataComplete> getAllAccesses(User loggedUser) {
+    public List<AccessDataComplete> getAllAccesses(User loggedUser, Optional<Long> unitId) {
         List<AccessDataComplete> listAccess;
 
         if (loggedUser.isAdmin()) {
-            listAccess = accessRepository.findAll()
-                .stream()
-                .map(AccessDataComplete::new)
-                .toList();
+
+            if (unitId.isPresent()) {
+                listAccess = accessRepository.findAllByUnitId(unitId.get())
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .toList();
+            } else {
+                listAccess = accessRepository.findAll()
+                    .stream()
+                    .map(AccessDataComplete::new)
+                    .toList();
+            }
         } else {
             listAccess = accessRepository.findAllByUnitId(loggedUser.getUnit().getId())
                 .stream()
