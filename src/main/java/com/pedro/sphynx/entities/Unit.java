@@ -26,16 +26,16 @@ public class Unit {
     private LocalDateTime dtcreate;
     private LocalDateTime dtupdate;
 
-    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER)
     private List<User> users;
 
-    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER)
     private List<Local> locals;
 
-    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER)
     private List<Group> groups;
 
-    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER)
     private List<Access> accesses;
 
     public Unit(UnitDataInput data){

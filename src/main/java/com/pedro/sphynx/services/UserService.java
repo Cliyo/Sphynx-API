@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedro.sphynx.dtos.auth.UserDataComplete;
 import com.pedro.sphynx.dtos.auth.UserDataRegisterInput;
@@ -44,6 +45,7 @@ public class UserService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
+    @Transactional
     public UserDataComplete create(UserDataRegisterInput data, User loggedUser) {
         if (userRepository.existsByUser(data.user())) {
             throw new EntityExistsException("User already exists");
@@ -129,12 +131,14 @@ public class UserService {
         return new UserDataComplete(userCreated);
     }
 
+    @Transactional
     public UserDataComplete getById(Long id) {
         User userEntity = userRepository.findById(id)
             .orElseThrow(() -> new EntityExistsException("User not found"));
         return new UserDataComplete(userEntity);
     }
 
+    @Transactional
     public List<UserDataComplete> getAll(User loggedUser) {
         List<UserDataComplete> listUsers;
 
@@ -156,6 +160,7 @@ public class UserService {
         return listUsers;
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             throw new EntityExistsException("User not found");
@@ -164,6 +169,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     public UserDataComplete update(UserDataRegisterInput data, Long id){
         if(!userRepository.existsById(id)) {
             throw new EntityNotFoundException(messages.getString("error.idDontExists"));
